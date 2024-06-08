@@ -1,0 +1,37 @@
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "SourceSans";
+  src: url("./fonts/SourceSansPro-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "SourceSans";
+  src: url("./fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+/* Defina a fonte padrão para o corpo do texto */
+body {
+  font-family: "SourceSans", sans-serif;
+}
+
+/* Defina uma fonte diferente para os títulos */
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+}
