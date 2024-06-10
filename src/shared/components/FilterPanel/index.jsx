@@ -9,7 +9,7 @@ export function FilterPanel() {
       <Card sx={styles.card}>   
         <CardContent>
           <Box sx={styles.textFieldContainer}>
-            <div>
+            <Box sx={styles.textFieldWrapper}>
               <TextField
                 placeholder="Nome completo"
                 sx={styles.textField}
@@ -19,14 +19,13 @@ export function FilterPanel() {
                       <PersonOutlineIcon />
                     </InputAdornment>
                   ),
-                  disableUnderline: true,
                 }}
               />
               <Typography sx={styles.textDown}>
                 Insira o nome completo do primeiro pesquisador
               </Typography>
-            </div>
-            <div>
+            </Box>
+            <Box sx={styles.textFieldWrapper}>
               <TextField
                 placeholder="Nome completo"
                 sx={styles.textField}
@@ -41,8 +40,7 @@ export function FilterPanel() {
               <Typography sx={styles.textDown}>
                 Insira o nome completo do segundo pesquisador
               </Typography>
-            </div>       
-            
+            </Box>       
           </Box>
         </CardContent>
         <CardContent>

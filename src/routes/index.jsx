@@ -16,16 +16,16 @@ export const AppRoutes = () => {
       <FilterPanel />
       <SearchResults />
       <DataAccordion />
-      <Routes>
+      {/* <Routes> */}
         {/* <Route path="/pagina-inicial" element={
           <Button variant='contained' color='primary' onClick={toggleTheme}>
             Contraste
           </Button>
         }/> */}
-        <Route path="*" element={
+        {/* <Route path="*" element={
           <Navigate to="/pagina-inicial" />
         }/>
-      </Routes>
+      </Routes> */}
     </>
   );
     

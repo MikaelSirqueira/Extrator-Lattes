@@ -6,21 +6,21 @@ const styles = {
   card: {    
     background: 'rgba(217, 217, 217, 0.85)',
     borderRadius: 8,
-    margin: 8,
-    marginTop: 0,
-    maxWidth: '945px',
-    padding: 5,
+    margin: '0 0 64px',
+    width: '945px',
   },
   textFieldContainer: {
     display: 'flex',
-    gap: 30
+  },
+  textFieldWrapper: {
+    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '40px 40px 0 40px'
   },
   textField: {
-    flex: 1,
-    display: 'flex',
     background: '#FFF',
     borderRadius: 2,
-    textDecoration: 'none',
   },
   textDown: {
     fontSize: '13px',
@@ -35,8 +35,8 @@ const styles = {
     width: '108px',
     textSize: '16px',
     textTransform: 'none',
+    margin: '16px 40px',
   },
 };
 
 export default styles;
-

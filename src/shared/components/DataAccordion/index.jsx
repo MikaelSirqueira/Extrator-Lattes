@@ -9,8 +9,8 @@ import graph1 from "../../assets/graph1.svg";
 export function DataAccordion() {
   const graphs = [
     { 
-      graphTitle: 'Gráfico 1', 
-      legendTitle: 'Legenda 1', 
+      graphTitle: 'Comparativo de publicações', 
+      legendTitle: 'Legenda', 
       graphContent: <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />, 
       legendContent: <Typography variant="body1">Legenda do Gráfico 1</Typography> 
     },
@@ -43,7 +43,7 @@ export function DataAccordion() {
   const hasInfoData = infoGroups.length > 0;
 
   return (
-    <div>
+    <main>
       {hasGraphData && (
         <PublicationAccordion title="Artigos Publicados">
           {graphs.map((graph, index) => (
@@ -75,7 +75,7 @@ export function DataAccordion() {
         <Button sx={styles.button}>Voltar</Button>
         <Button variant='contained' color="primary" sx={styles.button}>Salvar</Button>
       </Box>
-    </div>
+    </main>
   );
 }
 
