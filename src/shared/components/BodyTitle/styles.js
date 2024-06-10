@@ -6,12 +6,10 @@ const styles = {
     fontFamily: 'SourceSans, sans-serif',
     fontWeight: 700, 
     fontSize: '80px', 
-    textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)', 
   },
   text: {
     fontSize: '24px', 
     color: '#828282', 
-    textShadow: '0px 2px 2px rgba(0, 0, 0, 0.2)', 
     lineHeight: '1.6', 
   },
   link: {
