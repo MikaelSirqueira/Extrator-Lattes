@@ -5,48 +5,50 @@ import styles from './styles';
 
 export function FilterPanel() {
   return (
-    <Card sx={styles.card}>
-      <CardContent>
-        <Box sx={styles.textFieldContainer}>
-          <div>
-            <TextField
-              placeholder="Nome completo"
-              sx={styles.textField}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonOutlineIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Typography sx={styles.textDown}>
-              Insira o nome completo do primeiro pesquisador
-            </Typography>
-          </div>
-          <div>
-            <TextField
-              placeholder="Nome completo"
-              sx={styles.textField}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonOutlineIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Typography sx={styles.textDown}>
-              Insira o nome completo do segundo pesquisador
-            </Typography>
-          </div>
-        
-          
-        </Box>
-      </CardContent>
-      <CardContent>
-        <Button sx={styles.buttonContainer}>Extrair</Button>
-      </CardContent>
-    </Card>
+    <Box sx={styles.container}>
+      <Card sx={styles.card}>   
+        <CardContent>
+          <Box sx={styles.textFieldContainer}>
+            <div>
+              <TextField
+                placeholder="Nome completo"
+                sx={styles.textField}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                  disableUnderline: true,
+                }}
+              />
+              <Typography sx={styles.textDown}>
+                Insira o nome completo do primeiro pesquisador
+              </Typography>
+            </div>
+            <div>
+              <TextField
+                placeholder="Nome completo"
+                sx={styles.textField}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Typography sx={styles.textDown}>
+                Insira o nome completo do segundo pesquisador
+              </Typography>
+            </div>       
+            
+          </Box>
+        </CardContent>
+        <CardContent>
+          <Button sx={styles.buttonContainer}>Extrair</Button>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

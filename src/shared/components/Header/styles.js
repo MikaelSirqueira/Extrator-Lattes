@@ -23,10 +23,12 @@ const styles = {
   buttonTertiary: {
     fontSize: '16px',
     borderRadius: '4px',
+    textTransform: 'none',
   },
   button: {
     fontSize: '16px',
     borderRadius: '24px',
+    textTransform: 'none',
   },
 };
 
