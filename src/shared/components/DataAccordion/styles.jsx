@@ -15,6 +15,10 @@ const styles = {
   graphImage: {
     width: '100%',
   },
+  divider: {
+    width: '80%',
+    marginTop: '16px',
+  },
 };
 
 export default styles;

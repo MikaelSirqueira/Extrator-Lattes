@@ -1,55 +1,75 @@
 import React from 'react';
 import { PublicationAccordion } from '../PublicationAccordion';
+import { GraphSection } from '../GraphSection';
+import { InfoSection } from '../InfoSection';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import styles from './styles';
 import graph1 from "../../assets/graph1.svg";
 
 export function DataAccordion() {
-  const graphContent = (
-    <>      
-      <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />
-    </>
-  );
+  const graphs = [
+    { 
+      graphTitle: 'Gráfico 1', 
+      legendTitle: 'Legenda 1', 
+      graphContent: <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />, 
+      legendContent: <Typography variant="body1">Legenda do Gráfico 1</Typography> 
+    },
+  ];
 
-  const legendContent = (
-    <Typography>Legenda vai aqui</Typography>
-  );
+  const infoGroups = [
+    {
+      leftTitle: 'Pesquisador 1',
+      rightTitle: 'Pesquisador 2',
+      contentLeft: (
+        <Box>
+          <Typography variant="body1">ID Lattes: 123456</Typography>
+          <Typography variant="body1">Programa de Pós-Graduação: ABC</Typography>
+          <Typography variant="body1">Senioridade: Alta</Typography>
+          <Typography variant="body1">CV Lattes: Link</Typography>
+        </Box>
+      ),
+      contentRight: (
+        <Box>
+          <Typography variant="body1">ID Lattes: 654321</Typography>
+          <Typography variant="body1">Programa de Pós-Graduação: XYZ</Typography>
+          <Typography variant="body1">Senioridade: Média</Typography>
+          <Typography variant="body1">CV Lattes: Link</Typography>
+        </Box>
+      )
+    },
+  ];
 
-  const textContentLeft = (
-    <Box>
-      <Typography variant="body1">ID Lattes: 123456</Typography>
-      <Typography variant="body1">Programa de Pós-Graduação: ABC</Typography>
-      <Typography variant="body1">Senioridade: Alta</Typography>
-      <Typography variant="body1">CV Lattes: Link</Typography>
-    </Box>
-  );
-
-  const textContentRight = (
-    <Box>
-      <Typography variant="body1">ID Lattes: 654321</Typography>
-      <Typography variant="body1">Programa de Pós-Graduação: XYZ</Typography>
-      <Typography variant="body1">Senioridade: Média</Typography>
-      <Typography variant="body1">CV Lattes: Link</Typography>
-    </Box>
-  );
+  const hasGraphData = graphs.length > 0;
+  const hasInfoData = infoGroups.length > 0;
 
   return (
     <div>
-      <PublicationAccordion
-        title="Artigos Publicados"
-        contentLeftTitle="Comparativos de Publicações"
-        contentRightTitle="Legenda"
-        contentLeft={graphContent}
-        contentRight={legendContent}
-      />
-      <PublicationAccordion
-        title="Experiência"
-        contentLeftTitle="Pesquisador 1"
-        contentRightTitle="Pesquisador 2"
-        contentLeft={textContentLeft}
-        contentRight={textContentRight}
-      />
-
+      {hasGraphData && (
+        <PublicationAccordion title="Artigos Publicados">
+          {graphs.map((graph, index) => (
+            <GraphSection 
+              key={index}
+              graphTitle={graph.graphTitle}
+              legendTitle={graph.legendTitle}
+              graphContent={graph.graphContent}
+              legendContent={graph.legendContent}
+            />
+          ))}
+        </PublicationAccordion>
+      )}
+      {hasInfoData && (
+        <PublicationAccordion title="Experiência">
+          {infoGroups.map((group, index) => (
+            <InfoSection 
+              key={index}
+              leftTitle={group.leftTitle}
+              rightTitle={group.rightTitle}
+              contentLeft={group.contentLeft}
+              contentRight={group.contentRight}
+            />
+          ))}
+        </PublicationAccordion>
+      )}
       <Box sx={styles.buttonPanel}>
         <Divider />
         <Button sx={styles.button}>Voltar</Button>
@@ -58,3 +78,4 @@ export function DataAccordion() {
     </div>
   );
 }
+

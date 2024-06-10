@@ -3,7 +3,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Box, Typography, Divider
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styles from './styles';
 
-export function PublicationAccordion({ title, contentLeftTitle, contentRightTitle, contentLeft, contentRight }) {
+export function PublicationAccordion({ title, children }) {
   return (
     <Box sx={styles.accordionContainer}>
       <Accordion sx={styles.accordion}>
@@ -11,23 +11,10 @@ export function PublicationAccordion({ title, contentLeftTitle, contentRightTitl
           <Typography variant='primary' sx={styles.title}>{title}</Typography>
         </AccordionSummary>
         <AccordionDetails sx={styles.accordionDetails}>
-          <Box sx={styles.graphSectionContainer}>
-            <Typography sx={styles.sectionTitle}>{contentLeftTitle}</Typography>
-            <Box sx={styles.contentContainer}>
-              {contentLeft}
-            </Box>
-          </Box>
-          <Box sx={styles.legendSectionContainer}>
-            <Typography sx={styles.sectionTitle}>{contentRightTitle}</Typography>
-            <Box sx={styles.contentContainer}>
-              {contentRight}
-            </Box>
-          </Box>
+          {children}
         </AccordionDetails>
       </Accordion>
       <Divider sx={styles.divider} />
     </Box>
   );
 }
-
-export default PublicationAccordion;
