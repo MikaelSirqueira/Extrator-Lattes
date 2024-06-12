@@ -6,16 +6,16 @@ export const LightTheme = createTheme({
       main: '#8A0538',
       dark: '#8A0538',
       light: '#8A0538',
-      contrastText: '#ffffff',
+      contrastText: '#000',
     },
     secondary: {
-      main: '#8A0538',
-      dark:'#8A0538',
-      light: '#8A0538',
+      main: '#000',
+      dark:'#000',
+      light: '#828282',
       contrastText: '#8A0538',
     },
     background: {
-      paper: '#ffffff',
+      paper: '#D9D9D9',
       default: '#ffffff',
     }
   },

@@ -4,20 +4,20 @@ import { cyan, yellow } from '@mui/material/colors';
 export const DarkTheme = createTheme({
   palette: {
     primary: {
-      main: '#ffffff',
-      dark: '#ffffff',
-      light: yellow[500],
-      contrastText: '#ffffff',
+      main: '#863BFF',
+      dark: '#863BFF',
+      light: '#863BFF',
+      contrastText: '#fff',
     },
     secondary: {
-      main: '#8A0538',
-      dark: '#8A0538',
-      light: '#8A0538',
-      contrastText: '#8A0538',
+      main: '#fff',
+      dark: '#828282',
+      light: '#fff',
+      contrastText: '#E4E4E4',
     },
     background: {
-      paper: '#303134',
-      default: '#202124',
-    }
+      default: '#000',
+      paper: '#1E1E1E',
+    },
   }
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { Card, CardContent, TextField, InputAdornment, Button, Box, Typography } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import styles from './styles';
@@ -6,7 +6,7 @@ import styles from './styles';
 export function FilterPanel() {
   return (
     <Box sx={styles.container}>
-      <Card sx={styles.card}>   
+      <Card bgcolor='secondary' sx={styles.card}>   
         <CardContent>
           <Box sx={styles.textFieldContainer}>
             <Box sx={styles.textFieldWrapper}>
