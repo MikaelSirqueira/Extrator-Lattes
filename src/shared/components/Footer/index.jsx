@@ -5,7 +5,7 @@ import LogoImage from "../../assets/logo-pucpr.svg";
 
 export function Footer() {
   return (
-    <footer style={styles.footer}>
+    <footer color='background.paper' style={styles.footer}>
         <img src={LogoImage} alt="Logo da PUCPR" style={styles.logo} />
     </footer>
   );

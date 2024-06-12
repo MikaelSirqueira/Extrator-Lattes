@@ -9,7 +9,7 @@ const styles = {
   },
   text: {
     fontSize: '24px', 
-    color: '#828282', 
+    // color: '#828282', 
     lineHeight: '1.6', 
   },
   link: {
