@@ -3,7 +3,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     height: '250px',
-    background: '#D9D9D9',
     position: 'relative',
   },
   logo: {

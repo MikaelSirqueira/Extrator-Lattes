@@ -1,27 +1,30 @@
+const commonContainerStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  borderRadius: 8,
+  padding: '16px',
+  margin: '0 8px',
+  height: '305px',
+};
+
 const styles = {
-  accordionContainer: {
+  container: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     marginTop: '24px',
+    gap: '64px',
   },
   graphSectionContainer: {
-    flex: 2, // 2/3 do espaço
-    display: 'flex',
-    flexDirection: 'column',
-    background: 'rgba(217, 217, 217, 0.85)', 
-    borderRadius: 8,
-    padding: '16px',
-    margin: '0 8px',
+    ...commonContainerStyles,
+    flex: 2,
+    width: '530px',
   },
   legendSectionContainer: {
-    flex: 1, // 1/3 do espaço
-    display: 'flex',
-    flexDirection: 'column',
-    background: 'rgba(217, 217, 217, 0.85)', 
-    borderRadius: 8,
-    padding: '16px',
-    margin: '0 8px',
+    ...commonContainerStyles,
+    flex: 1,
+    width: '280px',
   },
   sectionTitle: {
     display: 'flex',

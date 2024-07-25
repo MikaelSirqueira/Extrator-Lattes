@@ -10,11 +10,13 @@ export function BodyTitle() {
         <Typography color='secondary.dark' variant="h1" sx={styles.title}>
           Extrator de Dados
         </Typography>
-        <Box color='secondary.light' sx={styles.text}>
-          Selecione abaixo a opção de perfil que se encaixa com a análise desejada.<br />
-          Você também pode acessar nosso manual para compreender melhor como o sistema funciona.
+        <Box>
+          <Typography color='secondary.light' sx={styles.text}>
+            Selecione abaixo a opção de perfil que se encaixa com a análise desejada.<br />
+            Você também pode acessar nosso manual para compreender melhor como o sistema funciona.
+          </Typography>
         </Box>
-        <Link color='secondary' href="#saiba-mais" sx={styles.link}>
+        <Link color='customComponents.dark' href="#saiba-mais" sx={styles.link}>
           Saiba mais <ArrowForwardIcon sx={{ marginLeft: '4px' }} />
         </Link>
         <Divider />

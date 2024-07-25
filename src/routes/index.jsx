@@ -12,10 +12,10 @@ export const AppRoutes = () => {
 
   return (
     <>
-      <BodyTitle />
+      {/* <BodyTitle />
       <FilterPanel />
       <SearchResults />
-      <DataAccordion />
+      <DataAccordion /> */}
       {/* <Routes>
         <Route path="/pagina-inicial" element={
           <Button variant='contained' color='primary' onClick={toggleTheme}>

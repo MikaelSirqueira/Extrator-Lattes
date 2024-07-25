@@ -4,11 +4,11 @@ import styles from './styles';
 
 export function CardResult({ name, idLattes, program, seniority, cvLink, photo }) {
   return (
-    <Card sx={styles.card}>
-      <CardContent sx={styles.cardContent}>
+    <Card color='secondary.dark' sx={styles.card}>
+      <CardContent>
         <Avatar sx={styles.avatar} src={photo} alt={`Foto de ${name}`} />
-        <Typography variant="h6" sx={styles.researcherName}>{name}</Typography>
-        <Box sx={styles.details}>
+        <Typography variant="h6" color='secondary.dark' sx={styles.researcherName}>{name}</Typography>
+        <Box sx={styles.details} color='secondary.dark'>
           <Typography>ID Lattes: {idLattes}</Typography>
           <Typography>Programa de Pós-Graduação: {program}</Typography>
           <Typography>Senioridade: {seniority}</Typography>
