@@ -1,22 +1,28 @@
 import { createTheme } from '@mui/material';
+import { colors } from './colors';
 
 export const LightTheme = createTheme({
   palette: {
     primary: {
-      main: '#8A0538',
-      dark: '#8A0538',
-      light: '#8A0538',
-      contrastText: '#000',
+      main: colors.redPrimaryPure,
+      dark: colors.redPrimaryPure,
+      light: colors.redPrimaryDark,
+      contrastText: colors.whiteLightPure,
     },
     secondary: {
-      main: '#000',
-      dark:'#000',
-      light: '#828282',
-      contrastText: '#8A0538',
+      main: colors.redPrimaryPure,
+      dark:colors.dark01,
+      light: colors.dark03,
+      contrastText: colors.redPrimaryPure,
     },
     background: {
-      paper: '#D9D9D9',
-      default: '#ffffff',
-    }
+      paper: colors.whiteLightPure3,
+      default: colors.whiteLightPure,
+    },
+    customComponents: {
+      main: colors.whiteLightPure,
+      light: colors.whiteLightPure3,
+      dark: colors.redPrimaryPure,
+    },
   },
 });

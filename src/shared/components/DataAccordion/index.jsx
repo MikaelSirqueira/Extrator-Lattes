@@ -12,7 +12,7 @@ export function DataAccordion() {
       graphTitle: 'Comparativo de publicações', 
       legendTitle: 'Legenda', 
       graphContent: <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />, 
-      legendContent: <Typography variant="body1">Legenda do Gráfico 1</Typography> 
+      legendContent: <Typography color='secondary.dark' variant="body1">Legenda do Gráfico 1</Typography> 
     },
   ];
 
@@ -22,18 +22,18 @@ export function DataAccordion() {
       rightTitle: 'Pesquisador 2',
       contentLeft: (
         <Box>
-          <Typography variant="body1">ID Lattes: 123456</Typography>
-          <Typography variant="body1">Programa de Pós-Graduação: ABC</Typography>
-          <Typography variant="body1">Senioridade: Alta</Typography>
-          <Typography variant="body1">CV Lattes: Link</Typography>
+          <Typography color='secondary.dark' variant="body1">ID Lattes: 123456</Typography>
+          <Typography color='secondary.dark' variant="body1">Programa de Pós-Graduação: ABC</Typography>
+          <Typography color='secondary.dark' variant="body1">Senioridade: Alta</Typography>
+          <Typography color='secondary.dark' variant="body1">CV Lattes: Link</Typography>
         </Box>
       ),
       contentRight: (
         <Box>
-          <Typography variant="body1">ID Lattes: 654321</Typography>
-          <Typography variant="body1">Programa de Pós-Graduação: XYZ</Typography>
-          <Typography variant="body1">Senioridade: Média</Typography>
-          <Typography variant="body1">CV Lattes: Link</Typography>
+          <Typography color='secondary.dark' variant="body1">ID Lattes: 654321</Typography>
+          <Typography color='secondary.dark' variant="body1">Programa de Pós-Graduação: XYZ</Typography>
+          <Typography color='secondary.dark' variant="body1">Senioridade: Média</Typography>
+          <Typography color='secondary.dark' variant="body1">CV Lattes: Link</Typography>
         </Box>
       )
     },
@@ -43,7 +43,7 @@ export function DataAccordion() {
   const hasInfoData = infoGroups.length > 0;
 
   return (
-    <main>
+    <main style={styles.container}>
       {hasGraphData && (
         <PublicationAccordion title="Artigos Publicados">
           {graphs.map((graph, index) => (
@@ -72,7 +72,7 @@ export function DataAccordion() {
       )}
       <Box sx={styles.buttonPanel}>
         <Divider />
-        <Button sx={styles.button}>Voltar</Button>
+        <Button variant="outlined" sx={styles.button}>Voltar</Button>
         <Button variant='contained' color="primary" sx={styles.button}>Salvar</Button>
       </Box>
     </main>

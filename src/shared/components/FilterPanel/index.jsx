@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React from 'react';
 import { Card, CardContent, TextField, InputAdornment, Button, Box, Typography } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import styles from './styles';
@@ -6,11 +6,11 @@ import styles from './styles';
 export function FilterPanel() {
   return (
     <Box sx={styles.container}>
-      <Card bgcolor='secondary' sx={styles.card}>   
-        <CardContent>
+      <Card sx={styles.card}>   
+        <CardContent bgcolor='secondary.dark'>
           <Box sx={styles.textFieldContainer}>
             <Box sx={styles.textFieldWrapper}>
-              <TextField
+              <TextField 
                 placeholder="Nome completo"
                 sx={styles.textField}
                 InputProps={{
@@ -43,9 +43,9 @@ export function FilterPanel() {
             </Box>       
           </Box>
         </CardContent>
-        <CardContent>
-          <Button sx={styles.buttonContainer}>Extrair</Button>
-        </CardContent>
+        <Box>
+          <Button size="large" sx={styles.buttonContainer}>Extrair</Button>
+        </Box>
       </Card>
     </Box>
   );

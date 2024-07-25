@@ -3,7 +3,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8, // Ajuste o padding conforme necessário
+    padding: 8,
     paddingTop: 3, 
   },
   imageContainer: {

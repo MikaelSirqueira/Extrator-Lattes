@@ -7,7 +7,6 @@ const styles = {
     gap: 8,
   },
   card: {
-    background: 'rgba(217, 217, 217, 0.85)',
     borderRadius: 8,
     width: '430px',
     textAlign: 'center',

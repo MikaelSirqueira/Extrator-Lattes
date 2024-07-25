@@ -4,7 +4,6 @@ const styles = {
     justifyContent: 'center',
   },
   card: {    
-    background: 'rgba(217, 217, 217, 0.85)',
     borderRadius: 8,
     margin: '0 0 64px',
     width: '945px',
@@ -33,7 +32,6 @@ const styles = {
     borderRadius: '24px',
     height: '48px',
     width: '108px',
-    textSize: '16px',
     textTransform: 'none',
     margin: '16px 40px',
   },

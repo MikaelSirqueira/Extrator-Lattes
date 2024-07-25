@@ -9,18 +9,18 @@ const styles = {
     width: '80%',
     marginTop: '16px',
   },
-  accordion: {
+  accordion: {    
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: '24px',
     width: '80%',
-    background: '#FFFFFF',
-    boxShadow: 'none',
   },
   title: {
-    color: '#8A0538',
     fontWeight: '600',
   },
   accordionDetails: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
 };
 

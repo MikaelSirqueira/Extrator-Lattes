@@ -1,27 +1,21 @@
 const styles = {
-  accordionContainer: {
+  container: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     marginTop: '24px',
+    gap: '64px',
   },
-  graphSectionContainer: {
+  card: {
+    borderRadius: 6,
+    boxShadow: 'none',
+    flexGrow: 1,
+  },
+  sectionContainer: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    background: 'rgba(217, 217, 217, 0.85)', 
-    borderRadius: 8,
-    padding: '16px',
-    margin: '0 8px',
-  },
-  legendSectionContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    background: 'rgba(217, 217, 217, 0.85)', 
-    borderRadius: 8,
-    padding: '16px',
-    margin: '0 8px',
+    margin: 1,
   },
   sectionTitle: {
     display: 'flex',

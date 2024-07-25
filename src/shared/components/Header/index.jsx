@@ -1,18 +1,21 @@
 import React from 'react';
-import LogoImage from "../../assets/logo-pucpr.svg";
+import LogoLight from "../../assets/logo-pucpr.svg";
+import LogoDark from "../../assets/logo-pucpr-contraste.svg";
 import { Box, Button } from '@mui/material';
 import styles from './styles';
 import { useAppThemeContext } from '../../contexts';
 
 
 export function Header() {
-  const { toggleTheme } = useAppThemeContext();
+  const { themeName, toggleTheme } = useAppThemeContext();
+
+  const logoPucpr = themeName === 'light' ? LogoLight : LogoDark;
 
   return (
     <>
       <Box sx={styles.headerContainer}>
         <Box sx={styles.imageContainer}>
-          <img src={LogoImage} alt="Logo da PUCPR" style={styles.logo} />
+          <img src={logoPucpr} alt="Logo da PUCPR" style={styles.logo} />
         </Box>
         <Box sx={styles.menuContainer}>
           <Button color="secondary" href="#about" sx={styles.buttonTertiary}>Sobre</Button>
