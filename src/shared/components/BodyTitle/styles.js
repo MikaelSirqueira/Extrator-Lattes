@@ -16,7 +16,7 @@ const styles = {
     alignItems: 'center',
     fontFamily: 'Poppins, sans-serif',
     fontSize: '14px',
-    fontWeight: 600,
+    fontWeight: '600',
     margin: '0px 0px 32px'
   },
   buttonTertiary: {

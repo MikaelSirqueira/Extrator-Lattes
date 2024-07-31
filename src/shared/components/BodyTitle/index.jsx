@@ -8,7 +8,7 @@ export function BodyTitle() {
     <>    
       <Box sx={styles.container}>
         <Typography color='secondary.dark' variant="h1" sx={styles.title}>
-          Extrator de Dados
+          Extrator Lattes
         </Typography>
         <Box>
           <Typography color='secondary.light' sx={styles.text}>
