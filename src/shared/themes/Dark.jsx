@@ -23,6 +23,11 @@ export const DarkTheme = createTheme({
       main: colors.darkPure,
       light: colors.dark01,
       dark: colors.whiteLightPure,
+    },
+    homeCardComponent: {
+      main: colors.darkPureTransparent,
+      light: colors.dark01,
+      dark: colors.whiteLightPure,
     }
   },
   

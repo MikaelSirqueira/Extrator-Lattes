@@ -24,5 +24,8 @@ export const LightTheme = createTheme({
       light: colors.whiteLightPure3,
       dark: colors.redPrimaryPure,
     },
+    homeCardComponent: {
+      main: colors.whiteLightPure3Transparent,
+    }
   },
 });
