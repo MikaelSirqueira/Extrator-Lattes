@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material';
 import { colors } from './colors';
+import { typography } from './colors';
 
 export const LightTheme = createTheme({
   palette: {
@@ -28,4 +29,5 @@ export const LightTheme = createTheme({
       main: colors.whiteLightPure3Transparent,
     }
   },
+  typography: typography,
 });

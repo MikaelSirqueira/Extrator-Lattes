@@ -71,7 +71,7 @@ export function DataAccordion() {
         </PublicationAccordion>
       )}
       <Box sx={styles.buttonPanel}>
-        <Divider />
+        <Divider aria-hidden="true" />
         <Button variant="outlined" sx={styles.button}>Voltar</Button>
         <Button variant='contained' color="primary" sx={styles.button}>Salvar</Button>
       </Box>

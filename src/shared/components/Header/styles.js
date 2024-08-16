@@ -3,13 +3,16 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8,
-    paddingTop: 3, 
+    padding: '2.5rem',
   },
   imageContainer: {
     flexGrow: 1, 
     display: 'flex', 
-    alignItems: 'center' 
+    alignItems: 'center' ,
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 0.8,
+    },
   },
   logo: {
     height: '65px',
@@ -20,13 +23,7 @@ const styles = {
     gap: '16px',
     alignItems: 'center' 
   },
-  buttonTertiary: {
-    fontSize: '16px',
-    borderRadius: '4px',
-    textTransform: 'none',
-  },
   button: {
-    fontSize: '16px',
     borderRadius: '24px',
     textTransform: 'none',
   },

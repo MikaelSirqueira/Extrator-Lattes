@@ -6,19 +6,27 @@ import { AppThemeProvider } from "./shared/contexts/ThemeContext.jsx";
 import { CssBaseline } from "@mui/material";
 import { ExtractData } from "./shared/pages/extract-data/index.jsx";
 import './global.css';
+import { Index } from "./shared/pages/index.jsx";
+import { AboutPage } from "./shared/pages/about-guide/index.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/extract",
-    element: <ExtractData />,
-  },
-  {
-    path: "/test",
-    element: <h1>Test Page</h1>,
+    element: <Index />,
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/extract",
+        element: <ExtractData />,
+      },     
+      {
+        path: "/about",
+        element: <AboutPage />,
+      },     
+    ],
   },
 ]);
 
@@ -26,9 +34,7 @@ export default function App() {
   return (
     <AppThemeProvider>
       <CssBaseline />
-      <Header />
       <RouterProvider router={router} />
-      <Footer />
     </AppThemeProvider>
   )
 }
