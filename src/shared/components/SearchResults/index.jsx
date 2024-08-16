@@ -24,7 +24,7 @@ export function SearchResults() {
           photo="/path/to/researcher2.jpg"
         />
       </Box>
-      <Divider sx={styles.divider} />
+      <Divider sx={styles.divider} aria-hidden="true" />
     </>
   );
 }

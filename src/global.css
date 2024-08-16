@@ -23,7 +23,11 @@
 }
 
 /* Defina a fonte padrão para o corpo do texto */
-body {
+body,
+input,
+textarea,
+select,
+button {
   font-family: "SourceSans", sans-serif;
 }
 
@@ -34,4 +38,8 @@ h3,
 h4 {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
+}
+
+html {
+  scroll-behavior: smooth;
 }

@@ -8,7 +8,7 @@ const styles = {
   logo: {
     position: 'absolute',
     left: 45,
-    width: '200px',
+    width: '290px',
   },
 };
 
