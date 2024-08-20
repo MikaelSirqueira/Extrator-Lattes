@@ -6,7 +6,7 @@ import { SearchResults } from "../../components/SearchResults";
 export function Researchers() {
   return (
     <>
-      <BodyTitle />
+      {/* <BodyTitle /> */}
       <FilterPanel />
       <SearchResults />
       <DataAccordion />

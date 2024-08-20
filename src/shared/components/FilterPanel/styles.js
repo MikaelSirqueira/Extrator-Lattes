@@ -6,10 +6,12 @@ const styles = {
   card: {    
     borderRadius: 8,
     margin: '0 0 64px',
-    width: '945px',
+    maxWidth: '945px',
+    flexGrow: 1
   },
   textFieldContainer: {
     display: 'flex',
+    gap: 15
   },
   textFieldWrapper: {
     flexGrow: 1,
@@ -18,7 +20,7 @@ const styles = {
     padding: '40px 40px 0 40px'
   },
   textField: {
-    background: '#FFF',
+    // background: '#FFF',
     borderRadius: 2,
   },
   textDown: {
@@ -26,8 +28,8 @@ const styles = {
     color: '#787878',
   },
   buttonContainer: {
-    background: '#F0F2F2',
-    color: '#787878',
+    // background: '#F0F2F2',
+    // color: '#787878',
     fontSize: '16px',
     borderRadius: '24px',
     height: '48px',
