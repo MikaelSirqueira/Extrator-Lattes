@@ -27,6 +27,9 @@ export const LightTheme = createTheme({
     },
     homeCardComponent: {
       main: colors.whiteLightPure3Transparent,
+    },
+    dangerComponent: {
+      main: colors.danger
     }
   },
   typography: typography,

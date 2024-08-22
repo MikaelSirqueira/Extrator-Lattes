@@ -1,0 +1,12 @@
+{
+    "logins": [
+        {
+            "user":"paula.jardim",
+            "senha":"1234abc"
+        },
+        {
+            "user":"mikael.sirqueira",
+            "senha":"abc1234"
+        }
+    ]
+}

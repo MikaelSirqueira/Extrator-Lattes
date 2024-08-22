@@ -1,11 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { Outlet , useLocation} from "react-router-dom";
 import Footer from "../components/Footer";
 import { Header } from "../components/Header";
 
 export function Index() {
+  const location = useLocation();
+
+  // Verifica se a rota atual é a página de login
+  const isLoginPage = location.pathname === "/";
+
   return (
     <>
-      <Header />
+      {isLoginPage ?
+       ( <Header isLoggedIn={false}/>)
+        :
+        (<Header isLoggedIn={true}/>)  
+      }
       <Outlet />
       <Footer />
     </>
