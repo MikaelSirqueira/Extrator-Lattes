@@ -7,7 +7,8 @@ import { useAppThemeContext } from '../../contexts';
 import { useNavigate } from 'react-router-dom';
 
 
-export function Header() {
+export function Header({isLoggedIn}) {
+
   const { themeName, toggleTheme } = useAppThemeContext();
   const navigate = useNavigate();
 
@@ -16,19 +17,42 @@ export function Header() {
   };
 
   const logoPucpr = themeName === 'light' ? LogoLight : LogoDark;
-
+  
   return (
-    <Box sx={styles.headerContainer}>
-      <Box sx={styles.imageContainer} onClick={() => navigate('/')}>
-        <img src={logoPucpr} alt="Logo da PUCPR" style={styles.logo} />
+  <>
+    { isLoggedIn ? (
+      
+      <Box sx={styles.headerContainer}>
+        <Box sx={styles.imageContainer} onClick={() => navigate('/home')}>
+          <img src={logoPucpr} alt="Logo da PUCPR" style={styles.logo} />
+        </Box>
+        <Box sx={styles.menuContainer}>
+          <Button color="secondary" onClick={() => handleNavigation('#about')} sx={styles.button}>Sobre</Button>
+          <Button color="secondary" onClick={() => handleNavigation('#guide')} sx={styles.button}>Manual</Button>
+          <Button color="secondary" sx={styles.button} onClick={toggleTheme}>Alto Contraste</Button>
+          <Button color="primary" variant='contained' onClick={() => navigate('/extract')} sx={styles.button}>Extrair</Button>
+        </Box>
+      </Box>
+    ) : (
+      <Box sx={styles.headerContainer}>
+      <Box sx={{
+          flexGrow: 1,
+          display: 'flex', 
+          alignItems: 'center'
+        }}>
+          <img src={logoPucpr} alt="Logo da PUCPR" style={styles.logo} />
       </Box>
       <Box sx={styles.menuContainer}>
-        <Button color="secondary" onClick={() => handleNavigation('#about')} sx={styles.button}>Sobre</Button>
-        <Button color="secondary" onClick={() => handleNavigation('#guide')} sx={styles.button}>Manual</Button>
-        <Button color="secondary" sx={styles.button} onClick={toggleTheme}>Alto Contraste</Button>
-        <Button color="primary" variant='contained' onClick={() => navigate('/extract')} sx={styles.button}>Extrair</Button>
+       <Button color="secondary" sx={{
+          borderRadius: '24px',
+          textTransform: 'none',
+          alignItems: 'right'
+        }} onClick={toggleTheme}>Alto Contraste</Button>
       </Box>
     </Box>
+    )
+  }
+  </>
   );
 }
   

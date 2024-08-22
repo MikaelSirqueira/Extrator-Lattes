@@ -29,6 +29,9 @@ export const DarkTheme = createTheme({
       main: colors.darkPureTransparent,
       light: colors.dark01,
       dark: colors.whiteLightPure,
+    },
+    dangerComponent: {
+      main: colors.danger
     }
   },
   typography: typography,  

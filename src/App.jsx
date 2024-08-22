@@ -8,6 +8,7 @@ import { ExtractData } from "./shared/pages/extract-data/index.jsx";
 import './global.css';
 import { Index } from "./shared/pages/index.jsx";
 import { AboutPage } from "./shared/pages/about-guide/index.jsx";
+import { AuthPage } from "./shared/pages/auth/index.jsx";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <AuthPage />,
+      },
+      {
+        path: "/home",
         element: <HomePage />,
       },
       {

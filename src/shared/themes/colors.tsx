@@ -14,6 +14,7 @@ export const colors = {
   darkPure: '#000000',
   darkPureTransparent: '#000000D9',
   whiteLightPure3Transparent: '#D9D9D9D9',
+  danger: '#660410'
 }
 
 export const typography: TypographyOptions = {
