@@ -45,21 +45,21 @@ export const typography: TypographyOptions = {
     lineHeight: '140%',
   },
   body1: {
-    fontFamily: 'SourceSans, sans-serif',
+    fontFamily: 'Source Sans 3, sans-serif',
     fontSize: '16px',
   },
   body2: {
-    fontFamily: 'SourceSans, sans-serif',
+    fontFamily: 'Source Sans 3, sans-serif',
     fontSize: '24px',
     lineHeight: '1.6',
   },
   button: {
-    fontFamily: 'SourceSans, sans-serif',
+    fontFamily: 'Source Sans 3, sans-serif',
     fontWeight: 600,
     borderRadius: 3,
   },
   overline: {
-    fontFamily: 'SourceSans, sans-serif',
+    fontFamily: 'Source Sans 3, sans-serif',
     fontSize: '14px',
     fontWeight: 600,
     lineHeight: '130%'

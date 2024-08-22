@@ -14,10 +14,10 @@ export function Auth() {
   const [showError, setShowError] = useState(false);
 
   function logIn(state) {
-    setShowError(true)
-    // if (showError == false){
-    //   navigate('/home');
-    // }
+    setShowError(false)
+    if (showError == false){
+      navigate('/home');
+    }
   }
 
   const handleClickShowPassword = () => {
