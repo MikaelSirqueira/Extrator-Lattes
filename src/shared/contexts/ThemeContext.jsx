@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { Box } from '@mui/system';
 
@@ -12,11 +12,18 @@ export const useAppThemeContext = () => {
 }
 
 export const AppThemeProvider = ({ children }) => {
-  const [themeName, setThemeName] = useState('light');
+  const [themeName, setThemeName] = useState();
 
-  const toggleTheme = useCallback(() => {
-    setThemeName(oldThemeName => oldThemeName === 'light' ? 'dark' : 'light');
+  useEffect(() => {
+    const savedTheme = sessionStorage.getItem('theme') || 'light';
+    setThemeName(savedTheme);
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = themeName === 'light' ? 'dark' : 'light';
+    setThemeName(newTheme);
+    sessionStorage.setItem('theme', newTheme);
+  };
 
   const theme = useMemo(() => {
     if (themeName === 'light') return LightTheme;
