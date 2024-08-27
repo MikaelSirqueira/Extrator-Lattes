@@ -25,8 +25,11 @@ export const LightTheme = createTheme({
       light: colors.whiteLightPure3,
       dark: colors.redPrimaryPure,
     },
+    headerFooterComponent: {
+      main: colors.whiteLightPure2
+    },
     homeCardComponent: {
-      main: colors.whiteLightPure3Transparent,
+      main: colors.whiteLightPureTransparent,
     },
     dangerComponent: {
       main: colors.danger

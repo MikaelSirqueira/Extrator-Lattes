@@ -27,10 +27,6 @@ const styles = {
     alignItems: 'center',
     gap: '2rem',
   },
-  title: {
-    fontWeight: '700',
-    fontSize: "5rem",
-  },
   text: {
     fontSize: '24px', 
     lineHeight: '1.6', 

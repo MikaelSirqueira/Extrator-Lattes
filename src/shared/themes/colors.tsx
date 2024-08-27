@@ -12,8 +12,8 @@ export const colors = {
   dark01: '#1E1E1E',
   dark03: '#787878',
   darkPure: '#000000',
-  darkPureTransparent: '#000000D9',
-  whiteLightPure3Transparent: '#D9D9D9D9',
+  darkPureTransparent: '#000000AA',
+  whiteLightPureTransparent: '#FFFFFF73',
   danger: '#660410'
 }
 
@@ -37,6 +37,11 @@ export const typography: TypographyOptions = {
   h4: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
+  },
+  h5: {
+    fontFamily: 'Poppins, sans-serif',
+    fontSize: '2.25rem',
+    fontWeight: 800
   },
   subtitle1: {
     fontFamily: 'Poppins, sans-serif',

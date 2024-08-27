@@ -1,12 +1,10 @@
-import { Alert, AlertTitle, Box, Button, InputAdornment, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, InputAdornment, Stack, TextField, Typography } from "@mui/material";
 import ImageHome from "../../assets/bg-home.svg";
-import styles from "../Auth/styles";
 import { useNavigate } from "react-router-dom";
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { useState } from "react";
-
 
 export function Auth() {
   const navigate = useNavigate()
@@ -25,21 +23,49 @@ export function Auth() {
   };
 
   return (
-    <div style={styles.container}>
+    <Box component='div'
+      position='relative'
+      display='flex'
+      justifyContent='center'
+      alignItems='center'
+      height='90vh'
+      overflow='hidden'      
+    >
       <img 
         src={ImageHome} 
         alt="Imagem interna da parte central da PUC-PR exibindo a cruz, a igreja e a biblioteca." 
-        style={styles.image} 
+        style={{
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+          objectFit: 'cover',
+          filter: 'brightness(60%)'
+        }} 
       />  
-      <Box bgcolor='homeCardComponent.main' sx={styles.content} >
-        <Typography color='secondary.dark' variant="h1" sx={styles.title}>Faça seu login</Typography>
+
+      <Box 
+        bgcolor='homeCardComponent.main' 
+        position='relative'
+        borderRadius='24px'
+        padding='24px'
+        width='27.875rem'
+        display='flex'
+        flexDirection='column'
+        gap='1rem'
+        sx={{
+          backdropFilter: 'blur(5px)',          
+        }}
+      >
+        <Typography color='secondary.dark' variant="h5" textAlign='center' >Faça seu login</Typography>
         
-        <TextField 
+        <div style={{display: 'flex', gap: 8, flexDirection: 'column'}}>
+          <TextField 
             placeholder="Usuário"
             sx={{
               '& .MuiFormHelperText-root': { ml: '0', fontSize: 13 },
-              '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-              width: "225px"
+              '& .MuiInputBase-root': { backgroundColor: '#FFF' },  
+              display: 'flex', 
+              flexGrow: '1'           
             }}
             InputProps={{
               startAdornment: (
@@ -50,13 +76,16 @@ export function Auth() {
             }}
           />
 
-        <TextField 
+          <TextField 
             placeholder="Senha"
             type={showPassword ? "text" : "password"} 
             sx={{
               '& .MuiFormHelperText-root': { ml: '0', fontSize: 13 },
               '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-              width: "225px",
+              display: 'flex', 
+
+              flexGrow: '1'  
+              
             }}
             InputProps={{
               startAdornment: (
@@ -78,18 +107,20 @@ export function Auth() {
               )
             }}
           />
+        </div>        
         
-        <Box sx={styles.buttonContainer}>
-          <Button 
-            variant='contained' 
-            size="large"
-            color="primary" 
-            sx={styles.button}
-            onClick={() => logIn(true)}
-          >
-            Entrar
-          </Button>
-        </Box>
+        <Button 
+          variant='contained' 
+          size="large"
+          color="primary" 
+          sx={{
+            borderRadius: 2,  
+            textTransform:'none'
+          }}
+          onClick={() => logIn(true)}
+        >
+          Entrar
+        </Button>
       
       { showError && (
         <Stack spacing={2}>
@@ -109,6 +140,6 @@ export function Auth() {
       
 
       </Box>
-    </div>
+    </Box>
   )
 }
