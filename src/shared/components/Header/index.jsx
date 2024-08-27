@@ -1,10 +1,9 @@
+import { Box, Button } from '@mui/material';
+import { useAppThemeContext } from '../../contexts';
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import LogoLight from "../../assets/logo-pucpr.svg";
 import LogoDark from "../../assets/logo-pucpr-contraste.svg";
-import { Box, Button } from '@mui/material';
-import styles from './styles';
-import { useAppThemeContext } from '../../contexts';
-import { useNavigate } from 'react-router-dom';
 
 export function Header({isLoggedIn}) {
   const { themeName, toggleTheme } = useAppThemeContext();
@@ -18,35 +17,52 @@ export function Header({isLoggedIn}) {
   
   return (
   <>      
-    <Box sx={styles.headerContainer}>
-
+    <Box 
+    component='header'
+      display={'flex'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
+      height={'100px'}
+      mx={6}
+      bgcolor='headerFooterComponent'
+    >
       { isLoggedIn ? (
         <>
-          <Box sx={styles.imageContainer} onClick={() => navigate('/home')}>
-            <img src={logoPucpr} alt="Logo da PUCPR" style={styles.logo} />
+          <Box sx={{
+            display: 'flex', 
+            alignItems: 'center',
+            cursor: 'pointer',
+            '&:hover': {
+              opacity: 0.8,
+            },
+          }} onClick={() => navigate('/home')}>
+            <img src={logoPucpr} alt="Logo da PUCPR" style={{height:'64px'}} />
           </Box>
-          <Box sx={styles.menuContainer}>
-            <Button color="secondary" onClick={() => handleNavigation('#about')} sx={styles.button}>Sobre</Button>
-            <Button color="secondary" onClick={() => handleNavigation('#guide')} sx={styles.button}>Manual</Button>
-            <Button color="secondary" sx={styles.button} onClick={toggleTheme}>Alto Contraste</Button>
-            <Button color="primary" variant='contained' onClick={() => navigate('/extract')} sx={styles.button}>Extrair</Button>
+          <Box
+            display={'flex'}
+            alignItems={'center'}
+            gap={2}
+          >
+            <Button color="secondary" size='large' onClick={() => handleNavigation('#about')} sx={{borderRadius: '24px', textTransform: 'none'}}>Sobre</Button>
+            <Button color="secondary" size='large' onClick={() => handleNavigation('#guide')} sx={{borderRadius: '24px', textTransform: 'none'}}>Manual</Button>
+            <Button color="secondary" size='large' onClick={toggleTheme} sx={{borderRadius: '24px', textTransform: 'none'}}>Alto Contraste</Button>
+            <Button color="primary" size='large' onClick={() => navigate('/extract')} sx={{borderRadius: '24px', textTransform: 'none'}} variant='contained'>Extrair</Button>
           </Box>
         </>
       ) : (
         <>
-          <Box sx={{
-            flexGrow: 1,
+          <Box sx={{            
             display: 'flex', 
             alignItems: 'center'
           }}>
-            <img src={logoPucpr} alt="Logo da PUCPR" style={styles.logo} />
+            <img src={logoPucpr} alt="Logo da PUCPR" style={{height:'64px'}} />
           </Box>
-          <Box sx={styles.menuContainer}>
-            <Button color="secondary" sx={{
-              borderRadius: '24px',
-              textTransform: 'none',
-              alignItems: 'right'
-            }} onClick={toggleTheme}>Alto Contraste</Button>
+          <Box 
+            display={'flex'}
+            alignItems={'center'}
+            gap={2}
+          >
+            <Button color="secondary" size='large' onClick={toggleTheme} sx={{borderRadius: '24px', textTransform: 'none'}}>Alto Contraste</Button>
           </Box>
         </>
       )}
