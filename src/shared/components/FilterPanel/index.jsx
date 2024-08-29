@@ -9,11 +9,12 @@ export function FilterPanel() {
   const [loading, setLoading] = useState(false);
 
   const handleExtractClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setShowData(true);
-    }, 2000); // Simula um tempo de carregamento
+    setShowData(true);
+    // setLoading(true);
+    // setTimeout(() => {
+    //   setLoading(false);
+    //   setShowData(true);
+    // }, 2000); // Simula um tempo de carregamento
   };
 
   const handleBackClick = () => {
@@ -28,9 +29,9 @@ export function FilterPanel() {
             <Box sx={styles.textFieldContainer}>
               <Box sx={styles.textFieldWrapper}>
                 <TextField 
-                  placeholder="Nome completo"
+                  placeholder="Nome completo"                  
                   sx={{
-                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13 },
+                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                     '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                   }}
                   helperText='Insira o nome completo do primeiro pesquisador'
@@ -48,7 +49,7 @@ export function FilterPanel() {
                 <TextField
                   placeholder="Nome completo"
                   sx={{
-                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13 },
+                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                     '& .MuiInputBase-root': { backgroundColor: '#FFF' },
                     borderRadius: 2,
                   }}                
