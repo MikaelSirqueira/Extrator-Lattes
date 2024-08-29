@@ -22,7 +22,7 @@ export function DataAccordion({ onBackClick }) {
         "#2a71d0",
       ],
       borderColor: "black",
-      borderWidth: 2,
+      borderWidth: 1,
     }]
   })
   
@@ -42,6 +42,26 @@ export function DataAccordion({ onBackClick }) {
   ];
 
   const infoGroups = [
+    {
+      leftTitle: 'Pesquisador 1',
+      rightTitle: 'Pesquisador 2',
+      contentLeft: (
+        <>
+          <Typography color='secondary.dark' variant="body1">ID Lattes: 123456</Typography>
+          <Typography color='secondary.dark' variant="body1">Programa de Pós-Graduação: ABC</Typography>
+          <Typography color='secondary.dark' variant="body1">Senioridade: Alta</Typography>
+          <Typography color='secondary.dark' variant="body1">CV Lattes: Link</Typography>
+        </>
+      ),
+      contentRight: (
+        <>
+          <Typography color='secondary.dark' variant="body1">ID Lattes: 654321</Typography>
+          <Typography color='secondary.dark' variant="body1">Programa de Pós-Graduação: XYZ</Typography>
+          <Typography color='secondary.dark' variant="body1">Senioridade: Média</Typography>
+          <Typography color='secondary.dark' variant="body1">CV Lattes: Link</Typography>
+        </>
+      )
+    },
     {
       leftTitle: 'Pesquisador 1',
       rightTitle: 'Pesquisador 2',

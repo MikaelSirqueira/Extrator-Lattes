@@ -26,12 +26,6 @@ const styles = {
     flex: 1,
     width: '280px',
   },
-  sectionTitle: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: '16px',
-    fontWeight: '600',
-  }
 };
 
 export default styles;
