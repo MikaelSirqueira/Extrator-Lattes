@@ -1,29 +1,22 @@
 import React from 'react';
+import { Bar } from 'react-chartjs-2';
+import {Chart as ChartJS} from 'chart.js/auto';
 import { Card, CardContent, Typography } from '@mui/material';
 import styles from './styles';
 
-export function GraphSection({ graphTitle, legendTitle, graphContent, legendContent }) {
+function GraphSection({ chartData }) {
   return (
-    <section style={styles.container}>
-      <div>
-        <Card sx={styles.graphSectionContainer}>
-          <Typography color='secondary.dark' sx={styles.sectionTitle}>{graphTitle}</Typography>
-          <CardContent>
-            {graphContent}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div>
-        <Card sx={styles.legendSectionContainer}>
-          <Typography color='secondary.dark' sx={styles.sectionTitle}>{legendTitle}</Typography>
-          <CardContent>
-            {legendContent}
-          </CardContent>
-        </Card>
-      </div>
-    </section>
-  );
+  <div>
+    <Card sx={styles.graphSectionContainer}>
+      <Typography color='secondary.dark' sx={styles.sectionTitle}>Titulo</Typography>
+      <CardContent>
+        <div style={{ width: 400 }}>
+          <Bar data={chartData} /> 
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+  )
 }
 
 export default GraphSection;

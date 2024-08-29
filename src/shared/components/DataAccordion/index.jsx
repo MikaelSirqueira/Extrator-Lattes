@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PublicationAccordion } from '../PublicationAccordion';
-import { GraphSection } from '../GraphSection';
 import { InfoSection } from '../InfoSection';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import styles from './styles';
 import graph1 from "../../assets/graph1.svg";
 import { SearchResults } from '../SearchResults';
+import {UserData} from '../../../../data'
+import GraphSection from '../GraphSection';
 
 export function DataAccordion({ onBackClick }) {
+  const [userData, setUserData] = useState({
+    labels: UserData.map((data) => data.year),
+    datasets: [{
+      label: "Users Gained",
+      data: UserData.map((data) => data.userGain),
+      backgroundColor: [
+        "rgba(75,192,192,1)",
+        "#ecf0f1",
+        "#50AF95",
+        "#f3ba2f",
+        "#2a71d0",
+      ],
+      borderColor: "black",
+      borderWidth: 2,
+    }]
+  })
+  
   const graphs = [
+    { 
+      graphTitle: 'Comparativo de publicações', 
+      legendTitle: 'Legenda', 
+      graphContent: <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />, 
+      legendContent: <Typography color='secondary.dark' variant="body1">Legenda do Gráfico 1</Typography> 
+    },
     { 
       graphTitle: 'Comparativo de publicações', 
       legendTitle: 'Legenda', 
@@ -52,12 +76,8 @@ export function DataAccordion({ onBackClick }) {
           <PublicationAccordion title="Artigos Publicados">
             {graphs.map((graph, index) => (
               <GraphSection 
-                key={index}
-                graphTitle={graph.graphTitle}
-                legendTitle={graph.legendTitle}
-                graphContent={graph.graphContent}
-                legendContent={graph.legendContent}
-              />
+              key={index}
+              chartData={userData}/>
             ))}
           </PublicationAccordion>
         )}
