@@ -1,12 +1,16 @@
 {
     "logins": [
         {
-            "user":"paula.jardim",
-            "senha":"1234abc"
+            "user": "paula.jardim",
+            "senha": "1234abc"
         },
         {
-            "user":"mikael.sirqueira",
-            "senha":"abc1234"
+            "user": "mikael.sirqueira",
+            "senha": "abc1234"
+        },
+        {
+            "user": "bruno.klemz",
+            "senha": "batata123"
         }
     ]
 }
