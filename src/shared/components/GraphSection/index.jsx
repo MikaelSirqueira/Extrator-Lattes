@@ -3,6 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import {Chart as ChartJS} from 'chart.js/auto';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import styles from './styles';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 function GraphSection({ chartData }) {
   return (
@@ -32,27 +33,12 @@ function GraphSection({ chartData }) {
         flexGrow: '1'  ,
         minWidth: '600px'
       }}>
-
-          <Bar data={chartData} 
-            options={{
-              scales: {
-                y: {
-                  ticks: {
-                    font: {
-                      weight: 'bold',
-                    },
-                  },
-                },
-                x: {
-                  ticks: {
-                    font: {
-                      weight: 'bold',
-                    },
-                  },
-                },
-              }}}
-          /> 
-
+        <BarChart
+          xAxis={[{ scaleType: 'band', data: ['group A', 'group B', 'group C'] }]}
+          series={[{ data: [4, 3, 5] }, { data: [1, 6, 3] }, { data: [2, 5, 6] }]}
+          width={500}
+          height={300}
+        />
       </CardContent>
     </Card>
   </div>
