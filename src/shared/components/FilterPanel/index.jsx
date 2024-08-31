@@ -1,100 +1,126 @@
 import React, { useState } from 'react';
-import { Card, CardContent, TextField, InputAdornment, Button, Box, Backdrop, CircularProgress } from '@mui/material';
-import { DataAccordion } from '../DataAccordion';
+import { TextField, Button, Box, Select, MenuItem, FormControl, InputLabel, InputAdornment } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import styles from './styles';
+import * as XLSX from 'xlsx';
+import { Bar } from 'react-chartjs-2';
+
+const fileLabels = {
+  'conference.xlsx': 'Conferências',
+  'work_presentation.xlsx': 'Apresentações de Trabalho',
+  'technological_products.xlsx': 'Produtos Tecnológicos',
+  'teaching_materials.xlsx': 'Materiais de Ensino',
+  'teaching_activities.xlsx': 'Atividades de Ensino',
+  'software.xlsx': 'Software',
+  'short_duration_course.xlsx': 'Cursos de Curta Duração',
+  'projects.xlsx': 'Projetos',
+  'process_or_techniques.xlsx': 'Processos ou Técnicas',
+  'patents.xlsx': 'Patentes',
+  'other_technical_production.xlsx': 'Produção Técnica Outros',
+  'other_bibliography.xlsx': 'Outras Bibliografias',
+  'event_participation.xlsx': 'Participação em Eventos',
+  'committee_participation.xlsx': 'Participação em Comitês',
+  'book_chapter.xlsx': 'Capítulos de Livros',
+  'advising_ongoing.xlsx': 'Orientações em Andamento',
+  'advising_complete.xlsx': 'Orientações Concluídas'
+};
 
 export function FilterPanel() {
-  const [showData, setShowData] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [researcherName1, setResearcherName1] = useState('');
+  const [researcherName2, setResearcherName2] = useState('');
+  const [selectedFile, setSelectedFile] = useState(Object.keys(fileLabels)[0]);
+  const [chartData, setChartData] = useState(null);
 
-  const handleExtractClick = () => {
-    setShowData(true);
-    // setLoading(true);
-    // setTimeout(() => {
-    //   setLoading(false);
-    //   setShowData(true);
-    // }, 2000); // Simula um tempo de carregamento
+  const handleExtractClick = async () => {
+    const response = await fetch(`database/${selectedFile}`, {
+      headers: {
+        'Content-Type': 'arraybuffer',
+      },
+    });
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
+    const worksheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[worksheetName];
+    const json = XLSX.utils.sheet_to_json(worksheet);
+
+    const countPublications = (name) => json.filter(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase()).length;
+
+    const dataForChart = {
+      labels: [researcherName1.toUpperCase(), researcherName2.toUpperCase()],
+      datasets: [{
+        label: fileLabels[selectedFile],
+        data: [countPublications(researcherName1), countPublications(researcherName2)],
+        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+        borderWidth: 1
+      }]
+    };
+    setChartData(dataForChart);
   };
 
-  const handleBackClick = () => {
-    setShowData(false);
+  const options = {
+    plugins: {
+      legend: {
+        display: false
+      },
+      title: {
+        display: true,
+        text: fileLabels[selectedFile],
+        font: {
+          size: 16
+        }
+      }
+    },
+    maintainAspectRatio: false
   };
 
   return (
-    <>
-      <Box sx={styles.container}>
-        <Card sx={styles.card}>
-          <CardContent bgcolor='secondary.dark'>
-            <Box sx={styles.textFieldContainer}>
-              <Box sx={styles.textFieldWrapper}>
-                <TextField 
-                  placeholder="Nome completo"                  
-                  sx={{
-                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                    '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                  }}
-                  helperText='Insira o nome completo do primeiro pesquisador'
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PersonOutlineIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
-
-              <Box sx={styles.textFieldWrapper}>
-                <TextField
-                  placeholder="Nome completo"
-                  sx={{
-                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                    '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-                    borderRadius: 2,
-                  }}                
-                  helperText='Insira o nome completo do segundo pesquisador'
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PersonOutlineIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>       
-            </Box>
-          </CardContent>
-          <Box>
-            <Button 
-              variant='contained' 
-              color="primary" 
-              size="large"
-              sx={{ borderRadius: 24, textTransform: 'none', m: '16px 40px',
-                '& .Mui-disabled': { color: '#FFF' },
-              }}      
-              onClick={handleExtractClick}
-              disabled={showData || loading}
-            >
-              Extrair
-            </Button>
-          </Box>
-        </Card>
-      </Box>
-
-      {showData && 
-        <DataAccordion onBackClick={handleBackClick} />
-      }
-
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1,
-          display: 'flex', gap: 4
-         }}
-        open={loading}
-      >
-        Carregando
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <TextField
+        label="Nome do Pesquisador 1"
+        variant="outlined"
+        value={researcherName1}
+        onChange={(e) => setResearcherName1(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <PersonOutlineIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <TextField
+        label="Nome do Pesquisador 2"
+        variant="outlined"
+        value={researcherName2}
+        onChange={(e) => setResearcherName2(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <PersonOutlineIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <FormControl fullWidth>
+        <InputLabel id="file-select-label">Selecione a comparação</InputLabel>
+        <Select
+          labelId="file-select-label"
+          id="file-select"
+          value={selectedFile}
+          label="Selecionar Arquivo"
+          onChange={(e) => setSelectedFile(e.target.value)}
+        >
+          {Object.entries(fileLabels).map(([key, label]) => (
+            <MenuItem key={key} value={key}>{label}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Button variant="contained" onClick={handleExtractClick}>Extrair Dados</Button>
+      {chartData && (
+        <Box sx={{ height: 400 }}>
+          <Bar data={chartData} options={options} />
+        </Box>
+      )}
+    </Box>
   );
 }
