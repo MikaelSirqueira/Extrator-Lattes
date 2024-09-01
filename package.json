@@ -23,7 +23,8 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.25.1",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
