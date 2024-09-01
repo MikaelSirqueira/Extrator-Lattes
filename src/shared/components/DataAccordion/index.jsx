@@ -5,40 +5,16 @@ import { Box, Button, Divider, Typography } from '@mui/material';
 import styles from './styles';
 import graph1 from "../../assets/graph1.svg";
 import { SearchResults } from '../SearchResults';
-import {UserData} from '../../../../data'
 import GraphSection from '../GraphSection';
 
 export function DataAccordion({ onBackClick }) {
-  const [userData, setUserData] = useState({
-    labels: UserData.map((data) => data.year),
-    datasets: [{
-      label: "Users Gained",
-      data: UserData.map((data) => data.userGain),
-      backgroundColor: [
-        "rgba(75,192,192,1)",
-        "#ecf0f1",
-        "#50AF95",
-        "#f3ba2f",
-        "#2a71d0",
-      ],
-      borderColor: "black",
-      borderWidth: 1,
-    }]
-  })
-  
   const graphs = [
     { 
       graphTitle: 'Comparativo de publicações', 
       legendTitle: 'Legenda', 
       graphContent: <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />, 
       legendContent: <Typography color='secondary.dark' variant="body1">Legenda do Gráfico 1</Typography> 
-    },
-    { 
-      graphTitle: 'Comparativo de publicações', 
-      legendTitle: 'Legenda', 
-      graphContent: <img src={graph1} alt="Gráfico 1" style={styles.graphImage} />, 
-      legendContent: <Typography color='secondary.dark' variant="body1">Legenda do Gráfico 1</Typography> 
-    },
+    }
   ];
 
   const infoGroups = [
@@ -95,9 +71,7 @@ export function DataAccordion({ onBackClick }) {
         {hasGraphData && (
           <PublicationAccordion title="Artigos Publicados">
             {graphs.map((graph, index) => (
-              <GraphSection 
-              key={index}
-              chartData={userData}/>
+              <GraphSection key={index}/>
             ))}
           </PublicationAccordion>
         )}
