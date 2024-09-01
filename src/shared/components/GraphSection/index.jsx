@@ -6,15 +6,20 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
-import { Card, CardContent } from '@mui/material';
+import { Box, Card, CardContent } from '@mui/material';
 
 export default function GraphSection() {
   const [layout, setLayout] = React.useState('vertical');
   const [radius, setRadius] = React.useState(10);
   const [labelChart, setLabelChart] = React.useState('Rótulo Desativado');
-
+  const [grid, setGrid] = React.useState('Grid Horizontal');
+  
   return (
-    <div>
+    <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
     {/* Card do Gráfico */}
     <Card sx={{    
       display: 'flex',
@@ -22,7 +27,7 @@ export default function GraphSection() {
       justifyContent: 'center',
       flexDirection: 'column',
       borderRadius: 8,
-      padding: 2,
+      padding: 3,
       margin: '0 8px',        
       }}
     >
@@ -49,9 +54,9 @@ export default function GraphSection() {
               { dataKey: 'value3', label: 'Valor 3', layout },
             ]}
             {...(layout === 'vertical' ? chartSettingsV : chartSettingsH)}
-            {...(layout === 'vertical' ? chartSettingsV : chartSettingsH)}
             borderRadius={radius}
             {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
+            {...(gridStyle(grid))}
           />
         </Stack>
       </CardContent>
@@ -81,7 +86,7 @@ export default function GraphSection() {
         justifyContent: 'center',
         flexDirection: 'column',
         flexGrow: '1'  ,
-        minWidth: '60px'
+        minWidth: '180px'
       }}>
         <Stack direction="column" spacing={4} flex={1}>
           <Stack spacing={0.1}>
@@ -91,7 +96,7 @@ export default function GraphSection() {
               onChange={(e, v) => setRadius(v)}
               valueLabelDisplay="auto"
               min={0}
-              max={50}
+              max={20}
               sx={{ mt: 2 }}
             />
           </Stack>
@@ -115,10 +120,21 @@ export default function GraphSection() {
             <MenuItem value="Rótulo Desativado">Rótulo Desativado</MenuItem>
             <MenuItem value="Rótulo Ativado">Rótulo Ativado</MenuItem>
           </TextField>
+          <TextField
+            select
+            sx={{ minWidth: 150 }}
+            label="Grid"
+            value={grid}
+            onChange={(event) => setGrid(event.target.value)}
+          >
+            <MenuItem value="Grid Horizontal">Grid Horizontal</MenuItem>
+            <MenuItem value="Grid Vertical">Grid Vertical</MenuItem>
+            <MenuItem value="Grid Desativado">Grid Desativado</MenuItem>
+          </TextField>
         </Stack>
       </CardContent>
     </Card>
-  </div>  
+  </Box>  
   );
 }
 
@@ -132,6 +148,7 @@ const dataset = [
   value3,
   order,
 }));
+
 const chartSettingsH = {
   dataset,
   height: 300,
@@ -154,9 +171,21 @@ const chartSettingsV = {
   xAxis: [{ scaleType: 'band', dataKey: 'order' }],
   yAxis: undefined,
 };
+
 const labelOff = {
   barLabel: null
 };
 const labelOn = {
   barLabel: "value"
+};
+
+const gridStyle = (grid) => {
+  if (grid == 'Grid Horizontal'){
+    return { grid: {horizontal: true} }
+  }  else if (grid == 'Grid Vertical') {
+    return { grid: {vertical: true} }
+  } else if (grid == 'Grid Desativado') {
+    return false
+  }
+  return true
 };
