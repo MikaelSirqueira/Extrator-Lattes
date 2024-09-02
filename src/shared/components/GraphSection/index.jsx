@@ -8,11 +8,50 @@ import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { Box, Card, CardContent } from '@mui/material';
 
-export default function GraphSection() {
+export default function GraphSection({ index , dataset, fileLabels ,selectedFiles }) {
   const [layout, setLayout] = React.useState('vertical');
   const [radius, setRadius] = React.useState(10);
   const [labelChart, setLabelChart] = React.useState('Rótulo Desativado');
   const [grid, setGrid] = React.useState('Grid Horizontal');
+
+  const chartSettingsH = {
+    xAxis: [{ scaleType: 'band' }],
+    yAxis: [{ scaleType: 'band', dataKey: 'researcher' }],
+    sx: {
+      [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+        transform: 'translateX(-10px)',
+      },
+    },    
+  };
+  
+  const chartSettingsV = {
+    xAxis: [{ scaleType: 'band', dataKey: 'researcher' }],
+    yAxis: [{ scaleType: 'linear' }],
+    sx: {
+      [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+        transform: 'translateX(-10px)',
+      },
+    },    
+  };
+  
+  
+  const labelOff = {
+    barLabel: null
+  };
+  const labelOn = {
+    barLabel: "value"
+  };
+  
+  const gridStyle = (grid) => {
+    if (grid == 'Grid Horizontal'){
+      return { grid: {horizontal: true} }
+    }  else if (grid == 'Grid Vertical') {
+      return { grid: {vertical: true} }
+    } else if (grid == 'Grid Desativado') {
+      return false
+    }
+    return true
+  };
   
   return (
     <Box sx={{
@@ -47,17 +86,17 @@ export default function GraphSection() {
         minWidth: '600px'
       }}>  
         <Stack direction="column" spacing={1} sx={{ width: '100%', maxWidth: 600 }}>
-          <BarChart
-            series={[
-              { dataKey: 'value1', label: 'Valor 1', layout },
-              { dataKey: 'value2', label: 'Valor 2', layout },
-              { dataKey: 'value3', label: 'Valor 3', layout },
-            ]}
-            {...(layout === 'vertical' ? chartSettingsV : chartSettingsH)}
-            borderRadius={radius}
-            {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
-            {...(gridStyle(grid))}
-          />
+        <BarChart
+          series={[
+            { dataKey: 'count', label: fileLabels[selectedFiles[index]] },
+          ]}
+          dataset={dataset}
+          {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}
+          borderRadius={radius}
+          {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
+          {...(gridStyle(grid))}
+          height={300}
+        />
         </Stack>
       </CardContent>
     </Card>
@@ -100,7 +139,8 @@ export default function GraphSection() {
               sx={{ mt: 2 }}
             />
           </Stack>
-          <TextField
+
+          {/* <TextField
             select
             sx={{ minWidth: 150 }}
             label="Layout"
@@ -109,7 +149,8 @@ export default function GraphSection() {
           >
             <MenuItem value="horizontal">Horizontal</MenuItem>
             <MenuItem value="vertical">Vertical</MenuItem>
-          </TextField>
+          </TextField> */}
+
           <TextField
             select
             sx={{ minWidth: 150 }}
@@ -137,55 +178,3 @@ export default function GraphSection() {
   </Box>  
   );
 }
-
-const dataset = [
-  [4, 3, 5, 'Grupo A'],
-  [1, 6, 3, 'Grupo B'],
-  [2, 5, 6, 'Grupo C']
-].map(([value1, value2, value3, order]) => ({
-  value1,
-  value2,
-  value3,
-  order,
-}));
-
-const chartSettingsH = {
-  dataset,
-  height: 300,
-  yAxis: [{ scaleType: 'band', dataKey: 'order' }],
-  sx: {
-    [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
-      transform: 'translateX(-10px)',
-    },
-  },
-  slotProps: {
-    legend: {
-      direction: 'row',
-      position: { vertical: 'bottom', horizontal: 'middle' },
-      padding: -5,
-    },
-  },
-};
-const chartSettingsV = {
-  ...chartSettingsH,
-  xAxis: [{ scaleType: 'band', dataKey: 'order' }],
-  yAxis: undefined,
-};
-
-const labelOff = {
-  barLabel: null
-};
-const labelOn = {
-  barLabel: "value"
-};
-
-const gridStyle = (grid) => {
-  if (grid == 'Grid Horizontal'){
-    return { grid: {horizontal: true} }
-  }  else if (grid == 'Grid Vertical') {
-    return { grid: {vertical: true} }
-  } else if (grid == 'Grid Desativado') {
-    return false
-  }
-  return true
-};

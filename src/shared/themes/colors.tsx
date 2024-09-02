@@ -14,6 +14,8 @@ export const colors = {
   darkPure: '#000000',
   darkPureTransparent: '#000000AA',
   whiteLightPureTransparent: '#FFFFFF73',
+  redPrimaryPureTransparent: '#8A053873',
+  purpleColdPureTransparent: '#863BFF73',
   danger: '#660410'
 }
 

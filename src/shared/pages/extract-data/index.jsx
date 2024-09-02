@@ -58,9 +58,9 @@ export function ExtractData() {
           <SavedSearchs />
         </>
       ): (
-        <>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           <FilterPanel />          
-        </>
+        </div>
       )}
     </Box>
   );

@@ -30,6 +30,7 @@ export const DarkTheme = createTheme({
     },
     homeCardComponent: {
       main: colors.darkPureTransparent,
+      light: colors.purpleColdPureTransparent,
     },
     dangerComponent: {
       main: colors.danger
