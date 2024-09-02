@@ -3,12 +3,12 @@ import { Box, Divider } from '@mui/material';
 import {CardResult} from './CardResult';
 import styles from './styles';
 
-export function SearchResults() {
+export function SearchResults({ name1, name2}) {
   return (
     <>
       <Box sx={styles.container}>
         <CardResult
-          name="Nome do Pesquisador 1"
+          name={name1}
           idLattes="123456"
           program="Exemplo"
           seniority="Sênior"
@@ -16,7 +16,7 @@ export function SearchResults() {
           photo="/path/to/researcher1.jpg"
         />
         <CardResult
-          name="Nome do Pesquisador 2"
+          name={name2}
           idLattes="654321"
           program="Exemplo"
           seniority="Júnior"
