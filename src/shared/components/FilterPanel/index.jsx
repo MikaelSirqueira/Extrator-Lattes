@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Select, MenuItem, FormControl, InputLabel, InputAdornment } from '@mui/material';
+import { TextField, Button, Box, Select, MenuItem, FormControl, InputLabel, InputAdornment, Chip } from '@mui/material';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import * as XLSX from 'xlsx';
 import { Bar } from 'react-chartjs-2';
@@ -27,50 +27,40 @@ const fileLabels = {
 export function FilterPanel() {
   const [researcherName1, setResearcherName1] = useState('');
   const [researcherName2, setResearcherName2] = useState('');
-  const [selectedFile, setSelectedFile] = useState(Object.keys(fileLabels)[0]);
-  const [chartData, setChartData] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [chartData, setChartData] = useState([]);
 
   const handleExtractClick = async () => {
-    const response = await fetch(`database/${selectedFile}`, {
-      headers: {
-        'Content-Type': 'arraybuffer',
-      },
-    });
-    const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
-    const worksheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[worksheetName];
-    const json = XLSX.utils.sheet_to_json(worksheet);
+    const charts = await Promise.all(selectedFiles.map(async (file) => {
+      const response = await fetch(`database/${file}`, {
+        headers: {
+          'Content-Type': 'arraybuffer',
+        },
+      });
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
+      const worksheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[worksheetName];
+      const json = XLSX.utils.sheet_to_json(worksheet);
 
-    const countPublications = (name) => json.filter(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase()).length;
+      const countPublications = (name) => json.filter(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase()).length;
 
-    const dataForChart = {
-      labels: [researcherName1.toUpperCase(), researcherName2.toUpperCase()],
-      datasets: [{
-        label: fileLabels[selectedFile],
-        data: [countPublications(researcherName1), countPublications(researcherName2)],
-        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
-        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
-        borderWidth: 1
-      }]
-    };
-    setChartData(dataForChart);
-  };
-
-  const options = {
-    plugins: {
-      legend: {
-        display: false
-      },
-      title: {
-        display: true,
-        text: fileLabels[selectedFile],
-        font: {
-          size: 16
+      return {
+        title: fileLabels[file],
+        data: {
+          labels: [researcherName1.toUpperCase(), researcherName2.toUpperCase()],
+          datasets: [{
+            label: fileLabels[file],
+            data: [countPublications(researcherName1), countPublications(researcherName2)],
+            backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+            borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+            borderWidth: 1
+          }]
         }
-      }
-    },
-    maintainAspectRatio: false
+      };
+    }));
+
+    setChartData(charts);
   };
 
   return (
@@ -102,13 +92,20 @@ export function FilterPanel() {
         }}
       />
       <FormControl fullWidth>
-        <InputLabel id="file-select-label">Selecione a comparação</InputLabel>
+        <InputLabel id="file-select-label">Selecionar Arquivos</InputLabel>
         <Select
           labelId="file-select-label"
           id="file-select"
-          value={selectedFile}
-          label="Selecionar Arquivo"
-          onChange={(e) => setSelectedFile(e.target.value)}
+          multiple
+          value={selectedFiles}
+          onChange={(e) => setSelectedFiles(e.target.value)}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value) => (
+                <Chip key={value} label={fileLabels[value]} />
+              ))}
+            </Box>
+          )}
         >
           {Object.entries(fileLabels).map(([key, label]) => (
             <MenuItem key={key} value={key}>{label}</MenuItem>
@@ -116,11 +113,11 @@ export function FilterPanel() {
         </Select>
       </FormControl>
       <Button variant="contained" onClick={handleExtractClick}>Extrair Dados</Button>
-      {chartData && (
-        <Box sx={{ height: 400 }}>
-          <Bar data={chartData} options={options} />
+      {chartData.length > 0 && chartData.map((chart, index) => (
+        <Box sx={{ height: 400, mt: 2 }} key={index}>
+          <Bar data={chart.data} options={{ plugins: { legend: { display: false }, title: { display: true, text: chart.title, font: { size: 16 } } } }} />
         </Box>
-      )}
+      ))}
     </Box>
   );
 }
