@@ -34,7 +34,7 @@ export function FilterPanel() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleExtractClick = async () => {
-    setChartData([])
+    setChartData([]);
     if (!researcherName1 || !researcherName2) {
       setError('Por favor, preencha os nomes dos pesquisadores.');
       return;
@@ -44,54 +44,32 @@ export function FilterPanel() {
 
     const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
 
-    let dataExists = true;
+    try {
+      const datasets = await Promise.all(filesToFetch.map(async (file) => {
+        const response = await fetch(`/database/${file}`);
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const worksheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[worksheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
 
-    const datasets = await Promise.all(filesToFetch.map(async (file) => {
-      const response = await fetch(`public/database/${file}`, {
-        headers: {
-          'Content-Type': 'arraybuffer',
-        },
-      });
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
-      const worksheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[worksheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
+        const countPublications = (name) => json.filter(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase()).length;
 
-      // const researcherExists = (name) => json.some(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase());
+        const data1 = countPublications(researcherName1);
+        const data2 = countPublications(researcherName2);
 
-      // const exists1 = researcherExists(researcherName1);
-      // const exists2 = researcherExists(researcherName2);
-
-      // if (!exists1 || !exists2) {
-      //   dataExists = false
-      //   setError(`Pesquisador${!exists1 && !exists2 ? 'es' : ''} ${!exists1 ? researcherName1 : ''}${!exists1 && !exists2 ? ' e ' : ''}${!exists2 ? researcherName2 : ''} não encontrado${!exists1 && !exists2 ? 's' : ''}.`);
-      //   return;
-      // }
-
-      const countPublications = (name) => json.filter(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase()).length;
-
-      const data1 = countPublications(researcherName1);
-      const data2 = countPublications(researcherName2);
-
-      return [
-        [data1, researcherName1.toUpperCase()],
-        [data2, researcherName2.toUpperCase()]
-      ].map(([count, researcher]) => ({
-        count,
-        researcher
+        return [
+          { count: data1, researcher: researcherName1.toUpperCase() },
+          { count: data2, researcher: researcherName2.toUpperCase() }
+        ];
       }));
-    }));
 
-    // if (!dataExists) {
-    //   setIsLoading(false); 
-    //   return;
-    // }
-
-    setTimeout(() => {
       setChartData(datasets);
+    } catch (err) {
+      setError('Erro ao carregar os arquivos XLSX.');
+    } finally {
       setIsLoading(false);
-    }, 500)
+    }
   };
 
   const handleResearcherName1Change = (e) => {
