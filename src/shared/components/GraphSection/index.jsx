@@ -102,6 +102,17 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
           {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
           {...(gridStyle(grid))}
           height={300}
+          slotProps={{
+            popper: {
+              sx: {
+                '& .MuiChartsTooltip-root': {
+                  '& .MuiTypography-root': {
+                    color: 'secondary.dark',
+                  },
+                },
+              },
+            },
+        }}
           sx={(theme) => ({
               '& .MuiChartsAxis-root .MuiChartsAxis-tickLabel': {
                 stroke: theme.palette.secondary.dark,
