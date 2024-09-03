@@ -58,16 +58,16 @@ export function FilterPanel() {
       const worksheet = workbook.Sheets[worksheetName];
       const json = XLSX.utils.sheet_to_json(worksheet);
 
-      const researcherExists = (name) => json.some(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase());
+      // const researcherExists = (name) => json.some(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase());
 
-      const exists1 = researcherExists(researcherName1);
-      const exists2 = researcherExists(researcherName2);
+      // const exists1 = researcherExists(researcherName1);
+      // const exists2 = researcherExists(researcherName2);
 
-      if (!exists1 || !exists2) {
-        dataExists = false
-        setError(`Pesquisador${!exists1 && !exists2 ? 'es' : ''} ${!exists1 ? researcherName1 : ''}${!exists1 && !exists2 ? ' e ' : ''}${!exists2 ? researcherName2 : ''} não encontrado${!exists1 && !exists2 ? 's' : ''}.`);
-        return;
-      }
+      // if (!exists1 || !exists2) {
+      //   dataExists = false
+      //   setError(`Pesquisador${!exists1 && !exists2 ? 'es' : ''} ${!exists1 ? researcherName1 : ''}${!exists1 && !exists2 ? ' e ' : ''}${!exists2 ? researcherName2 : ''} não encontrado${!exists1 && !exists2 ? 's' : ''}.`);
+      //   return;
+      // }
 
       const countPublications = (name) => json.filter(row => row.NOME_PESQUISADOR && row.NOME_PESQUISADOR.toLowerCase() === name.toLowerCase()).length;
 
@@ -83,10 +83,10 @@ export function FilterPanel() {
       }));
     }));
 
-    if (!dataExists) {
-      setIsLoading(false); 
-      return;
-    }
+    // if (!dataExists) {
+    //   setIsLoading(false); 
+    //   return;
+    // }
 
     setTimeout(() => {
       setChartData(datasets);
