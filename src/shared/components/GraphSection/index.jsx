@@ -75,12 +75,12 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
       margin: '0 8px',        
       }}
     >
-      <Typography variant='body2' color='secondary.dark' sx={{
+      {/* <Typography variant='body2' color='secondary.dark' sx={{
         display: 'flex',
         justifyContent: 'center',
       }}>
         Título do Gráfico
-      </Typography>
+      </Typography> */}
 
       <CardContent sx={{
         display: 'flex',
@@ -112,7 +112,7 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
                 },
               },
             },
-        }}
+          }}
           sx={(theme) => ({
               '& .MuiChartsAxis-root .MuiChartsAxis-tickLabel': {
                 stroke: theme.palette.secondary.dark,
@@ -127,6 +127,12 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
               },
               '& .MuiChartsAxis-tick': {
                 stroke: theme.palette.secondary.dark,
+              },
+              '& .MuiChartsLegend-mark': {
+                fill: 'none',
+              },
+              '& .MuiChartsLegend-series': {
+                fill: theme.palette.secondary.dark
               },
           })}
         />
