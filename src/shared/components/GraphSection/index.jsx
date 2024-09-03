@@ -131,6 +131,9 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
               '& .MuiChartsLegend-mark': {
                 fill: 'none',
               },
+              '& .MuiChartsLegend-series': {
+                fill: theme.palette.secondary.dark
+              },
           })}
         />
         </Stack>
