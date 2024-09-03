@@ -47,7 +47,7 @@ export function FilterPanel() {
     let dataExists = true;
 
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
-      const response = await fetch(`database/${file}`, {
+      const response = await fetch(`public/database/${file}`, {
         headers: {
           'Content-Type': 'arraybuffer',
         },
