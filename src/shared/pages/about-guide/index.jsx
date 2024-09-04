@@ -60,6 +60,7 @@ export function AboutPage() {
           variant="outlined" 
           size="large" 
           sx={{borderRadius: 24, textTransform: 'none'}}
+          onClick={() => navigate(-1)}    
         >
           Voltar
         </Button>

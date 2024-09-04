@@ -6,6 +6,7 @@ import styles from './styles';
 import graph1 from "../../assets/graph1.svg";
 import { SearchResults } from '../SearchResults';
 import GraphSection from '../GraphSection';
+import { useNavigate } from 'react-router-dom';
 
 export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2 }) {
   const infoGroups = [
@@ -34,6 +35,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
   const hasGraphData = chartData.length > 0;
   const hasInfoData = infoGroups.length > 0;
   const hasGeneralInfo = infoGroups.length > 0;
+  const navigate = useNavigate()
 
   return (
     <>
@@ -76,7 +78,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
 
         <Box sx={styles.buttonPanel}>
           <Divider aria-hidden="true" />
-          <Button variant="outlined" sx={styles.button}>Voltar</Button>
+          <Button variant="outlined" sx={styles.button} onClick={() => navigate(-1)}>Voltar</Button>
           <Button variant='contained' color="primary" sx={styles.button}>Salvar</Button>
         </Box>
       </main>
