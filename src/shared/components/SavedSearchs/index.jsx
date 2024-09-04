@@ -4,12 +4,10 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 export function SavedSearchs() {
   const searchs = [
     {
-      title: 'Emerson Paraiso e Jean Barddal - 03/06/2024',
-      link: 'https://www.google.com.br',
+      title: 'Emerson Paraiso e Jean Barddal - 03/06/2024'
     },
     {
-      title: 'Emerson Paraiso e Jean Barddal - 03/06/2024',
-      link: 'https://www.google.com.br',
+      title: 'Emerson Paraiso e Jean Barddal - 29/05/2024'
     },
     
   ];

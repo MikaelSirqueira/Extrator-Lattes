@@ -17,7 +17,7 @@ export function BodyTitle() {
         </Box>
         <Link 
           color='customComponents.dark' 
-          href="#saiba-mais" 
+          href="/about" 
           variant="overline"
           display={'flex'}
           alignItems={'center'}
