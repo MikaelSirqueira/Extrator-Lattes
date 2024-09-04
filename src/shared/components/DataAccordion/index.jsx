@@ -78,7 +78,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
 
         <Box sx={styles.buttonPanel}>
           <Divider aria-hidden="true" />
-          <Button variant="outlined" sx={styles.button} onClick={() => navigate(-1)}>Voltar</Button>
+          <Button variant="outlined" sx={styles.button} onClick={() => navigate(0)}>Voltar</Button>
           <Button variant='contained' color="primary" sx={styles.button}>Salvar</Button>
         </Box>
       </main>
