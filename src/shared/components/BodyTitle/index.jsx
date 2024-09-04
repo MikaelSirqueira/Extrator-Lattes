@@ -1,8 +1,10 @@
 import React from 'react';
 import { Box, Typography, Link, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useNavigate } from 'react-router-dom';
 
 export function BodyTitle() {
+  const navigate = useNavigate()
   return (
     <>    
       <Box>
@@ -17,12 +19,13 @@ export function BodyTitle() {
         </Box>
         <Link 
           color='customComponents.dark' 
-          href="/about#about" 
           variant="overline"
           display={'flex'}
           alignItems={'center'}
           textTransform={'none'}
           mb={4}
+          onClick={() => navigate('/about#about')}
+          sx={{cursor: 'pointer'}}
         >
           Saiba mais <ArrowForwardIcon sx={{ marginLeft: '4px' }} />
         </Link>
