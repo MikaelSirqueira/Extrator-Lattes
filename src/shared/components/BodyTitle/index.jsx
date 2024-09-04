@@ -17,7 +17,7 @@ export function BodyTitle() {
         </Box>
         <Link 
           color='customComponents.dark' 
-          href="/about" 
+          href="/about#about" 
           variant="overline"
           display={'flex'}
           alignItems={'center'}
