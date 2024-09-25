@@ -2,7 +2,8 @@ import { createTheme } from '@mui/material';
 import { colors } from './colors';
 import { typography } from './colors';
 
-export const DarkTheme = createTheme({
+export function DarkTheme(fontSizeFactor) {
+  return createTheme({
   palette: {
     primary: {
       main: colors.purpleColdPure,
@@ -36,5 +37,6 @@ export const DarkTheme = createTheme({
       main: colors.danger
     }
   },
-  typography: typography,  
-});
+  typography: typography(fontSizeFactor),
+})
+}

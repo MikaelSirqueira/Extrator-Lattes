@@ -19,45 +19,47 @@ export const colors = {
   danger: '#660410'
 }
 
-export const typography: TypographyOptions = {
+export const typography = (fontSizeFactor: number): TypographyOptions => ({
   fontFamily: 'Poppins, sans-serif',
   fontSize: 14,
   h1: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
-    fontSize: '80px',
+    fontSize: `${80 * fontSizeFactor}px`,
   },
   h2: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
-    fontSize: '64px',
+    fontSize: `${64 * fontSizeFactor}px`,
   },
   h3: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
+    fontSize: `${1 * fontSizeFactor}px`,
   },
   h4: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
+    fontSize: `${1 * fontSizeFactor}px`,
   },
   h5: {
     fontFamily: 'Poppins, sans-serif',
-    fontSize: '2.25rem',
-    fontWeight: 800
+    fontSize: `${36 * fontSizeFactor}px`,
+    fontWeight: 800,
   },
   subtitle1: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 500,
-    fontSize: '24px',
+    fontSize: `${24 * fontSizeFactor}px`,
     lineHeight: '140%',
   },
   body1: {
     fontFamily: 'Source Sans 3, sans-serif',
-    fontSize: '16px',
+    fontSize: `${16 * fontSizeFactor}px`,
   },
   body2: {
     fontFamily: 'Source Sans 3, sans-serif',
-    fontSize: '24px',
+    fontSize: `${24 * fontSizeFactor}px`,
     lineHeight: '1.6',
   },
   button: {
@@ -67,9 +69,8 @@ export const typography: TypographyOptions = {
   },
   overline: {
     fontFamily: 'Source Sans 3, sans-serif',
-    fontSize: '14px',
+    fontSize: `${14 * fontSizeFactor}px`,
     fontWeight: 600,
-    lineHeight: '130%'
-
+    lineHeight: '130%',
   }
-};
+})

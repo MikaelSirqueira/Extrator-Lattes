@@ -1,6 +1,7 @@
 import { Outlet , useLocation} from "react-router-dom";
 import Footer from "../components/Footer";
 import { Header } from "../components/Header";
+import { Zoom } from "../components/Zoom";
 
 export function Index() {
   const location = useLocation();
@@ -16,6 +17,7 @@ export function Index() {
         (<Header isLoggedIn={true}/>)  
       }
       <Outlet />
+      <Zoom />
       <Footer />
     </>
   )

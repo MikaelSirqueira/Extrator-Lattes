@@ -1,8 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Header } from "./shared/components/Header/index.jsx";
-import { Footer } from "./shared/components/Footer/index.jsx";
 import { HomePage } from "./shared/pages/home/index.jsx";
-import { AppThemeProvider } from "./shared/contexts/ThemeContext.jsx";
+import { AppProvider } from "./shared/contexts/ThemeContext.jsx";
 import { CssBaseline } from "@mui/material";
 import { ExtractData } from "./shared/pages/extract-data/index.jsx";
 import './global.css';
@@ -37,9 +35,9 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <AppThemeProvider>
+    <AppProvider>
       <CssBaseline />
       <RouterProvider router={router} />
-    </AppThemeProvider>
+    </AppProvider>
   )
 }
