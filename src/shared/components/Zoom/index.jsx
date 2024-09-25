@@ -1,8 +1,23 @@
-import { Box, Button, Card, IconButton, Slider } from "@mui/material";
+import { useFontSize } from '../../contexts/ThemeContext';
+import { Card, IconButton, Slider } from "@mui/material";
 import TextDecreaseRoundedIcon from '@mui/icons-material/TextDecreaseRounded';
 import TextIncreaseRoundedIcon from '@mui/icons-material/TextIncreaseRounded';
 
 export function Zoom() {
+  const { fontSizeFactor, setFontSizeFactor } = useFontSize();
+
+  function zoomIn() {
+    if (fontSizeFactor < 2) {
+      setFontSizeFactor(prevFactor => prevFactor + 0.25);
+    }
+  }
+
+  function zoomOut() {
+    if (fontSizeFactor > 1) {
+      setFontSizeFactor(prevFactor => prevFactor - 0.25);
+    }
+  }
+
   return (
     <>
       <Card 
@@ -17,29 +32,28 @@ export function Zoom() {
           marginX: 2,
           right: 0, 
           top: '70%', 
-
         }}
       >      
-        <IconButton  sx={{textTransform: 'none', color:"secondary.dark", marginRight: '6px'}} >
+        <IconButton onClick={zoomOut} sx={{textTransform: 'none', color:"secondary.dark"}} >
          <TextDecreaseRoundedIcon sx={{fontSize:"large"}} />
         </IconButton>
         <Slider
+          value={fontSizeFactor * 100}
           valueLabelDisplay="auto"
-          min={0}
-          max={5}
-          sx={{ width: '60px', 
+          min={100}
+          max={200} 
+          step={25}
+          sx={{ 
+            width: '60px', 
+            marginX: '4px',
             '& .MuiSlider-rail': {
               opacity: 1,
               height: 3,             
             },
             '& .MuiSlider-valueLabel': { display: 'none' },
-
-
           }}
         />
-        <IconButton 
-          sx={{textTransform: 'none', color:"secondary.dark"}}          
-        >
+        <IconButton onClick={zoomIn} sx={{textTransform: 'none', color:"secondary.dark"}} >
          <TextIncreaseRoundedIcon sx={{fontSize:"large"}} />
         </IconButton>
       </Card>
