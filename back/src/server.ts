@@ -4,16 +4,9 @@ import { routes } from "./routes"
 
 const app = Fastify({ logger: true })
 
-const start = async () => {
+app.register(cors);
+app.register(routes);
 
-    await app.register(cors);
-    await app.register(routes);
-
-    try {
-        await app.listen({ port: 3333 })
-    } catch (error) {
-        process.exit(1)
-    }
-}
-
-start();
+app.listen({ port: 3333 }).then(() => {
+    console.log('HTTP Server Running!')
+})
