@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from "fastify";
 import { CreateUserController } from "./controllers/CreateUserController";
 import { GetUserController } from "./controllers/GetUserController";
+import { DeleteUserController } from "./controllers/DeleteUserController";
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
 
@@ -10,5 +11,9 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     fastify.get("/user", async (request: FastifyRequest, reply: FastifyReply) => {
         return new GetUserController().handle(request, reply)
+    })
+
+    fastify.delete("/user", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new DeleteUserController().handle(request, reply)
     })
 }
