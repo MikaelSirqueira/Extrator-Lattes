@@ -4,18 +4,73 @@ import { useNavigate } from "react-router-dom";
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import { useState } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
+import { api } from "../../../services/api"
+
+// interface UserProps {
+//   id: string;
+//   name: string;
+//   password: string;
+//   profile: string;
+// }
 
 export function Auth() {
+
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [showUserError, setShowUserError] = useState(false);
+  const [showInputError, setShowInputError] = useState(false);
+  const [user, setUser] = useState([]);
+  const [userName, setUserName] = useState('');
+  const [userPassword, setUserPassword] = useState('');
 
-  function logIn(state) {
-    setShowError(false)
-    if (showError == false){
-      navigate('/home');
+  useEffect(() => {
+
+  }, [])
+
+  const handleUserName = (e) => {
+    setUserName(e.target.value);
+  };
+
+  const handleUserPassword = (e) => {
+    setUserPassword(e.target.value);
+  };
+
+  async function logIn() {
+
+    // verifica se não há nenhum campo em branco
+    if (!userName || !userPassword){
+      setShowInputError(true)
+    }else{
+      setShowInputError(false)
     }
+
+    // busca pelo usuário e retorna o registro
+    try {
+      const response = await api.get("/user", {
+        params:{
+          name: userName
+        }
+      });
+
+      console.log(response.data);
+      setUser(response.data);
+
+      // verifica se as informações do usuário estão corretas
+      if (user.password != userPassword){
+        setShowUserError(true);
+      } else{
+        setShowUserError(false);
+      }
+
+      if (showUserError == false){
+        navigate('/home');
+      }
+
+    } catch (error) {
+      setShowUserError(true);
+    }
+    
   }
 
   const handleClickShowPassword = () => {
@@ -67,6 +122,8 @@ export function Auth() {
               display: 'flex', 
               flexGrow: '1'           
             }}
+            value= {userName}
+            onChange={handleUserName}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -87,6 +144,8 @@ export function Auth() {
               flexGrow: '1'  
               
             }}
+            value = {userPassword}
+            onChange={handleUserPassword}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -110,6 +169,7 @@ export function Auth() {
         </div>        
         
         <Button 
+          type='submit'
           variant='contained' 
           size="large"
           color="primary" 
@@ -117,12 +177,12 @@ export function Auth() {
             borderRadius: 2,  
             textTransform:'none'
           }}
-          onClick={() => logIn(true)}
+          onClick = {() => logIn()}
         >
           Entrar
         </Button>
       
-      { showError && (
+      { showUserError && (
         <Stack spacing={2}>
           <Alert  sx={{
             fontSize:'14px',
@@ -130,7 +190,23 @@ export function Auth() {
             display:'flex',
             alignItems:'center'
             }} variant="filled" severity="error">
-            Usuário ou Senha errados.
+            Usuário ou Senha incorretos.
+            <br/>
+            Tente novamente.
+          </Alert>
+        </Stack>
+      )
+      }
+
+      { showInputError && (
+        <Stack spacing={2}>
+          <Alert  sx={{
+            fontSize:'14px',
+            backgroundColor: theme => theme.palette.dangerComponent.main,
+            display:'flex',
+            alignItems:'center'
+            }} variant="filled" severity="error">
+            Preencha todos os campos
             <br/>
             Tente novamente.
           </Alert>
