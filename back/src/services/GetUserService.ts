@@ -1,10 +1,28 @@
-import { prismaClient } from "../prisma";
+import { prismaClient } from "../prisma/index";
 
-class getUserService {
-    async execute() {
-        const user = await prismaClient.user.findMany()
-        return user
+interface GetUserProps{
+    name: string;
+}
+
+class GetUserService{
+    async execute({ name }: GetUserProps){
+
+        if(!name){
+            throw new Error("Solicitação inválida")
+        }
+
+        const findUser = await prismaClient.user.findFirst({
+            where:{
+                name: name
+            }
+        })
+
+        if(!findUser){
+            throw new Error("Usuário não existe")
+        }
+
+        return { message: "Usuário encontrado com sucesso." }
     }
 }
 
-export { getUserService }
+export {GetUserService}
