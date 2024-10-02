@@ -21,7 +21,6 @@ class GetUserService{
             throw new Error("Usuário não existe")
         }
 
-        return { message: "Usuário encontrado com sucesso." }
     }
 }
 
