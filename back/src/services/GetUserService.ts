@@ -21,6 +21,8 @@ class GetUserService{
             throw new Error("Usuário não existe")
         }
 
+        return {}
+
     }
 }
 
