@@ -7,6 +7,7 @@ import './global.css';
 import { Index } from "./shared/pages/index.jsx";
 import { AboutPage } from "./shared/pages/about-guide/index.jsx";
 import { AuthPage } from "./shared/pages/auth/index.jsx";
+import { useEffect, useState } from "react";
 
 const router = createBrowserRouter([
   {
@@ -34,10 +35,15 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+  // const data = retrieveListagemPpgs()
+  
+  //const data = "TITULO,TIPO,ANO,PAIS,IDIOMA,MEIO DE DIVULGACAO,HOMEPAGE,FINALIDADE,NOME_PESQUISADOR,ID_LATTES_PESQUISADOR\r\nOFICINA MAKER MACHINE LEARNING PARA BIG DATA,PREPARAÇÃO DE MATERIAL DIDÁTICO PARA ENSINO A DISTÂNCIA (EAD),2019,BRASIL,PORTUGUÊS,MEIO_DIGITAL,,,Jean Paul Barddal,5862618116527136\r\nPREPARAÇÃO E ANÁLISE EXPLORATÓRIA DE DADOS,DESENVOLVIMENTO DE MATERIAL DIDÁTICO OU INSTRUCIONAL,2020,BRASIL,PORTUGUÊS,MEIO_DIGITAL,,,Jean Paul Barddal,5862618116527136\r\n"
+
   return (
     <AppProvider>
       <CssBaseline />
       <RouterProvider router={router} />
+      {/* <pre>{JSON.stringify(data, 2)}</pre> */}
     </AppProvider>
-  )
+  );
 }
