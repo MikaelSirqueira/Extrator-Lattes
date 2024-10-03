@@ -9,32 +9,11 @@ import GraphSection from '../GraphSection';
 import { useNavigate } from 'react-router-dom';
 
 export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2 }) {
-  const infoGroups = [
-    {
-      leftTitle: researcherName1,
-      rightTitle: researcherName2,
-      contentLeft: (
-        <>
-          <Typography color='secondary.dark' variant="body1">ID Lattes: 123456</Typography>
-          <Typography color='secondary.dark' variant="body1">Programa de Pós-Graduação: ABC</Typography>
-          <Typography color='secondary.dark' variant="body1">Senioridade: Alta</Typography>
-          <Typography color='secondary.dark' variant="body1">CV Lattes: Link</Typography>
-        </>
-      ),
-      contentRight: (
-        <>
-          <Typography color='secondary.dark' variant="body1">ID Lattes: 654321</Typography>
-          <Typography color='secondary.dark' variant="body1">Programa de Pós-Graduação: XYZ</Typography>
-          <Typography color='secondary.dark' variant="body1">Senioridade: Média</Typography>
-          <Typography color='secondary.dark' variant="body1">CV Lattes: Link</Typography>
-        </>
-      )
-    },    
-  ];
+  
 
   const hasGraphData = chartData.length > 0;
-  const hasInfoData = infoGroups.length > 0;
-  const hasGeneralInfo = infoGroups.length > 0;
+  const hasInfoData = chartData.length > 0;
+  const hasGeneralInfo = chartData.length > 0;
   const navigate = useNavigate()
 
   return (
@@ -48,7 +27,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
             ))}
           </PublicationAccordion>
         )}
-        {hasInfoData && (
+        {/* {hasInfoData && (
           <PublicationAccordion title="Experiência">
             {infoGroups.map((group, index) => (
               <InfoSection 
@@ -60,9 +39,9 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
               />
             ))}
           </PublicationAccordion>
-        )}
+        )} */}
 
-        {hasInfoData && (
+        {/* {hasInfoData && (
           <PublicationAccordion title="Informações Gerais">
             {infoGroups.map((group, index) => (
               <InfoSection 
@@ -74,7 +53,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
               />
             ))}
           </PublicationAccordion>
-        )}
+        )} */}
 
         <Box sx={styles.buttonPanel}>
           <Divider aria-hidden="true" />
