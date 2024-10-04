@@ -54,6 +54,9 @@ export function FilterPanel() {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [beginYear, setBeginYear] = useState('');  
+  const [endYear, setEndYear] = useState('');      
+
 
   const handleExtractClick = async () => {
     setChartData([]);
@@ -82,12 +85,15 @@ export function FilterPanel() {
         try {
           const fetchFunction = functionMap[file];
           
-          const data1Response = await fetchFunction(id1);
-          const data2Response = await fetchFunction(id2);
+          const data1Response = await fetchFunction(id1, beginYear, endYear);  
+          const data2Response = await fetchFunction(id2, beginYear, endYear);
+          
 
           // Transforme os dados CSV em arrays de objetos
           const data1 = csvToArray(data1Response.data); // Transforme CSV em array
           const data2 = csvToArray(data2Response.data); // Transforme CSV em array
+
+          
   
           // Verifica se os dados foram retornados corretamente
           if (!data1 || !data2) {
@@ -181,7 +187,25 @@ export function FilterPanel() {
             }}
             helperText='Insira o nome completo do segundo pesquisador'
           />          
-        </div>        
+        </div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <TextField
+            label="Ano Inicial"
+            placeholder="Ex: 2010"
+            value={beginYear}
+            onChange={(e) => setBeginYear(e.target.value)}  // Atualiza o estado do ano inicial
+            fullWidth
+            helperText='Insira o ano inicial do filtro'
+          />
+          <TextField
+            label="Ano Final"
+            placeholder="Ex: 2022"
+            value={endYear}
+            onChange={(e) => setEndYear(e.target.value)}    // Atualiza o estado do ano final
+            fullWidth
+            helperText='Insira o ano final do filtro'
+          />
+        </div>
         {error && <FormHelperText sx={{fontSize: '14px'}} error>{error}</FormHelperText>}
         <FormControl 
           sx={{
