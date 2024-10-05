@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Select, MenuItem, FormControl, InputLabel, InputAdornment, Chip, Card, FormHelperText, CircularProgress } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
+import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram } from '../../../http/get-researchers';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts } from '../../../http/get-researchers';
 
 const fileLabels = {
   'conferences': 'Conferências',
@@ -47,9 +47,13 @@ const functionMap = {
   'technologicalProducts': technologicalProducts,
 };
 
-export function FilterPanel() {
+export function FilterPanel({isSelectedToShowResearchers}) {
   const [researcherName1, setResearcherName1] = useState('');
   const [researcherName2, setResearcherName2] = useState('');
+  const [collegeName1, setCollegeName1] = useState('');
+  const [collegeName2, setCollegeName2] = useState('');
+  const [failedIds, setFailedIds] = useState({});
+
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
@@ -58,71 +62,23 @@ export function FilterPanel() {
   const handleExtractClick = async () => {
     setChartData([]);
     if (!researcherName1 || !researcherName2) {
-      setError('Por favor, preencha os nomes dos pesquisadores.');
+      setError('Por favor, preencha os nomes completos nos campos.');
       return;
-    }
-  
-    setIsLoading(true);
-    const Name1UpperCase = researcherName1.toUpperCase()
-    const Name2UpperCase = researcherName2.toUpperCase()
-  
+    }  
+
+    setIsLoading(true);  
+    const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
+
     try {
-      // Verificando se os IDs foram retornados corretamente
-      const { id1, id2 } = await getIdByName(Name1UpperCase, Name2UpperCase);
-      if (!id1 || !id2) {
-        setError('Não foi possível encontrar um ou ambos os pesquisadores.');
-        setIsLoading(false);
-        return;
+      let datasets;
+
+      if (isSelectedToShowResearchers) {      
+        datasets = await getResearcherData(filesToFetch);
+      } else {
+        datasets = await getPpgData(filesToFetch);
       }
-  
-      // Caso nada tenha sido selecionado, ele pega todos os fileLabels
-      const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
-  
-      const datasets = await Promise.all(filesToFetch.map(async (file) => {
-        try {
-          const fetchFunction = functionMap[file];
-          
-          const data1Response = await fetchFunction(id1);
-          const data2Response = await fetchFunction(id2);
-
-          // Transforme os dados CSV em arrays de objetos
-          const data1 = csvToArray(data1Response.data); // Transforme CSV em array
-          const data2 = csvToArray(data2Response.data); // Transforme CSV em array
-  
-          // Verifica se os dados foram retornados corretamente
-          if (!data1 || !data2) {
-            throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
-          }
-  
-          // Função para contar as publicações
-          const countPublications = (data, id) => {
-            return data.filter(row => row.ID_LATTES_PESQUISADOR && row.ID_LATTES_PESQUISADOR.includes(id)).length;
-          };          
-  
-          const data1Count = countPublications(data1, id1);
-          const data2Count = countPublications(data2, id2);
-
-          
-          console.log(file)
-          console.log(data1Count)
-          console.log(data2Count)
-
-
-          // if (data1Count.length == 0 && data2Count.length == 0) {
-          //   return
-          // }
-  
-          return [
-            { count: data1Count, researcher: Name1UpperCase },
-            { count: data2Count, researcher: Name2UpperCase }
-          ];
-        } catch (err) {
-          console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
-          return [];
-        }
-      }));
-  
-      setChartData(datasets);
+      
+      setChartData(datasets);      
     } catch (err) {
       console.error('Erro ao carregar os dados.', err);
       setError('Erro ao carregar os dados.');
@@ -131,61 +87,225 @@ export function FilterPanel() {
     }
   };
 
-  const handleResearcherName1Change = (e) => {
-    setResearcherName1(e.target.value);
-    if (error) setError('');
-  };
+  async function getResearcherData(filesToFetch) {
+    const name1 = researcherName1.toUpperCase()
+    const name2 = researcherName2.toUpperCase()
 
-  const handleResearcherName2Change = (e) => {
-    setResearcherName2(e.target.value);
-    if (error) setError('');
-  };
+    const { id1, id2 } = await getIdByName(name1, name2);
+    if (!id1 || !id2) {
+      setError(`Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos`);
+      setIsLoading(false);
+      return;
+    }
+
+    const datasets = await Promise.all(filesToFetch.map(async (file) => {
+      try {
+        const fetchFunction = functionMap[file];
+        
+        const data1Response = await fetchFunction(id1);
+        const data2Response = await fetchFunction(id2);
+
+        const data1 = csvToArray(data1Response.data);
+        const data2 = csvToArray(data2Response.data);
+
+        if (!data1 || !data2) {
+          throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
+        }
+
+        const countPublications = (data, id) => {
+          return data.filter(row => row.ID_LATTES_PESQUISADOR && row.ID_LATTES_PESQUISADOR.includes(id)).length;
+        };          
+
+        const data1Count = countPublications(data1, id1);
+        const data2Count = countPublications(data2, id2);
+
+        return [
+          { count: data1Count, researcher: name1 },
+          { count: data2Count, researcher: name2 }
+        ];
+      } catch (err) {
+        console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
+        return [];
+      }
+    }));
+
+    return datasets;
+  }
+
+  async function getPpgData(filesToFetch) {
+    const name1 = researcherName1.toUpperCase()
+    const name2 = researcherName2.toUpperCase()
+    const listName = [name1, name2]
+    const failedIds = { 1: [], 2: [] };
+
+    const ids = await getIdsByProgram(name1, collegeName1.toUpperCase(), name2, collegeName2.toUpperCase());
+
+    const datasets = await Promise.all(filesToFetch.map(async (file) => {
+      try {
+        const fetchFunction = functionMap[file];
+        const results = [];        
+        
+        for (const key in ids) {
+          if (ids.hasOwnProperty(key)) {
+            const idArray = ids[key]; 
+            
+            const responses = await Promise.all(idArray.map(async (id) => {
+              try {
+                const dataResponse = await fetchFunction(id);
+                return csvToArray(dataResponse.data);
+              } catch (err) {
+                console.error(`Erro ao buscar dados para ID ${id}:`, err);
+                failedIds[key].push(id);
+                return null;
+              }
+            }));
+
+            const validResponses = responses.filter(response => response !== null);
+
+            const totalCount = validResponses.reduce((acc, data) => {
+              const countPublications = (data) => {
+                return data.filter(row => row.ID_LATTES_PESQUISADOR).length; // Contagem de publicações
+              };
+              return acc + countPublications(data);
+            }, 0);
+
+            results.push(
+              {
+                count: totalCount,
+                researcher: listName[Number(key) - 1]
+              }
+            )
+          }
+        }
+        
+        return Object.values(results); // Retorna os resultados como um array de objetos
+      } catch (err) {
+        console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
+        return [];
+      }
+    }));
+    setFailedIds(failedIds)
+
+    return datasets;
+  }
 
   return (
     <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column' }} component='section'>
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4}} component='form'>
-        <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
-          <TextField
-            placeholder="Nome completo"
-            value={researcherName1}
-            onChange={handleResearcherName1Change}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonOutlineIcon />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-              '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-            }}
-            helperText='Insira o nome completo do primeiro pesquisador'
-          />
-          <TextField
-            placeholder="Nome completo"
-            value={researcherName2}
-            onChange={handleResearcherName2Change}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonOutlineIcon />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-              '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-            }}
-            helperText='Insira o nome completo do segundo pesquisador'
-          />          
-        </div>        
+        {isSelectedToShowResearchers ? (
+          <>
+            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
+              <TextField
+                placeholder="Nome completo"
+                onChange={(e) => setResearcherName1(e.target.value)}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+                helperText={`Insira o nome completo do primeiro pesquisador`}
+              />
+              <TextField
+                placeholder="Nome completo"
+                onChange={(e) => setResearcherName2(e.target.value)}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+                helperText={`Insira o nome completo do segundo pesquisador`}
+              />          
+            </div>
+          </>
+        ) : (
+          <>
+            {/* PRIMEIRO PPG */}
+            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
+              <TextField
+                placeholder="Ex: Ciência da Computação"
+                onChange={(e) => setResearcherName1(e.target.value)}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+                helperText={`Insira o nome completo do primeiro programa`}
+              />
+              <TextField
+                placeholder="Ex: Pontificia Universidade Catolica do Parana"
+                onChange={(e) => setCollegeName1(e.target.value)}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+                helperText={`Insira o nome completo da Instituição do programa`}
+              />          
+            </div>   
+
+            {/* SEGUNDO PPG */}
+            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
+              <TextField placeholder="Ex: Informática" onChange={(e) => setResearcherName2(e.target.value)} fullWidth
+                InputProps={{ startAdornment: ( 
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+                helperText={`Insira o nome completo do segundo programa`}
+              />
+              <TextField placeholder="Ex: Universidade de Brasilia" onChange={(e) => setCollegeName2(e.target.value)} fullWidth
+                InputProps={{ startAdornment: ( 
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+                helperText={`Insira o nome completo da Instituição do programa`}
+              />
+            </div>   
+          </>
+        )}
+
         {error && <FormHelperText sx={{fontSize: '14px'}} error>{error}</FormHelperText>}
         <FormControl 
           sx={{
-              width: '850px', 
               '.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'},
               '.MuiList-root' : {color: 'secondary.dark'},
             }}
@@ -229,12 +349,13 @@ export function FilterPanel() {
             Caso não for selecionado nenhum, todos os gráficos serão exibidos.
 
           </FormHelperText>
-        </FormControl>       
-        
+        </FormControl>
+
         <Button variant="contained" sx={{}} size='large' onClick={handleExtractClick} disabled={isLoading}>
           {isLoading ? <CircularProgress size={24} /> : 'Extrair Dados'}
         </Button>
       </Card>
+      
       {chartData.length > 0 && 
         <DataAccordion 
           chartData={chartData} 
