@@ -1,12 +1,18 @@
 import * as XLSX from 'xlsx';
 
-export async function getIdByName(name1, name2) {
+async function fetchData() {
   const response = await fetch('/ppgs/ppgs.xlsx');
   const arrayBuffer = await response.arrayBuffer();
   const workbook = XLSX.read(arrayBuffer, { type: 'array' });
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
   const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+  return data;
+}
+
+export async function getIdByName(name1, name2) {
+  const data = await fetchData()
 
   const findIdByName = (name) => {
     const row = data.find(row => row[0].toUpperCase() === name);
@@ -18,6 +24,29 @@ export async function getIdByName(name1, name2) {
 
   return { id1, id2 };
 }
+
+export async function getIdsByProgram(programName1, collegeName1, programName2, collegeName2) {
+  const data = await fetchData(); // Ensure to await the fetchData
+
+  const findByName = async (programName, collegeName) => data
+    .filter(row => 
+      row[2].toUpperCase() === programName.toUpperCase() && // PPG
+      row[3].toUpperCase() === collegeName.toUpperCase() // Instituição
+    )
+    .map(row => row[1]); // ID Lattes
+
+  const idsProgram1 = await findByName(programName1, collegeName1);
+  const idsProgram2 = await findByName(programName2, collegeName2);
+
+  console.log('IDs Program 1:', idsProgram1);
+  console.log('IDs Program 2:', idsProgram2);
+
+  return {
+    1: idsProgram1,
+    2: idsProgram2 
+  };
+}
+
 
 // Função para converter CSV em array de objetos
 export function csvToArray(csv, delimiter = ',') {
@@ -130,7 +159,7 @@ export async function conferences(id_lattes, begin_year = '', end_year = '', are
       ? `api/projects/${id_lattes}/${begin_year}/${end_year}`
       : `api/projects/${id_lattes}`;
 
-  const response = await fetch(`api/conferences/${id_lattes}`)      
+  const response = await fetch(url);
   const result = await response.json();
   return result; 
 }
