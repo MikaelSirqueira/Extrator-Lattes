@@ -11,13 +11,16 @@ import { DataAccordion } from "../../components/DataAccordion";
 export function ExtractData() {
   const navigate = useNavigate();
   const [isSelectedToExtract, setIsSelectedToExtract] = useState(false);
+  const [isSelectedToShowResearchers, setIsSelectedToShowResearchers] = useState(true);
 
   function showPostGraduateProgram() {
     setIsSelectedToExtract(true);
+    setIsSelectedToShowResearchers(false)
   } 
 
   function showResearchers() {
     setIsSelectedToExtract(true);
+    setIsSelectedToShowResearchers(true)
   }
 
   return (
@@ -59,7 +62,7 @@ export function ExtractData() {
         </>
       ): (
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <FilterPanel />          
+          <FilterPanel isSelectedToShowResearchers={isSelectedToShowResearchers} />          
         </div>
       )}
     </Box>
