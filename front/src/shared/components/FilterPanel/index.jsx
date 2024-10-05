@@ -58,6 +58,9 @@ export function FilterPanel({isSelectedToShowResearchers}) {
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [beginYear, setBeginYear] = useState('');  
+  const [endYear, setEndYear] = useState('');      
+
 
   const handleExtractClick = async () => {
     setChartData([]);
@@ -78,7 +81,9 @@ export function FilterPanel({isSelectedToShowResearchers}) {
         datasets = await getPpgData(filesToFetch);
       }
       
+
       setChartData(datasets);      
+
     } catch (err) {
       console.error('Erro ao carregar os dados.', err);
       setError('Erro ao carregar os dados.');
@@ -230,6 +235,24 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                 helperText={`Insira o nome completo do segundo pesquisador`}
               />          
             </div>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <TextField
+                label="Ano Inicial"
+                placeholder="Ex: 2010"
+                value={beginYear}
+                onChange={(e) => setBeginYear(e.target.value)}  // Atualiza o estado do ano inicial
+                fullWidth
+                helperText='Insira o ano inicial do filtro'
+              />
+              <TextField
+                label="Ano Final"
+                placeholder="Ex: 2022"
+                value={endYear}
+                onChange={(e) => setEndYear(e.target.value)}    // Atualiza o estado do ano final
+                fullWidth
+                helperText='Insira o ano final do filtro'
+              />
+            </div>
           </>
         ) : (
           <>
@@ -299,7 +322,25 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                 }}
                 helperText={`Insira o nome completo da Instituição do programa`}
               />
-            </div>   
+            </div>  
+            <div style={{ display: 'flex', gap: 16 }}>
+              <TextField
+                label="Ano Inicial"
+                placeholder="Ex: 2010"
+                value={beginYear}
+                onChange={(e) => setBeginYear(e.target.value)}  // Atualiza o estado do ano inicial
+                fullWidth
+                helperText='Insira o ano inicial do filtro'
+              />
+              <TextField
+                label="Ano Final"
+                placeholder="Ex: 2022"
+                value={endYear}
+                onChange={(e) => setEndYear(e.target.value)}    // Atualiza o estado do ano final
+                fullWidth
+                helperText='Insira o ano final do filtro'
+              />
+            </div>
           </>
         )}
 
