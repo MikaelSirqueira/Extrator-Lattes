@@ -8,6 +8,7 @@ import { Index } from "./shared/pages/index.jsx";
 import { AboutPage } from "./shared/pages/about-guide/index.jsx";
 import { AuthPage } from "./shared/pages/auth/index.jsx";
 import { useEffect, useState } from "react";
+import { AdminPanel } from "./shared/pages/admin-access/index.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <AboutPage />,
+      },     
+      {
+        path: "/access",
+        element: <AdminPanel />,
       },     
     ],
   },
