@@ -33,10 +33,10 @@ export async function loginRoutes(fastify: FastifyInstance) {
         }
   
         // Passo 3: Geração do Token JWT
-        const token = fastify.jwt.sign({ name: user.name }, { expiresIn: '1h' }); // Token expira em 1 hora
+        const token = fastify.jwt.sign({ name: user.name, profile: user.profile }, { expiresIn: '1h' }); // Token expira em 1 hora
   
         // Passo 4: Enviar o token de volta ao cliente
-        return reply.send({ token });
+        return reply.send({ token, profile: user.profile });
       } catch (error) {
         console.error(error);
         return reply.status(500).send({ message: 'Erro interno do servidor' });
