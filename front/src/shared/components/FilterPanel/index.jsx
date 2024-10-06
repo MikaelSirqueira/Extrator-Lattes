@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
-import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram } from '../../../http/get-researchers';
+import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram } from '../../../http/get-routes';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 const fileLabels = {
@@ -13,17 +13,17 @@ const fileLabels = {
   'advisingOnGoing': 'Orientações em Andamento',
   'workPresentation': 'Apresentações de Trabalho',
   'teachingActivities': 'Atividades de Ensino',
-  'book': 'book',
-  'bookChapter': 'bookChapter',
-  'shortDurationCourse': 'shortDurationCourse',
-  'otherBibliography': 'otherBibliography',
+  'book': 'Livro',
+  'bookChapter': 'Capítulo de Livro',
+  'shortDurationCourse': 'Curso de Curta Duração',
+  'otherBibliography': 'Outras Bibliografias',
   'patents': 'Patentes',
-  'otherTechnicalProduction': 'otherTechnicalProduction',
-  'teachingMaterials': 'teachingMaterials',
-  'committeeParticipation': 'committeeParticipation',
-  'eventParticipation': 'eventParticipation',
-  'processOrTechniques': 'processOrTechniques',
-  'technologicalProducts': 'technologicalProducts',
+  'otherTechnicalProduction': 'Outras Produções Técnicas',
+  'teachingMaterials': 'Materiais Didáticos',
+  'committeeParticipation': 'Participação em Comitês',
+  'eventParticipation': 'Participação em Eventos',
+  'processOrTechniques': 'Processos ou Técnicas',
+  'technologicalProducts': 'Produtos Tecnológicos',
 };
 
 const functionMap = {
@@ -69,6 +69,12 @@ export function FilterPanel({isSelectedToShowResearchers}) {
       return;
     }  
 
+    const dateError = await dateValidate();
+    if (dateError) {
+        setError(dateError);
+        return;
+    }
+
     setIsLoading(true);  
     const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
 
@@ -80,7 +86,6 @@ export function FilterPanel({isSelectedToShowResearchers}) {
       } else {
         datasets = await getPpgData(filesToFetch);
       }
-      
 
       setChartData(datasets);      
 
@@ -91,6 +96,24 @@ export function FilterPanel({isSelectedToShowResearchers}) {
       setIsLoading(false);
     }
   };
+
+
+  async function dateValidate() {
+    const currentYear = new Date().getFullYear()
+
+    if (beginYear && endYear) {
+      if (beginYear > endYear) {
+          return 'O ano inicial não pode ser maior que o ano final';
+      }
+    } else if (beginYear && !endYear) {
+      if (beginYear > currentYear) {
+        return 'O ano inicial não pode ser maior que o ano atual';
+      }
+      setEndYear(currentYear)
+    }
+
+    return null;
+  }
 
   async function getResearcherData(filesToFetch) {
     const name1 = researcherName1.toUpperCase()
@@ -107,8 +130,8 @@ export function FilterPanel({isSelectedToShowResearchers}) {
       try {
         const fetchFunction = functionMap[file];
         
-        const data1Response = await fetchFunction(id1);
-        const data2Response = await fetchFunction(id2);
+        const data1Response = await fetchFunction(id1, beginYear, endYear);
+        const data2Response = await fetchFunction(id2, beginYear, endYear);
 
         const data1 = csvToArray(data1Response.data);
         const data2 = csvToArray(data2Response.data);
@@ -117,19 +140,15 @@ export function FilterPanel({isSelectedToShowResearchers}) {
           throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
         }
 
-        const countPublications = (data, id) => {
-          return data.filter(row => row.ID_LATTES_PESQUISADOR && row.ID_LATTES_PESQUISADOR.includes(id)).length;
-        };          
-
-        const data1Count = countPublications(data1, id1);
-        const data2Count = countPublications(data2, id2);
+        const data1Count = data1.length;
+        const data2Count = data2.length;
 
         return [
           { count: data1Count, researcher: name1 },
           { count: data2Count, researcher: name2 }
         ];
       } catch (err) {
-        console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
+        console.log(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
       }
     }));
@@ -141,49 +160,47 @@ export function FilterPanel({isSelectedToShowResearchers}) {
     const name1 = researcherName1.toUpperCase()
     const name2 = researcherName2.toUpperCase()
     const listName = [name1, name2]
-    const failedIds = { 1: [], 2: [] };
+    const listCollegeName = [collegeName1.toUpperCase(), collegeName2.toUpperCase()]
 
-    const ids = await getIdsByProgram(name1, collegeName1.toUpperCase(), name2, collegeName2.toUpperCase());
+    const failedIds = { 0: [], 1: [] };
+
+    const idsForEachPpg = await getIdsByProgram(name1, collegeName1.toUpperCase(), name2, collegeName2.toUpperCase());
 
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
         const results = [];        
         
-        for (const key in ids) {
-          if (ids.hasOwnProperty(key)) {
-            const idArray = ids[key]; 
+        for (const keyPpg in idsForEachPpg) {
+          if (idsForEachPpg.hasOwnProperty(keyPpg)) {
+            const idArray = idsForEachPpg[keyPpg]; 
             
             const responses = await Promise.all(idArray.map(async (id) => {
               try {
-                const dataResponse = await fetchFunction(id);
+                const dataResponse = await fetchFunction(id); 
                 return csvToArray(dataResponse.data);
               } catch (err) {
-                console.error(`Erro ao buscar dados para ID ${id}:`, err);
-                failedIds[key].push(id);
+                failedIds[keyPpg].push(id);
                 return null;
               }
             }));
 
             const validResponses = responses.filter(response => response !== null);
 
-            const totalCount = validResponses.reduce((acc, data) => {
-              const countPublications = (data) => {
-                return data.filter(row => row.ID_LATTES_PESQUISADOR).length; // Contagem de publicações
-              };
-              return acc + countPublications(data);
+            const totalCount = validResponses.reduce((acc, data) => {          
+                return acc + data.length;
             }, 0);
 
             results.push(
               {
                 count: totalCount,
-                researcher: listName[Number(key) - 1]
+                researcher: `${listName[Number(keyPpg)]} (${listCollegeName[Number(keyPpg)]})`
               }
             )
           }
         }
         
-        return Object.values(results); // Retorna os resultados como um array de objetos
+        return Object.values(results);
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
@@ -237,20 +254,24 @@ export function FilterPanel({isSelectedToShowResearchers}) {
             </div>
             <div style={{ display: 'flex', gap: 16 }}>
               <TextField
-                label="Ano Inicial"
                 placeholder="Ex: 2010"
-                value={beginYear}
                 onChange={(e) => setBeginYear(e.target.value)}  // Atualiza o estado do ano inicial
                 fullWidth
                 helperText='Insira o ano inicial do filtro'
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
               />
               <TextField
-                label="Ano Final"
                 placeholder="Ex: 2022"
-                value={endYear}
                 onChange={(e) => setEndYear(e.target.value)}    // Atualiza o estado do ano final
                 fullWidth
                 helperText='Insira o ano final do filtro'
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
               />
             </div>
           </>
@@ -325,20 +346,24 @@ export function FilterPanel({isSelectedToShowResearchers}) {
             </div>  
             <div style={{ display: 'flex', gap: 16 }}>
               <TextField
-                label="Ano Inicial"
                 placeholder="Ex: 2010"
-                value={beginYear}
-                onChange={(e) => setBeginYear(e.target.value)}  // Atualiza o estado do ano inicial
+                onChange={(e) => setBeginYear(e.target.value)}
                 fullWidth
                 helperText='Insira o ano inicial do filtro'
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
               />
               <TextField
-                label="Ano Final"
                 placeholder="Ex: 2022"
-                value={endYear}
-                onChange={(e) => setEndYear(e.target.value)}    // Atualiza o estado do ano final
+                onChange={(e) => setEndYear(e.target.value)}
                 fullWidth
                 helperText='Insira o ano final do filtro'
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
               />
             </div>
           </>
