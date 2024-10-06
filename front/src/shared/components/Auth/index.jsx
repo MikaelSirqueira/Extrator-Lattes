@@ -5,14 +5,7 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { useState, useEffect, useRef, FormEvent } from "react";
-import { api } from "../../../services/api"
-
-// interface UserProps {
-//   id: string;
-//   name: string;
-//   password: string;
-//   profile: string;
-// }
+import { api } from "../../../services/api";
 
 export function Auth() {
 
@@ -20,7 +13,7 @@ export function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [showUserError, setShowUserError] = useState(false);
   const [showInputError, setShowInputError] = useState(false);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
@@ -40,37 +33,37 @@ export function Auth() {
 
     // verifica se não há nenhum campo em branco
     if (!userName || !userPassword){
-      setShowInputError(true)
+      setShowUserError(false);
+      setShowInputError(true);
+      return
     }else{
-      setShowInputError(false)
+      setShowInputError(false);
+      
     }
 
     // busca pelo usuário e retorna o registro
     try {
-      const response = await api.get("/user", {
-        params:{
-          name: userName
-        }
+
+      const response = await api.post("/login", {
+          name: userName,
+          password: userPassword
       });
 
-      console.log(response.data);
-      setUser(response.data);
+      // verifica as informações
+      if (response.status === 200) {
+        const { token, profile } = response.data;
+        sessionStorage.setItem('authToken', token); // Armazena o token
+        sessionStorage.setItem('profile', profile);
+  
+      navigate('/home');
 
-      // verifica se as informações do usuário estão corretas
-      if (user.password != userPassword){
+      } else {
         setShowUserError(true);
-      } else{
-        setShowUserError(false);
       }
-
-      if (showUserError == false){
-        navigate('/home');
-      }
-
     } catch (error) {
       setShowUserError(true);
+      return
     }
-    
   }
 
   const handleClickShowPassword = () => {
@@ -86,7 +79,7 @@ export function Auth() {
       height='90vh'
       overflow='hidden'      
     >
-      <img 
+      {/* <img 
         src={ImageHome} 
         alt="Imagem interna da parte central da PUC-PR exibindo a cruz, a igreja e a biblioteca." 
         style={{
@@ -96,7 +89,7 @@ export function Auth() {
           objectFit: 'cover',
           filter: 'brightness(60%)'
         }} 
-      />  
+      />   */}
 
       <Box 
         bgcolor='homeCardComponent.main' 
