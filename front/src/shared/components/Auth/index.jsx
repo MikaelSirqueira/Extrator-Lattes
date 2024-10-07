@@ -50,9 +50,10 @@ export function Auth() {
 
       // verifica as informações
       if (response.status === 200) {
-        const { token, profile } = response.data;
+        const { token, admin } = response.data;
+        console.log(response.data); 
         sessionStorage.setItem('authToken', token); // Armazena o token
-        sessionStorage.setItem('profile', profile);
+        sessionStorage.setItem('admin', admin);
         sessionStorage.setItem('user', userName);
   
       navigate('/home');
