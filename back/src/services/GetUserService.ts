@@ -17,11 +17,7 @@ class GetUserService{
             }
         })
 
-        if(!findUser){
-            throw new Error("Usuário não existe")
-        }
-
-        return {findUser}
+        return findUser
 
     }
 }
