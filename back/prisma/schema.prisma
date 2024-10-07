@@ -11,9 +11,9 @@ model User {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   name       String
   password   String
-  profile    String
+  admin      Boolean
   created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
 
   @@map("users")
 }
@@ -25,7 +25,7 @@ model Research {
   informations    String
   graphs          String
   created_at      DateTime? @default(now())
-  updated_at      DateTime? @default(now())
+  updated_at      DateTime? @updatedAt
 
   @@map("savedResearches")
 }
