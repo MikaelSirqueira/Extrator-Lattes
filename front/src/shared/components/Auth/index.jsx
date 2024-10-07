@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { api } from "../../../services/api";
 
 export function Auth() {
@@ -13,12 +13,11 @@ export function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [showUserError, setShowUserError] = useState(false);
   const [showInputError, setShowInputError] = useState(false);
-  const [user, setUser] = useState({});
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
   useEffect(() => {
-
+    sessionStorage.clear();
   }, [])
 
   const handleUserName = (e) => {
@@ -54,6 +53,7 @@ export function Auth() {
         const { token, profile } = response.data;
         sessionStorage.setItem('authToken', token); // Armazena o token
         sessionStorage.setItem('profile', profile);
+        sessionStorage.setItem('user', userName);
   
       navigate('/home');
 
@@ -79,7 +79,7 @@ export function Auth() {
       height='90vh'
       overflow='hidden'      
     >
-      {/* <img 
+      <img 
         src={ImageHome} 
         alt="Imagem interna da parte central da PUC-PR exibindo a cruz, a igreja e a biblioteca." 
         style={{
@@ -89,7 +89,7 @@ export function Auth() {
           objectFit: 'cover',
           filter: 'brightness(60%)'
         }} 
-      />   */}
+      />  
 
       <Box 
         bgcolor='homeCardComponent.main' 
