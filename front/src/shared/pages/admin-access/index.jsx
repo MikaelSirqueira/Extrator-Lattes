@@ -55,7 +55,8 @@ export function AdminPanel() {
     // Verifica se o nome de usuário já existe ou não
     const userVerification = await api.get('/user', {params: {name: name}});
 
-    if (userVerification.status == 200){
+
+    if (userVerification.status == 200 && userVerification.data !== null){
       setShowInputError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
@@ -176,6 +177,7 @@ export function AdminPanel() {
         display='flex'
         flexDirection='column'
         gap='2rem'
+        color='secondary.dark'
         sx={{
           backdropFilter: 'blur(5px)',
         }}
@@ -185,13 +187,13 @@ export function AdminPanel() {
         </Typography>
 
         {/* Formulário para adicionar ou atualizar usuários */}
-        <Box component="form" sx={{ mb: 4 }}>
+        <Box component="form" sx={{ mb: 4 }} >
           <TextField 
             placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth
-            sx={{ mb: 2, '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
+            sx={{ mb: 2, color:'secondary.dark', '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
           />
           <TextField 
             placeholder="Senha"
@@ -291,7 +293,7 @@ export function AdminPanel() {
         </Box>
 
         {/* Tabela de usuários */}
-        <TableContainer component={Paper} sx={{ bgcolor: 'background.default', borderRadius: '12px', boxShadow: 1 }}>
+        <TableContainer component={Paper} color='secondary.dark' sx={{ bgcolor: 'background.default', borderRadius: '12px', boxShadow: 5}}>
           <Table>
             <TableHead>
               <TableRow>
@@ -304,9 +306,9 @@ export function AdminPanel() {
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.profile}</TableCell>
-                  <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell><Typography color="secondary.dark">{user.name}</Typography></TableCell>
+                  <TableCell><Typography color="secondary.dark">{user.profile}</Typography></TableCell>
+                  <TableCell><Typography color="secondary.dark">{new Date(user.created_at).toLocaleDateString()}</Typography></TableCell>
                   <TableCell>
                     <Button 
                       variant="outlined"
