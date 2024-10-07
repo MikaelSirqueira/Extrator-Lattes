@@ -12,15 +12,15 @@ export function Header({isLoggedIn}) {
   const [isAdmin, setIsAdmin] = useState(false); // Estado para verificar se é admin
 
   useEffect(() => {
-    const profile = sessionStorage.getItem('profile');
+    const admin = sessionStorage.getItem('admin');
     
-    // Verifica se o perfil é 'admin'
-    if (profile === 'admin') {
+    // Verifica se o perfil é admin
+    if (admin) {
       setIsAdmin(true);
     } else{
       setIsAdmin(false);
     }
-  }, []);
+  }, [isAdmin]);
 
   const logoPucpr = themeName === 'light'  ? LogoLight : LogoDark;
 
