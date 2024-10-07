@@ -194,11 +194,13 @@ export function FilterPanel({isSelectedToShowResearchers}) {
             results.push(
               {
                 count: totalCount,
-                researcher: `${listName[Number(keyPpg)]} (${listCollegeName[Number(keyPpg)]})`
+                researcher: `${listName[Number(keyPpg)]})`
               }
             )
           }
         }
+
+        console.log('re ',results)
         
         return Object.values(results);
       } catch (err) {
