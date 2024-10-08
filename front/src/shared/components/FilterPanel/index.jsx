@@ -54,7 +54,7 @@ const functionMap = {
   'awards': awards,
 };
 
-export function FilterPanel({isSelectedToShowResearchers}) {
+export function FilterPanel() {
   const [researcherName1, setResearcherName1] = useState('');
   const [researcherName2, setResearcherName2] = useState('');
   const [collegeName1, setCollegeName1] = useState('');
@@ -64,22 +64,45 @@ export function FilterPanel({isSelectedToShowResearchers}) {
   const [evaluationArea, setEvaluationArea] = useState('');
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [beginYear, setBeginYear] = useState('');
+  const [endYear, setEndYear] = useState('');
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [beginYear, setBeginYear] = useState('');  
-  const [endYear, setEndYear] = useState('');     
   const navigate = useNavigate() 
 
   const [resultsToInfos, setResultsToInfos] = useState([]);
 
+
+  const [searchHistory, setSearchHistory] = useState([]);
+
+  useEffect(() => {
+    const savedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    setSearchHistory(savedHistory);
+  }, []);
+
+  const saveSearchHistory = (name1, name2, beginYear, endYear, selectedFiles) => {
+    const searchData = {
+      name1,
+      name2,
+      beginYear,
+      endYear,
+      selectedFiles,
+      date: new Date().toLocaleDateString(),
+    };
+
+    let localSearchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    localSearchHistory.push(searchData);
+    localStorage.setItem('searchHistory', JSON.stringify(localSearchHistory));
+    setSearchHistory(localSearchHistory);
+  };
 
   const handleExtractClick = async () => {
     setChartData([]);
     setError('');
 
     if (!researcherName1 || !researcherName2) {
-      setError('Por favor, preencha os nomes completos nos campos.');
+      setError('Por favor, preencha os nomes dos pesquisadores.');
       return;
     }       
 
@@ -116,7 +139,6 @@ export function FilterPanel({isSelectedToShowResearchers}) {
     } finally {
       setIsLoading(false);
     }
-  };
 
 
   async function evaluationAreaAndDateValidation() {
@@ -143,8 +165,8 @@ export function FilterPanel({isSelectedToShowResearchers}) {
       setEndYear(currentYear)
     }
 
-    return null;
-  }
+
+      const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
 
   async function getResearcherData(filesToFetch, id1, id2) {
     const name1 = researcherName1.toUpperCase()
@@ -179,9 +201,10 @@ export function FilterPanel({isSelectedToShowResearchers}) {
         const data1Count = validResponses1.length;
         const data2Count = validResponses2.length;
 
+
         return [
-          { count: data1Count, researcher: name1 },
-          { count: data2Count, researcher: name2 }
+          { count: data1Count, researcher: Name1UpperCase },
+          { count: data2Count, researcher: Name2UpperCase },
         ];
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
@@ -223,9 +246,8 @@ export function FilterPanel({isSelectedToShowResearchers}) {
 
             const validResponses = responses.filter(response => response && Object.values(response).some(value => value !== null));
 
-            const totalCount = validResponses.reduce((acc, data) => {          
-                return acc + data.length;
-            }, 0);
+
+      setChartData(datasets);
 
             resultsToGraphs.push(
               {
@@ -244,13 +266,48 @@ export function FilterPanel({isSelectedToShowResearchers}) {
     }));
     setFailedIds(failedIds)
 
-    return datasets;
-  }
+
+
+  const loadPreviousSearch = async (search) => {
+    setResearcherName1(search.name1);
+    setResearcherName2(search.name2);
+    setBeginYear(search.beginYear);
+    setEndYear(search.endYear);
+    setSelectedFiles(search.selectedFiles);
+
+
+    await handleExtractClick();
+  };
 
   return (
     <>
-    <Button variant="outlined" sx={{display: 'flex' }} onClick={() => navigate(0)}>Voltar</Button>
     <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column' }} component='section'>
+      {searchHistory.length > 0 && (
+        <Box component={'section'} mt={4}>
+          <Typography variant="subtitle1" color='secondary.dark' mb={3}>
+            Pesquisas salvas
+          </Typography>
+          <Box component={'div'}>
+            {searchHistory.map((search, index) => (
+              <Link 
+                key={index}
+                color='customComponents.dark' 
+                onClick={() => loadPreviousSearch(search)} 
+                variant="overline"
+                display={'flex'}
+                alignItems={'center'}
+                textTransform={'none'}
+                gap={1}
+                mb={2}
+                style={{ cursor: 'pointer' }}
+              >
+                {`${search.name1} e ${search.name2} - ${search.date} (Gráficos: ${search.selectedFiles.map(file => fileLabels[file]).join(', ')})`}
+                <ArrowOutwardIcon sx={{fontSize: 16}} />
+              </Link>
+            ))}
+          </Box>
+        </Box>
+      )}
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4}} component='form'>
         {isSelectedToShowResearchers ? (
           <>
@@ -513,7 +570,7 @@ export function FilterPanel({isSelectedToShowResearchers}) {
           >
           <InputLabel id="file-select-label">Selecionar informações que deseja visualizar</InputLabel>
           <Select
-            labelId="file-select-label" id='file-select'        
+            labelId="file-select-label"
             multiple
             value={selectedFiles}
             onChange={(e) => setSelectedFiles(e.target.value)}
@@ -524,23 +581,11 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                 ))}
               </Box>
             )}
-            sx={{ 
-              '& .MuiSelect-select': { backgroundColor: '#FFF' }, 
-              '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } 
-            }}
-            MenuProps={{
-              sx: {
-                '& .MuiMenuItem-root': {
-                  color: 'secondary.dark',                  
-                },
-                '& .Mui-selected': {
-                  backgroundColor: 'homeCardComponent.light',
-                },
-              },
-            }}
           >
             {Object.entries(fileLabels).map(([key, label]) => (
-              <MenuItem key={key} value={key}>{label}</MenuItem>
+              <MenuItem key={key} value={key}>
+                {label}
+              </MenuItem>
             ))}
           </Select>
           <FormHelperText sx={{
@@ -550,13 +595,11 @@ export function FilterPanel({isSelectedToShowResearchers}) {
             Caso não for selecionado nenhum, todas as informações serão exibidas.
           </FormHelperText>
         </FormControl>
-
-        <Button variant="contained" sx={{}} size='large' onClick={handleExtractClick} disabled={isLoading}>
+        <Button variant="contained" size="large" onClick={handleExtractClick} disabled={isLoading}>
           {isLoading ? <CircularProgress size={24} /> : 'Extrair Dados'}
         </Button>       
       </Card>
-
-      
+     
       {chartData.length > 0 && 
         <DataAccordion 
           chartData={chartData} 
@@ -564,13 +607,14 @@ export function FilterPanel({isSelectedToShowResearchers}) {
           selectedFiles={selectedFiles} 
           researcherName1={researcherName1.toUpperCase()}
           researcherName2={researcherName2.toUpperCase()}
+          saveSearchHistory={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
           resultsToInfos={resultsToInfos}
           isSelectedToShowResearchers={isSelectedToShowResearchers}
+
         />
-      }
+      )}
 
       {isLoading && <Loading />}
-
     </Box>
     </>
   );

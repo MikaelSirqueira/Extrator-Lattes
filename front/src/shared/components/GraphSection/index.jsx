@@ -199,16 +199,6 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
             />
           </Stack>
 
-          {/* <TextField
-            select
-            sx={{ minWidth: 150 }}
-            label="Layout"
-            value={layout}
-            onChange={(event) => setLayout(event.target.value)}
-          >
-            <MenuItem value="horizontal">Horizontal</MenuItem>
-            <MenuItem value="vertical">Vertical</MenuItem>
-          </TextField> */}
           <FormControl
           sx={{
             '.MuiFormHelperText-root' : { color: 'secondary.dark'},

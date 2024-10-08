@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputAdornment, Typography, Stack, Alert } from '@mui/material';
+import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputAdornment, Typography, Stack, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { api } from "../../../services/api";
-import PersonIcon from '@mui/icons-material/Person';
 
 export function AdminPanel() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [profile, setProfile] = useState('');
+  const [admin, setAdmin] = useState(null);
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -14,6 +13,7 @@ export function AdminPanel() {
   const [showInputError, setShowInputError] = useState(false);
   const [showProfileError, setShowProfileError] = useState(false);
   const [showUpdateError, setShowUpdateError] = useState(false);
+  const [labelChart, setLabelChart] = useState('');
 
   // Função para resgatar todos os usuários da API
   const fetchUsers = async () => {
@@ -31,6 +31,12 @@ export function AdminPanel() {
   }, []);
 
   const handleSubmit = () => {
+    if (labelChart == "Administrador"){
+      setAdmin(true);
+    } else{
+      setAdmin(false);
+    }
+
     if (editUser) {
       handleEditSubmit();
     } else if (!editUser){
@@ -42,7 +48,7 @@ export function AdminPanel() {
   const handleNewSubmit = async () => {
 
     // Verifica se não existe nenhum campo em branco
-    if (!name || !password || !profile){
+    if (!name || !password){
       setShowUserError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
@@ -55,7 +61,8 @@ export function AdminPanel() {
     // Verifica se o nome de usuário já existe ou não
     const userVerification = await api.get('/user', {params: {name: name}});
 
-    if (userVerification.status == 200){
+
+    if (userVerification.status == 200 && userVerification.data !== null){
       setShowInputError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
@@ -66,7 +73,7 @@ export function AdminPanel() {
     }
     
     try {
-      await api.post("/user", { name, password, profile });
+      await api.post("/user", { name, password, admin });
       fetchUsers(); 
       clearForm();
     } catch (error) {
@@ -78,7 +85,7 @@ export function AdminPanel() {
   const handleEditSubmit = async () => {
 
     // Verifica se não existe nenhum campo em branco
-    if (!name || !password || !profile){
+    if (!name || !password){
       setShowUserError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
@@ -100,9 +107,9 @@ export function AdminPanel() {
     } else{
       setShowUpdateError(false);
     }
-    
+
     try {
-      await api.put("/user", { name, password, profile });
+      await api.put("/user", { name, password, admin });
       fetchUsers(); 
       clearForm();
     } catch (error) {
@@ -112,10 +119,11 @@ export function AdminPanel() {
 
   // Função para deletar um usuário
   const handleDelete = async (id) => {
+
     const loggedUser = sessionStorage.getItem('user');
 
     // Caso o usuário queira se deletar ou deletar outro admin
-    if (loggedUser === name || profile === 'admin'){
+    if (loggedUser === name || admin == true){
       setShowInputError(false);
       setShowUserError(false);
       setShowUpdateError(false);
@@ -139,7 +147,7 @@ export function AdminPanel() {
     setEditUser(true);
     setSelectedUser(user);
     setName(user.name);
-    setProfile(user.profile);
+    setAdmin(user.admin);
     setPassword(''); 
   };
 
@@ -152,7 +160,7 @@ export function AdminPanel() {
     setEditUser(false);
     setName('');
     setPassword('');
-    setProfile('');
+    setAdmin(false);
     setSelectedUser(null);
   };
 
@@ -176,6 +184,7 @@ export function AdminPanel() {
         display='flex'
         flexDirection='column'
         gap='2rem'
+        color='secondary.dark'
         sx={{
           backdropFilter: 'blur(5px)',
         }}
@@ -184,14 +193,13 @@ export function AdminPanel() {
           Gerenciamento de Usuários
         </Typography>
 
-        {/* Formulário para adicionar ou atualizar usuários */}
-        <Box component="form" sx={{ mb: 4 }}>
+        <Box component="form" sx={{ mb: 4 }} >
           <TextField 
             placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
             fullWidth
-            sx={{ mb: 2, '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
+            sx={{ mb: 2, color:'secondary.dark', '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
           />
           <TextField 
             placeholder="Senha"
@@ -201,13 +209,40 @@ export function AdminPanel() {
             fullWidth
             sx={{ mb: 2, '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
           />
-          <TextField 
-            placeholder="Tipo de Perfil"
-            value={profile}
-            onChange={(e) => setProfile(e.target.value)}
-            fullWidth
-            sx={{ mb: 2, '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
-          />
+          <FormControl
+          fullWidth
+          sx={{
+            mb: 2,
+            '& .MuiInputBase-root': { backgroundColor: '#FFF' },
+            '.MuiFormHelperText-root' : { color: 'secondary.dark'},
+            '.MuiList-root' : {color: 'secondary.dark'},
+          }}>
+          <InputLabel id="file-select-label">Tipo de Perfil</InputLabel>
+          <Select
+            labelId="file-select-label" id='file-select'    
+            sx={{ 
+              '& .MuiSelect-select': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  }
+            }}
+            MenuProps={{
+              sx: {
+                '& .MuiMenuItem-root': {
+                  color: 'secondary.dark',                  
+                },
+                '& .Mui-selected': {
+                  backgroundColor: 'homeCardComponent.light',
+                },
+              },
+            }}
+            label="Tipo de Perfil"
+            value={labelChart}
+            onChange={(event) => setLabelChart(event.target.value)}
+          >
+            <MenuItem value="Pesquisador"
+            sx={{'& .MuiMenuItem-gutters': {color:'secondary.dark'}}}>Pesquisador</MenuItem>
+            <MenuItem value="Administrador">Administrador</MenuItem>
+          </Select>
+          </FormControl>
+
           <Button 
             variant="contained"
             color="primary"
@@ -291,7 +326,7 @@ export function AdminPanel() {
         </Box>
 
         {/* Tabela de usuários */}
-        <TableContainer component={Paper} sx={{ bgcolor: 'background.default', borderRadius: '12px', boxShadow: 1 }}>
+        <TableContainer component={Paper} color='secondary.dark' sx={{ bgcolor: 'background.default', borderRadius: '12px', boxShadow: 5}}>
           <Table>
             <TableHead>
               <TableRow>
@@ -304,9 +339,9 @@ export function AdminPanel() {
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.profile}</TableCell>
-                  <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell><Typography color="secondary.dark">{user.name}</Typography></TableCell>
+                  <TableCell><Typography color="secondary.dark">{user.admin ? 'Administrador' : 'Pesquisador'}</Typography></TableCell>
+                  <TableCell><Typography color="secondary.dark">{new Date(user.created_at).toLocaleDateString()}</Typography></TableCell>
                   <TableCell>
                     <Button 
                       variant="outlined"

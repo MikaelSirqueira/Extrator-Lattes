@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Link, Typography } from "@mui/material";
 import { BodyTitle } from "../../components/BodyTitle";
 import { useNavigate } from "react-router-dom";
-import { SavedSearchs } from "../../components/SavedSearchs";
+//import { SavedSearchs } from "../../components/SavedSearchs";
 import { useState } from "react";
 import { FilterPanel } from "../../components/FilterPanel";
 
@@ -12,12 +12,12 @@ export function ExtractData() {
 
   function showPostGraduateProgram() {
     setIsSelectedToExtract(true);
-    setIsSelectedToShowResearchers(false)
+    setIsSelectedToShowResearchers(false);
   } 
 
   function showResearchers() {
     setIsSelectedToExtract(true);
-    setIsSelectedToShowResearchers(true)
+    setIsSelectedToShowResearchers(true);
   }
 
   return (
@@ -55,7 +55,7 @@ export function ExtractData() {
 
           <Divider aria-hidden="true" />
 
-          <SavedSearchs />
+          {/* <SavedSearchs /> */}
         </>
       ): (
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>

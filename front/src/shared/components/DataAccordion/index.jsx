@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { PublicationAccordion } from '../PublicationAccordion';
-import { InfoSection } from '../InfoSection';
-import { Box, Button, Divider, Typography } from '@mui/material';
+import { Box, Button, Divider } from '@mui/material';
 import styles from './styles';
 import { GeneralInfos } from '../GeneralInfos';
 import GraphSection from '../GraphSection';
 import { useNavigate } from 'react-router-dom';
 
-export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, resultsToInfos, isSelectedToShowResearchers }) {
-  
-
+export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, saveSearchHistory, resultsToInfos, isSelectedToShowResearchers }) {
   const hasGraphData = chartData.length > 0;
-  const hasInfoData = chartData.length > 0;
-  const hasGeneralInfo = chartData.length > 0;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <>
@@ -26,6 +21,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
             ))}
           </PublicationAccordion>
         )}
+
         <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
 
         {isSelectedToShowResearchers && resultsToInfos.length > 0 && ( // Verifica se há dados para exibir
@@ -41,13 +37,13 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
             ))}
           </PublicationAccordion>
         )}
+
         <Box sx={styles.buttonPanel}>
           <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
           <Button variant="outlined" sx={styles.button} onClick={() => navigate(0)}>Voltar</Button>
-          <Button variant='contained' color="primary" sx={styles.button}>Salvar</Button>
+          <Button variant='contained' color="primary" sx={styles.button} onClick={saveSearchHistory}>Salvar</Button>
         </Box>
       </main>
     </>
   );
 }
-
