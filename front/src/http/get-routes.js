@@ -25,6 +25,26 @@ export async function getIdByName(name1, name2) {
   return { id1, id2 };
 }
 
+export async function getInfosById(id_lattes) {
+  const data = await fetchData()
+
+  const findIdById = (id_lattes) => {
+    const row = data.find(row => row[1] == id_lattes);
+    return {
+      id: row[1],
+      ppg: row[2],
+      college: row[3],
+      area_avaliacao: row[4],
+      nota: row[5],
+      Categoria: row[12],
+    };
+  };
+  const { id, ppg, college, area_avaliacao, nota, Categoria } = findIdById(id_lattes)
+
+  return { id, ppg, college, area_avaliacao, nota, Categoria };
+}
+
+
 export async function getIdsByProgram(programName1, collegeName1, programName2, collegeName2) {
   const data = await fetchData(); // Ensure to await the fetchData
 

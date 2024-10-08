@@ -143,5 +143,3 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels }) {
     </section>
   );
 }
-
-export default InfoSection;

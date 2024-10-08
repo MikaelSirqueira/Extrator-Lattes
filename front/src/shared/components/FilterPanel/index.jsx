@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, IconButton, NativeSelect } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
-import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram, awards, journals } from '../../../http/get-routes';
+import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram, awards, journals, getInfosById } from '../../../http/get-routes';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import TodayIcon from '@mui/icons-material/Today';
 import EventIcon from '@mui/icons-material/Event';
@@ -54,7 +54,7 @@ const functionMap = {
   'awards': awards,
 };
 
-export function FilterPanel() {
+export function FilterPanel({isSelectedToShowResearchers }) {
   const [researcherName1, setResearcherName1] = useState('');
   const [researcherName2, setResearcherName2] = useState('');
   const [collegeName1, setCollegeName1] = useState('');
@@ -62,6 +62,7 @@ export function FilterPanel() {
   const [failedIds, setFailedIds] = useState({});
   const [dropValue, setDropValue] = useState(true);
   const [evaluationArea, setEvaluationArea] = useState('');
+  const [infos, setInfos] = useState([]);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [beginYear, setBeginYear] = useState('');
@@ -72,8 +73,6 @@ export function FilterPanel() {
   const navigate = useNavigate() 
 
   const [resultsToInfos, setResultsToInfos] = useState([]);
-
-
   const [searchHistory, setSearchHistory] = useState([]);
 
   useEffect(() => {
@@ -102,7 +101,7 @@ export function FilterPanel() {
     setError('');
 
     if (!researcherName1 || !researcherName2) {
-      setError('Por favor, preencha os nomes dos pesquisadores.');
+      setError('Por favor, preencha os nomes completos nos campos.');
       return;
     }       
 
@@ -121,12 +120,16 @@ export function FilterPanel() {
       if (isSelectedToShowResearchers) {
         const { id1, id2 } = await getIdByName(researcherName1.toUpperCase(), researcherName2.toUpperCase());
         if (!id1 || !id2) {
-          setError(`Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos com os assentos necessários`);
+          setError('Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos com os assentos necessários');
           setIsLoading(false);
           return;
         }
-
+        
         datasets = await getResearcherData(filesToFetch, id1, id2);
+        
+        const infos1 = await getInfosById(id1);
+        const infos2 = await getInfosById(id2);
+        setInfos([infos1, infos2]);
       } else {
         datasets = await getPpgData(filesToFetch);
       }
@@ -139,7 +142,7 @@ export function FilterPanel() {
     } finally {
       setIsLoading(false);
     }
-
+  };
 
   async function evaluationAreaAndDateValidation() {
     const currentYear = new Date().getFullYear()
@@ -165,8 +168,8 @@ export function FilterPanel() {
       setEndYear(currentYear)
     }
 
-
-      const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
+    return null;
+   }
 
   async function getResearcherData(filesToFetch, id1, id2) {
     const name1 = researcherName1.toUpperCase()
@@ -203,8 +206,8 @@ export function FilterPanel() {
 
 
         return [
-          { count: data1Count, researcher: Name1UpperCase },
-          { count: data2Count, researcher: Name2UpperCase },
+          { count: data1Count, researcher: name1 },
+          { count: data2Count, researcher: name2 },
         ];
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
@@ -246,8 +249,9 @@ export function FilterPanel() {
 
             const validResponses = responses.filter(response => response && Object.values(response).some(value => value !== null));
 
-
-      setChartData(datasets);
+            const totalCount = validResponses.reduce((acc, data) => {          
+                return acc + data.length;
+            }, 0);
 
             resultsToGraphs.push(
               {
@@ -266,6 +270,8 @@ export function FilterPanel() {
     }));
     setFailedIds(failedIds)
 
+    return datasets;
+  }
 
 
   const loadPreviousSearch = async (search) => {
@@ -574,6 +580,7 @@ export function FilterPanel() {
             multiple
             value={selectedFiles}
             onChange={(e) => setSelectedFiles(e.target.value)}
+            sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
                 {selected.map((value) => (
@@ -610,9 +617,9 @@ export function FilterPanel() {
           saveSearchHistory={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
           resultsToInfos={resultsToInfos}
           isSelectedToShowResearchers={isSelectedToShowResearchers}
-
+          infos={infos}
         />
-      )}
+      }
 
       {isLoading && <Loading />}
     </Box>
