@@ -1,13 +1,26 @@
 import { Box, Button } from '@mui/material';
 import { useAppThemeContext } from '../../contexts';
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoLight from "../../assets/logo-pucpr.svg";
 import LogoDark from "../../assets/logo-pucpr-contraste.svg";
+import { ContinuousColorLegend } from '@mui/x-charts';
 
 export function Header({isLoggedIn}) {
   const { themeName, toggleTheme } = useAppThemeContext();
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false); // Estado para verificar se é admin
+
+  useEffect(() => {
+    const admin = sessionStorage.getItem('admin');
+    
+    // Verifica se o perfil é admin
+    if (admin) {
+      setIsAdmin(true);
+    } else{
+      setIsAdmin(false);
+    }
+  }, [isAdmin]);
 
   const logoPucpr = themeName === 'light'  ? LogoLight : LogoDark;
 
@@ -43,6 +56,10 @@ export function Header({isLoggedIn}) {
             alignItems={'center'}
             gap={2}
           >
+            {/* Botão para admins */}
+            {isAdmin && (
+              <Button color="primary" size='large' onClick={() => navigate('/access')} sx={{ borderRadius: '24px', textTransform: 'none' }}>Acessos</Button>
+            )}
             <Button color="secondary" size='large' onClick={() => handleNavigation('#about')} sx={{borderRadius: '24px', textTransform: 'none'}}>Sobre</Button>
             <Button color="secondary" size='large' onClick={() => handleNavigation('#guide')} sx={{borderRadius: '24px', textTransform: 'none'}}>Manual</Button>
             <Button color="secondary" size='large' onClick={toggleTheme} sx={{borderRadius: '24px', textTransform: 'none'}}>Alto Contraste</Button>

@@ -11,15 +11,17 @@ import { Box, Card, CardContent, FormControl, InputLabel, Select } from '@mui/ma
 export default function GraphSection({ index , dataset, fileLabels ,selectedFiles }) {
   const [layout, setLayout] = React.useState('vertical');
   const [radius, setRadius] = React.useState(10);
-  const [labelChart, setLabelChart] = React.useState('Rótulo Desativado');
+  const [labelChart, setLabelChart] = React.useState('Rótulo Ativado');
   const [grid, setGrid] = React.useState('Grid Horizontal');
+
+  console.log(fileLabels ," + " , selectedFiles)
 
   const chartSettingsH = {
     xAxis: [{ scaleType: 'band' }],
     yAxis: [{ scaleType: 'band', dataKey: 'researcher' }],
     sx: {
       [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
-        transform: 'translateX(-10px)',
+        transform: 'translateX(-50px)',
       },
     },    
   };
@@ -88,54 +90,72 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
         justifyContent: 'center',
         flexDirection: 'column',
         flexGrow: '1'  ,
-        minWidth: '600px'
+        minWidth: '600px',       
       }}>  
-        <Stack direction="column" spacing={1} sx={{ width: '100%', maxWidth: 600,
-        '& .MuiStack-root': {stroke:'blue'} }}>
+        <Stack direction="column" spacing={1} sx={{ width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
         <BarChart
-          series={[
-            { dataKey: 'count', label: fileLabels[selectedFiles[index]] },
-          ]}
-          dataset={dataset}
-          {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}
-          borderRadius={radius}
-          {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
-          {...(gridStyle(grid))}
-          height={300}
-          slotProps={{
-            popper: {
-              sx: {
-                '& .MuiChartsTooltip-root': {
-                  '& .MuiTypography-root': {
-                    color: 'secondary.dark',
+            series={[
+              { dataKey: 'count', label: fileLabels[selectedFiles[index]] },
+            ]}
+            dataset={dataset}
+            {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}
+            borderRadius={radius}
+            {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
+            {...(gridStyle(grid))}
+            height={400}
+            width={700}
+            slotProps={{
+              popper: {
+                sx: {
+                  '& .MuiChartsTooltip-paper': {
+                    backgroundColor: 'secondary', 
+                    '& .MuiTypography-root': {
+                      color: 'secondary.dark',
+                    },                   
+                  },
+                  '& .MuiChartsTooltip-cell': {
+                    backgroundColor: 'secondary',
+                    '& .MuiTypography-root': {
+                      color: 'secondary.dark',
+                    },
                   },
                 },
               },
-            },
-          }}
-          sx={(theme) => ({
+          }}          
+            sx={(theme) => ({
               '& .MuiChartsAxis-root .MuiChartsAxis-tickLabel': {
+                fill: theme.palette.secondary.dark,
+                color: theme.palette.secondary.dark,
+                fontWeight: 500,
+              },
+              '& .MuiChartsAxis-root line': {
+                fill: theme.palette.secondary.dark,
                 stroke: theme.palette.secondary.dark,
-                fontWeight: 200
               },
               '& .MuiChartsAxis-line': {
                 stroke: theme.palette.secondary.dark,
               },
               '& .MuiChartsGrid-line': {
                 stroke: theme.palette.secondary.dark,
-                opacity: '30%'
+                opacity: '30%',
               },
               '& .MuiChartsAxis-tick': {
-                stroke: theme.palette.secondary.dark,
+                fill: theme.palette.secondary.dark,
+                color: theme.palette.secondary.dark,
               },
               '& .MuiChartsLegend-mark': {
                 fill: 'none',
               },
-              '& .MuiChartsLegend-series': {
-                fill: theme.palette.secondary.dark
-              },
-          })}
-        />
+              '& .MuiChartsLegend-root text': {
+                fill: theme.palette.secondary.dark + ' !important',
+                fontWeight: 500,
+              },              
+            })}
+          />
         </Stack>
       </CardContent>
     </Card>
@@ -181,16 +201,6 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
             />
           </Stack>
 
-          {/* <TextField
-            select
-            sx={{ minWidth: 150 }}
-            label="Layout"
-            value={layout}
-            onChange={(event) => setLayout(event.target.value)}
-          >
-            <MenuItem value="horizontal">Horizontal</MenuItem>
-            <MenuItem value="vertical">Vertical</MenuItem>
-          </TextField> */}
           <FormControl
           sx={{
             '.MuiFormHelperText-root' : { color: 'secondary.dark'},
