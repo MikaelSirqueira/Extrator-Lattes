@@ -1,13 +1,3 @@
 {
-  "builds": [
-    {
-      "src": "front/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/front/(.*)",
-      "dest": "front/index.html"
-    }
-  ]
+  "outputDirectory": "front"
 }
