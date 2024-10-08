@@ -124,8 +124,6 @@ export function FilterPanel() {
 
       setChartData(datasets);
 
-      saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles);
-
     } catch (err) {
       setError('Erro ao carregar os dados.');
     } finally {
@@ -139,7 +137,6 @@ export function FilterPanel() {
     setBeginYear(search.beginYear);
     setEndYear(search.endYear);
     setSelectedFiles(search.selectedFiles);
-
 
     await handleExtractClick();
   };
@@ -174,7 +171,6 @@ export function FilterPanel() {
       )}
 
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4 }} component="form">
-        {/* Formulário de pesquisa */}
         <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
           <TextField
             placeholder="Nome completo"
@@ -266,6 +262,7 @@ export function FilterPanel() {
           selectedFiles={selectedFiles}
           researcherName1={researcherName1.toUpperCase()}
           researcherName2={researcherName2.toUpperCase()}
+          saveSearchHistory={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
         />
       )}
 
