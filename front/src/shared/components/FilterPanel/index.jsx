@@ -140,6 +140,7 @@ export function FilterPanel() {
     setEndYear(search.endYear);
     setSelectedFiles(search.selectedFiles);
 
+
     await handleExtractClick();
   };
 
