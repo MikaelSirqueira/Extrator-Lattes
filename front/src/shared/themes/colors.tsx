@@ -35,12 +35,12 @@ export const typography = (fontSizeFactor: number): TypographyOptions => ({
   h3: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
-    fontSize: `${1 * fontSizeFactor}px`,
+    fontSize: `${53 * fontSizeFactor}px`,
   },
   h4: {
     fontFamily: 'Poppins, sans-serif',
     fontWeight: 700,
-    fontSize: `${1 * fontSizeFactor}px`,
+    fontSize: `${48 * fontSizeFactor}px`,
   },
   h5: {
     fontFamily: 'Poppins, sans-serif',
@@ -55,7 +55,8 @@ export const typography = (fontSizeFactor: number): TypographyOptions => ({
   },
   body1: {
     fontFamily: 'Source Sans 3, sans-serif',
-    fontSize: `${16 * fontSizeFactor}px`,
+    fontSize: `${16 * fontSizeFactor}px`,    
+    lineHeight: '1.6',
   },
   body2: {
     fontFamily: 'Source Sans 3, sans-serif',

@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"  # Front-end mapeado para a porta 3000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: back.dockerfile
+    ports:
+      - "3333:3333"  # Back-end mapeado para a porta 3333
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=usuario
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: usuario
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"  # Banco de dados MySQL
+
+volumes:
+  dbdata:
