@@ -62,6 +62,18 @@ export function csvToArray(csv, delimiter = ',') {
   return array;
 }
 
+// @app.route('/awards/<id_lattes>', methods=['GET'])
+// @app.route('/awards/<id_lattes>/<begin_year>/<end_year>', methods=['GET'])
+export async function awards(id_lattes, begin_year = '', end_year = '') {
+    const url = begin_year && end_year 
+        ? `api/awards/${id_lattes}/${begin_year}/${end_year}`
+        : `api/awards/${id_lattes}`;
+        
+    const response = await fetch(url);
+    const result = await response.json();
+    return result;
+}
+
 //@app.route('/advising_ongoing/<id_lattes>', methods=['GET'])
 //@app.route('/advising_ongoing/<id_lattes>/<begin_year>/<end_year>', methods=['GET'])
 export async function advisingOnGoing(id_lattes, begin_year = '', end_year = '') {
@@ -90,7 +102,7 @@ export async function advisingComplete(id_lattes, begin_year = '', end_year = ''
 
 // @app.route('/book/<id_lattes>', methods=['GET'])
 // @app.route('/book/<id_lattes>/<begin_year>/<end_year>/<drop_duplicates>', methods=['GET'])
-export async function book(id_lattes, begin_year = '', end_year = '', drop_duplicates = 'true') {
+export async function book(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const url = begin_year && end_year 
       ? `api/book/${id_lattes}/${begin_year}/${end_year}/"${drop_duplicates}"`
       : `api/book/${id_lattes}`;
@@ -103,7 +115,7 @@ export async function book(id_lattes, begin_year = '', end_year = '', drop_dupli
 
 // @app.route('/book_chapter/<id_lattes>', methods=['GET'])
 // @app.route('/book_chapter/<id_lattes>/<begin_year>/<end_year>/<drop_duplicates>', methods=['GET'])
-export async function bookChapter(id_lattes, begin_year = '', end_year = '', drop_duplicates = 'true') {
+export async function bookChapter(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const url = begin_year && end_year 
       ? `api/book_chapter/${id_lattes}/${begin_year}/${end_year}/"${drop_duplicates}"`
       : `api/book_chapter/${id_lattes}`;
@@ -129,7 +141,7 @@ export async function committeeParticipation(id_lattes, begin_year = '', end_yea
 
 // @app.route('/conferences/<id_lattes>', methods=['GET'])
 // @app.route('/conferences/<id_lattes>/<begin_year>/<end_year>/<drop_duplicates>/<area_avaliacao>', methods=['GET'])
-export async function conferences(id_lattes, begin_year = '', end_year = '', drop_duplicates = 'true' , area_avaliacao = 'computação') {
+export async function conferences(id_lattes, begin_year = '', end_year = '', drop_duplicates = '' , area_avaliacao = '') {
   const url = begin_year && end_year 
       ? `api/conferences/${id_lattes}/${begin_year}/${end_year}/"${drop_duplicates}"/"${area_avaliacao}"`
       : `api/conferences/${id_lattes}`;
@@ -149,6 +161,18 @@ export async function eventParticipation(id_lattes, begin_year = "", end_year = 
   const response = await fetch(url);
   const result = await response.json();  
   return result;
+}
+
+// @app.route('/journals/<id_lattes>/<area_avaliacao>', methods=['GET'])
+// @app.route('/journals/<id_lattes>/<begin_year>/<end_year>/<drop_duplicates>/<area_avaliacao>', methods=['GET'])
+export async function journals(id_lattes, begin_year = '', end_year = '', drop_duplicates='',area_avaliacao = '') {
+  const url = begin_year && end_year && drop_duplicates
+      ? `api/journals/${id_lattes}/${begin_year}/${end_year}/"${drop_duplicates}"/"${area_avaliacao}"`
+      : `api/journals/${id_lattes}/${area_avaliacao}`;
+  
+  const response = await fetch(url);      
+  const result = await response.json();
+  return result; 
 }
 
 
@@ -184,7 +208,7 @@ export async function otherTechnicalProduction(id_lattes, begin_year = '', end_y
 
 // @app.route('/patents/<id_lattes>', methods=['GET'])
 // @app.route('/patents/<id_lattes>/<begin_year>/<end_year>/<drop_duplicates>', methods=['GET'])
-export async function patents(id_lattes, begin_year = '', end_year = '', drop_duplicates = 'true') {
+export async function patents(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const url = begin_year && end_year 
       ? `api/patents/${id_lattes}/${begin_year}/${end_year}/"${drop_duplicates}"`
       : `api/patents/${id_lattes}`;
@@ -236,12 +260,10 @@ export async function shortDurationCourse(id_lattes, begin_year = '', end_year =
 
 // @app.route('/software/<id_lattes>', methods=['GET'])
 // @app.route('/software/<id_lattes>/<begin_year>/<end_year>/<drop_duplicates>', methods=['GET'])
-export async function software(id_lattes, begin_year = '', end_year = '', drop_duplicates = 'true') {
+export async function software(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const url = begin_year && end_year 
       ? `api/software/${id_lattes}/${begin_year}/${end_year}/"${drop_duplicates}"`
       : `api/software/${id_lattes}`;
-
-  console.log(url)
       
   const response = await fetch(url);
   const result = await response.json();

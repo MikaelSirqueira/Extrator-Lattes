@@ -14,8 +14,6 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
   const [labelChart, setLabelChart] = React.useState('Rótulo Ativado');
   const [grid, setGrid] = React.useState('Grid Horizontal');
 
-  console.log(fileLabels ," + " , selectedFiles)
-
   const chartSettingsH = {
     xAxis: [{ scaleType: 'band' }],
     yAxis: [{ scaleType: 'band', dataKey: 'researcher' }],

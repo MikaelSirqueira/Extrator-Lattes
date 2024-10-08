@@ -3,10 +3,7 @@ import { BodyTitle } from "../../components/BodyTitle";
 import { useNavigate } from "react-router-dom";
 import { SavedSearchs } from "../../components/SavedSearchs";
 import { useState } from "react";
-import Researchers from "./researchers";
 import { FilterPanel } from "../../components/FilterPanel";
-import { SearchResults } from "../../components/SearchResults";
-import { DataAccordion } from "../../components/DataAccordion";
 
 export function ExtractData() {
   const navigate = useNavigate();

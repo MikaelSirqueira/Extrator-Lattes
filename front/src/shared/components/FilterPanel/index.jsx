@@ -1,35 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl } from '@mui/material';
+import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, IconButton, NativeSelect } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
-import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram } from '../../../http/get-routes';
+import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram, awards, journals } from '../../../http/get-routes';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import TodayIcon from '@mui/icons-material/Today';
+import EventIcon from '@mui/icons-material/Event';
+import { useNavigate } from 'react-router-dom';
 
 const fileLabels = {
   'conferences': 'Conferências',
   'projects': 'Projetos',
-  'software': 'Software',
+  'software': 'Quantidade de Software',
+  'journals': 'Periódicos',
   'advisingComplete': 'Orientações Completas',
   'advisingOnGoing': 'Orientações em Andamento',
   'workPresentation': 'Apresentações de Trabalho',
   'teachingActivities': 'Atividades de Ensino',
-  'book': 'Livro',
-  'bookChapter': 'Capítulo de Livro',
+  'book': 'Quantidade de Livros',
+  'bookChapter': 'Quantidade de Capítulos de Livro',
   'shortDurationCourse': 'Curso de Curta Duração',
   'otherBibliography': 'Outras Bibliografias',
-  'patents': 'Patentes',
+  'patents': 'Quantidade de Patentes',
   'otherTechnicalProduction': 'Outras Produções Técnicas',
-  'teachingMaterials': 'Materiais Didáticos',
+  'teachingMaterials': 'Quantidade de Materiais Didáticos',
   'committeeParticipation': 'Participação em Comitês',
   'eventParticipation': 'Participação em Eventos',
   'processOrTechniques': 'Processos ou Técnicas',
   'technologicalProducts': 'Produtos Tecnológicos',
+  'awards': 'Prêmios e Títulos',
 };
 
 const functionMap = {
   'conferences': conferences,
   'projects': projects,
   'software': software,
+  'journals': journals,
   'advisingComplete': advisingComplete,
   'advisingOnGoing': advisingOnGoing,
   'workPresentation': workPresentation,
@@ -45,6 +51,7 @@ const functionMap = {
   'eventParticipation': eventParticipation,
   'processOrTechniques': processOrTechniques,
   'technologicalProducts': technologicalProducts,
+  'awards': awards,
 };
 
 export function FilterPanel({isSelectedToShowResearchers}) {
@@ -53,25 +60,32 @@ export function FilterPanel({isSelectedToShowResearchers}) {
   const [collegeName1, setCollegeName1] = useState('');
   const [collegeName2, setCollegeName2] = useState('');
   const [failedIds, setFailedIds] = useState({});
+  const [dropValue, setDropValue] = useState(true);
+  const [evaluationArea, setEvaluationArea] = useState('');
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [beginYear, setBeginYear] = useState('');  
-  const [endYear, setEndYear] = useState('');      
+  const [endYear, setEndYear] = useState('');     
+  const navigate = useNavigate() 
+
+  const [resultsToInfos, setResultsToInfos] = useState([]);
 
 
   const handleExtractClick = async () => {
     setChartData([]);
+    setError('');
+
     if (!researcherName1 || !researcherName2) {
       setError('Por favor, preencha os nomes completos nos campos.');
       return;
-    }  
+    }       
 
-    const dateError = await dateValidate();
-    if (dateError) {
-        setError(dateError);
+    const msgError = await evaluationAreaAndDateValidation();
+    if (msgError) {
+        setError(msgError);
         return;
     }
 
@@ -81,8 +95,15 @@ export function FilterPanel({isSelectedToShowResearchers}) {
     try {
       let datasets;
 
-      if (isSelectedToShowResearchers) {      
-        datasets = await getResearcherData(filesToFetch);
+      if (isSelectedToShowResearchers) {
+        const { id1, id2 } = await getIdByName(researcherName1.toUpperCase(), researcherName2.toUpperCase());
+        if (!id1 || !id2) {
+          setError(`Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos com os assentos necessários`);
+          setIsLoading(false);
+          return;
+        }
+
+        datasets = await getResearcherData(filesToFetch, id1, id2);
       } else {
         datasets = await getPpgData(filesToFetch);
       }
@@ -98,40 +119,44 @@ export function FilterPanel({isSelectedToShowResearchers}) {
   };
 
 
-  async function dateValidate() {
+  async function evaluationAreaAndDateValidation() {
     const currentYear = new Date().getFullYear()
 
     if (beginYear && endYear) {
       if (beginYear > endYear) {
           return 'O ano inicial não pode ser maior que o ano final';
       }
+      if (!evaluationArea || evaluationArea == '') {
+        return 'Por favor, preencha a área de avaliação';        
+      } 
     } else if (beginYear && !endYear) {
       if (beginYear > currentYear) {
         return 'O ano inicial não pode ser maior que o ano atual';
       }
+      if (!evaluationArea || evaluationArea == '') {
+        return 'Por favor, preencha a área de avaliação';        
+      } 
+      setEndYear(currentYear)
+    }   
+
+    if (evaluationArea && (beginYear && !endYear)) {
       setEndYear(currentYear)
     }
 
     return null;
   }
 
-  async function getResearcherData(filesToFetch) {
+  async function getResearcherData(filesToFetch, id1, id2) {
     const name1 = researcherName1.toUpperCase()
-    const name2 = researcherName2.toUpperCase()
-
-    const { id1, id2 } = await getIdByName(name1, name2);
-    if (!id1 || !id2) {
-      setError(`Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos`);
-      setIsLoading(false);
-      return;
-    }
+    const name2 = researcherName2.toUpperCase() 
+    const resultsToInfos = [];    
 
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
         
-        const data1Response = await fetchFunction(id1, beginYear, endYear);
-        const data2Response = await fetchFunction(id2, beginYear, endYear);
+        const data1Response = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
+        const data2Response = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea);
 
         const data1 = csvToArray(data1Response.data);
         const data2 = csvToArray(data2Response.data);
@@ -139,16 +164,27 @@ export function FilterPanel({isSelectedToShowResearchers}) {
         if (!data1 || !data2) {
           throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
         }
+        
+        const validResponses1 = data1.filter(response => response && Object.values(response).some(value => value !== null));
+        const validResponses2 = data2.filter(response => response && Object.values(response).some(value => value !== null));
+  
+        resultsToInfos.push({
+          file: file,
+          data1: validResponses1,
+          data2: validResponses2,
+        })     
 
-        const data1Count = data1.length;
-        const data2Count = data2.length;
+        setResultsToInfos(resultsToInfos);
+
+        const data1Count = validResponses1.length;
+        const data2Count = validResponses2.length;
 
         return [
           { count: data1Count, researcher: name1 },
           { count: data2Count, researcher: name2 }
         ];
       } catch (err) {
-        console.log(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
+        console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
       }
     }));
@@ -169,7 +205,7 @@ export function FilterPanel({isSelectedToShowResearchers}) {
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
-        const results = [];        
+        const resultsToGraphs = [];        
         
         for (const keyPpg in idsForEachPpg) {
           if (idsForEachPpg.hasOwnProperty(keyPpg)) {
@@ -177,7 +213,7 @@ export function FilterPanel({isSelectedToShowResearchers}) {
             
             const responses = await Promise.all(idArray.map(async (id) => {
               try {
-                const dataResponse = await fetchFunction(id); 
+                const dataResponse = await fetchFunction(id, beginYear, endYear); 
                 return csvToArray(dataResponse.data);
               } catch (err) {
                 failedIds[keyPpg].push(id);
@@ -185,24 +221,22 @@ export function FilterPanel({isSelectedToShowResearchers}) {
               }
             }));
 
-            const validResponses = responses.filter(response => response !== null);
+            const validResponses = responses.filter(response => response && Object.values(response).some(value => value !== null));
 
             const totalCount = validResponses.reduce((acc, data) => {          
                 return acc + data.length;
             }, 0);
 
-            results.push(
+            resultsToGraphs.push(
               {
                 count: totalCount,
-                researcher: `${listName[Number(keyPpg)]})`
+                researcher: `${listName[Number(keyPpg)]} ${Number(keyPpg)}`
               }
             )
           }
         }
-
-        console.log('re ',results)
         
-        return Object.values(results);
+        return Object.values(resultsToGraphs);
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
@@ -214,6 +248,8 @@ export function FilterPanel({isSelectedToShowResearchers}) {
   }
 
   return (
+    <>
+    <Button variant="outlined" sx={{display: 'flex' }} onClick={() => navigate(0)}>Voltar</Button>
     <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column' }} component='section'>
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4}} component='form'>
         {isSelectedToShowResearchers ? (
@@ -264,6 +300,12 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
+                InputProps={{ startAdornment: ( 
+                    <InputAdornment position="start">
+                      <TodayIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
               <TextField
                 placeholder="Ex: 2022"
@@ -274,7 +316,47 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
+                InputProps={{ startAdornment: ( 
+                    <InputAdornment position="start">
+                      <EventIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
+            </div>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <TextField
+                placeholder="Ex: Computação"
+                onChange={(e) => setEvaluationArea(e.target.value)} 
+                fullWidth
+                helperText='Insira a área de avalição desejada'
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+              />
+              <FormControl fullWidth sx={{'.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'}, '.MuiList-root' : {color: 'secondary.dark'},}} >
+                <Select                     
+                  value={dropValue}
+                  onChange={(e) => setDropValue(e.target.value)}
+                  sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
+                  MenuProps={{
+                    sx: {
+                      '& .MuiMenuItem-root': { color: 'secondary.dark' },
+                      '& .Mui-selected': { backgroundColor: 'homeCardComponent.light'},
+                    },
+                  }}
+                >
+                  <MenuItem value={true}>Remover</MenuItem>
+                  <MenuItem value={false}>Manter</MenuItem>
+                </Select>
+                <FormHelperText sx={{
+                    '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
+                  }} 
+                >
+                  Selecione se deseja manter ou remover os dados duplicados
+                </FormHelperText>
+              </FormControl>
             </div>
           </>
         ) : (
@@ -346,6 +428,8 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                 helperText={`Insira o nome completo da Instituição do programa`}
               />
             </div>  
+
+            {/* Datas */}
             <div style={{ display: 'flex', gap: 16 }}>
               <TextField
                 placeholder="Ex: 2010"
@@ -356,6 +440,13 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
+                InputProps={{ startAdornment: ( 
+                    <InputAdornment position="start">
+                      <TodayIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                
               />
               <TextField
                 placeholder="Ex: 2022"
@@ -366,7 +457,49 @@ export function FilterPanel({isSelectedToShowResearchers}) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
+                InputProps={{ startAdornment: ( 
+                  <InputAdornment position="start">
+                    <EventIcon />
+                  </InputAdornment>
+                ),
+              }}
               />
+            </div>
+
+            {/* Area e Duplicates */}
+            <div style={{ display: 'flex', gap: 16 }}>
+              <TextField
+                placeholder="Ex: Computação"
+                onChange={(e) => setEvaluationArea(e.target.value)} 
+                fullWidth
+                helperText='Insira a área de avalição desejada'
+                sx={{
+                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                }}
+              />
+              <FormControl fullWidth sx={{'.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'}, '.MuiList-root' : {color: 'secondary.dark'},}} >
+                <Select                     
+                  value={dropValue}
+                  onChange={(e) => setDropValue(e.target.value)}
+                  sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
+                  MenuProps={{
+                    sx: {
+                      '& .MuiMenuItem-root': { color: 'secondary.dark' },
+                      '& .Mui-selected': { backgroundColor: 'homeCardComponent.light'},
+                    },
+                  }}
+                >
+                  <MenuItem value={true}>Remover</MenuItem>
+                  <MenuItem value={false}>Manter</MenuItem>
+                </Select>
+                <FormHelperText sx={{
+                    '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
+                  }} 
+                >
+                  Selecione se deseja manter ou remover os dados duplicados
+                </FormHelperText>
+              </FormControl>
             </div>
           </>
         )}
@@ -378,14 +511,14 @@ export function FilterPanel({isSelectedToShowResearchers}) {
               '.MuiList-root' : {color: 'secondary.dark'},
             }}
           >
-          <InputLabel id="file-select-label">Selecionar gráficos que deseja visualizar</InputLabel>
+          <InputLabel id="file-select-label">Selecionar informações que deseja visualizar</InputLabel>
           <Select
             labelId="file-select-label" id='file-select'        
             multiple
             value={selectedFiles}
             onChange={(e) => setSelectedFiles(e.target.value)}
             renderValue={(selected) => (
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
                 {selected.map((value) => (
                   <Chip key={value} label={fileLabels[value]} />
                 ))}
@@ -414,15 +547,15 @@ export function FilterPanel({isSelectedToShowResearchers}) {
               '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
             }} 
           >
-            Caso não for selecionado nenhum, todos os gráficos serão exibidos.
-
+            Caso não for selecionado nenhum, todas as informações serão exibidas.
           </FormHelperText>
         </FormControl>
 
         <Button variant="contained" sx={{}} size='large' onClick={handleExtractClick} disabled={isLoading}>
           {isLoading ? <CircularProgress size={24} /> : 'Extrair Dados'}
-        </Button>
+        </Button>       
       </Card>
+
       
       {chartData.length > 0 && 
         <DataAccordion 
@@ -431,11 +564,14 @@ export function FilterPanel({isSelectedToShowResearchers}) {
           selectedFiles={selectedFiles} 
           researcherName1={researcherName1.toUpperCase()}
           researcherName2={researcherName2.toUpperCase()}
+          resultsToInfos={resultsToInfos}
+          isSelectedToShowResearchers={isSelectedToShowResearchers}
         />
       }
 
       {isLoading && <Loading />}
 
     </Box>
+    </>
   );
 }
