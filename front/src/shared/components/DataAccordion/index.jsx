@@ -5,14 +5,17 @@ import styles from './styles';
 import { GeneralInfos } from '../GeneralInfos';
 import GraphSection from '../GraphSection';
 import { useNavigate } from 'react-router-dom';
+import { InfoSection } from '../InfoSection';
 
-export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, saveSearchHistory, resultsToInfos, isSelectedToShowResearchers }) {
+export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, saveSearchHistory, resultsToInfos, isSelectedToShowResearchers, infos }) {
   const hasGraphData = chartData.length > 0;
   const navigate = useNavigate();
 
   return (
     <>
-      <GeneralInfos name1={researcherName1} name2={researcherName2} />
+      {
+        isSelectedToShowResearchers && <GeneralInfos name1={researcherName1} name2={researcherName2} infos={infos} />
+      }
       <main style={styles.container}>
         {hasGraphData && (
           <PublicationAccordion title="Análise por gráficos">

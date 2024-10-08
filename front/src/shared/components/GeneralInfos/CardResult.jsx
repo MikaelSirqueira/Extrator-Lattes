@@ -2,17 +2,19 @@ import React from 'react';
 import { Card, CardContent, Box, Typography, Avatar } from '@mui/material';
 import styles from './styles';
 
-export function CardResult({ name, idLattes, program, seniority, cvLink, photo }) {
+export function CardResult({ name, idLattes, program, photo, college, area_avaliacao, nota, categoria }) {
   return (
     <Card color='secondary.dark' sx={styles.card}>
       <CardContent>
-        <Avatar sx={styles.avatar} src={photo} alt={`Foto de ${name}`} />
+        {/* <Avatar sx={styles.avatar} src={photo} alt={`Foto de ${name}`} /> */}
         <Typography variant="h6" color='secondary.dark' sx={styles.researcherName}>{name}</Typography>
         <Box sx={styles.details} color='secondary.dark'>
-          <Typography>ID Lattes: {idLattes}</Typography>
-          <Typography>Programa de Pós-Graduação: {program}</Typography>
-          <Typography>Senioridade: {seniority}</Typography>
-          <Typography>CV Lattes: <a href={cvLink} target="_blank" rel="noopener noreferrer">Link</a></Typography>
+          <Typography> <strong>ID Lattes:</strong> {idLattes}</Typography>
+          <Typography> <strong>Programa de Pós-Graduação:</strong> {program}</Typography>
+          <Typography> <strong>Instituição:</strong> {college}</Typography>
+          <Typography> <strong>Área de Avaliação:</strong> {area_avaliacao}</Typography>
+          <Typography> <strong>Nota:</strong> {nota}</Typography> 
+          <Typography> <strong>Categoria:</strong> {categoria}</Typography>
         </Box>
       </CardContent>
     </Card>
