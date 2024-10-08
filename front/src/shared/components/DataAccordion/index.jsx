@@ -5,7 +5,7 @@ import styles from './styles';
 import { SearchResults } from '../SearchResults';
 import GraphSection from '../GraphSection';
 import { useNavigate } from 'react-router-dom';
-
+//.
 export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, saveSearchHistory }) {
   const hasGraphData = chartData.length > 0;
   const navigate = useNavigate();
