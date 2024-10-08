@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box, Select, MenuItem, FormControl, InputLabel, InputAdornment, Chip, Card, FormHelperText, CircularProgress } from '@mui/material';
+import { TextField, Button, Box, Select, MenuItem, FormControl, InputLabel, InputAdornment, Chip, Card, FormHelperText, CircularProgress, Link, Typography } from '@mui/material';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts } from '../../../http/get-routes';
 
 const fileLabels = {
@@ -58,13 +59,11 @@ export function FilterPanel() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
 
-  // Carrega o histórico de pesquisas ao montar o componente
   useEffect(() => {
     const savedHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
     setSearchHistory(savedHistory);
   }, []);
 
-  // Função para salvar a pesquisa no histórico (sem usuário)
   const saveSearchHistory = (name1, name2, beginYear, endYear, selectedFiles) => {
     const searchData = {
       name1,
@@ -78,6 +77,7 @@ export function FilterPanel() {
     let localSearchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
     localSearchHistory.push(searchData);
     localStorage.setItem('searchHistory', JSON.stringify(localSearchHistory));
+    setSearchHistory(localSearchHistory);
   };
 
   const handleExtractClick = async () => {
@@ -124,7 +124,6 @@ export function FilterPanel() {
 
       setChartData(datasets);
 
-      // Salva a pesquisa no histórico
       saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles);
 
     } catch (err) {
@@ -134,7 +133,6 @@ export function FilterPanel() {
     }
   };
 
-  // Função para carregar pesquisas salvas
   const loadPreviousSearch = async (search) => {
     setResearcherName1(search.name1);
     setResearcherName2(search.name2);
@@ -142,30 +140,40 @@ export function FilterPanel() {
     setEndYear(search.endYear);
     setSelectedFiles(search.selectedFiles);
 
-    // Refaz a pesquisa após carregar os valores
     await handleExtractClick();
   };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }} component="section">
-      {/* Exibe as pesquisas salvas no início da página */}
       {searchHistory.length > 0 && (
-        <div>
-          <h3>Pesquisas Salvas</h3>
-          <ul>
+        <Box component={'section'} mt={4}>
+          <Typography variant="subtitle1" color='secondary.dark' mb={3}>
+            Pesquisas salvas
+          </Typography>
+          <Box component={'div'}>
             {searchHistory.map((search, index) => (
-              <li key={index}>
-                <button onClick={() => loadPreviousSearch(search)}>
-                  {`${search.name1} e ${search.name2} - ${search.date}`}
-                </button>
-              </li>
+              <Link 
+                key={index}
+                color='customComponents.dark' 
+                onClick={() => loadPreviousSearch(search)} 
+                variant="overline"
+                display={'flex'}
+                alignItems={'center'}
+                textTransform={'none'}
+                gap={1}
+                mb={2}
+                style={{ cursor: 'pointer' }}
+              >
+                {`${search.name1} e ${search.name2} - ${search.date} (Gráficos: ${search.selectedFiles.map(file => fileLabels[file]).join(', ')})`}
+                <ArrowOutwardIcon sx={{fontSize: 16}} />
+              </Link>
             ))}
-          </ul>
-        </div>
+          </Box>
+        </Box>
       )}
 
-      {/* Formulário de pesquisa */}
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4 }} component="form">
+        {/* Formulário de pesquisa */}
         <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
           <TextField
             placeholder="Nome completo"
