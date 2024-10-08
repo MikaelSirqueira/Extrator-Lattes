@@ -10,7 +10,7 @@ interface CreateUserProps {
 class CreateUserService {
     async execute({ name, password, profile }: CreateUserProps) {
         // Verifica se todos os campos foram preenchidos
-        if (!name || !password || !profile) {
+        if (!name || !password) {
             throw new Error("Preencha todos os campos para continuar");
         }
 
