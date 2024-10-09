@@ -1,0 +1,14 @@
+{
+  "name": "extrator-lattes-root",
+  "version": "1.0.0",
+  "description": "Projeto para automação de servidores frontend e backend",
+  "main": "start-dev.js",
+  "type": "module",
+  "scripts": {
+    "preinstall": "npm install @prisma/client",
+    "dev": "node start-dev.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0"
+  }
+}
