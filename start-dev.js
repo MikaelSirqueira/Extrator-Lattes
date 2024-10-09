@@ -2,27 +2,6 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-// Verifica e cria o diretório npm global se não existir
-function ensureNpmDirectory() {
-    return new Promise((resolve, reject) => {
-        const npmPath = path.join(process.env.APPDATA, 'npm');
-        if (!fs.existsSync(npmPath)) {
-            fs.mkdirSync(npmPath, { recursive: true });
-            console.log('Created global npm directory:', npmPath);
-        }
-        
-        exec('npm config set prefix "%APPDATA%\\npm"', (error) => {
-            if (error) {
-                console.error('Failed to set npm prefix:', error);
-                reject(error);
-            } else {
-                console.log('npm prefix set to:', npmPath);
-                resolve();
-            }
-        });
-    });
-}
-
 // Função para criar o arquivo .env com a variável DATABASE_URL
 function createEnvFile(directory) {
     const envPath = path.join(directory, '.env');
@@ -33,73 +12,66 @@ function createEnvFile(directory) {
     }
 }
 
-// Função para rodar o `prisma generate` após garantir que o npm esteja configurado
-async function generatePrismaClient() {
-    await ensureNpmDirectory(); // Certifica-se de que o diretório npm está correto
-
-    return new Promise((resolve, reject) => {
-        const generate = exec('cd Back && npx prisma generate');
-        generate.stdout.on('data', (data) => console.log(`Prisma Generate: ${data}`));
-        generate.stderr.on('data', (data) => console.error(`Prisma Generate Error: ${data}`));
-        generate.on('close', (code) => {
-            if (code === 0) {
-                resolve();
-            } else {
-                reject(new Error('Failed to generate Prisma Client. Please check your Prisma configuration.'));
-            }
-        });
-    });
-}
-
-// Função para testar a conexão com o banco de dados após gerar o Prisma Client
-async function testDatabaseConnection() {
-    const { PrismaClient } = await import('@prisma/client'); // Importa o PrismaClient apenas depois de gerar
-    const prisma = new PrismaClient();
-    try {
-        await prisma.$connect();
-        console.log("Database connection successful!");
-    } catch (error) {
-        console.error("Database connection failed:", error);
-        process.exit(1);
-    } finally {
-        await prisma.$disconnect();
+// Função para instalar dependências e rodar o servidor em uma pasta específica
+function startServer(directory, label) {
+    console.log(`Starting ${label} installation and server...`);
+    
+    // Cria o arquivo .env na pasta `back` se necessário
+    if (label === 'back') {
+        createEnvFile(directory);
     }
-}
-
-// Função para instalar dependências, configurar o Prisma e iniciar o servidor
-async function startServer(directory, label) {
-    console.log(`Starting ${label} installation, Prisma setup, and server...`);
-
-    if (label === 'Back') {
-        createEnvFile(directory);  // Cria o .env apenas no Back
-    }
-
+    
+    // Primeiro, executa `npm install`
     const install = exec(`cd ${directory} && npm install`);
     install.stdout.on('data', (data) => console.log(`${label} Install: ${data}`));
     install.stderr.on('data', (data) => console.error(`${label} Install Error: ${data}`));
-
-    install.on('close', async (code) => {
-        if (code === 0) {
-            if (label === 'Back') {
-                try {
-                    await generatePrismaClient(); // Gera o Prisma Client primeiro
-                    await testDatabaseConnection(); // Testa a conexão depois
-                } catch (error) {
-                    console.error(error.message);
-                    process.exit(1); // Encerra o processo em caso de erro
-                }
+    
+    // Quando `npm install` termina, inicia `npm run dev`
+    install.on('close', (code) => {
+        if (code === 0) { // Se `npm install` for bem-sucedido
+            // Verifica e gera o Prisma Client apenas no `back`
+            if (label === 'back') {
+                generatePrismaClient(directory).then(() => {
+                    const start = exec(`cd ${directory} && npm run dev`);
+                    start.stdout.on('data', (data) => console.log(`${label}: ${data}`));
+                    start.stderr.on('data', (data) => console.error(`${label} Error: ${data}`));
+                    start.on('close', (code) => console.log(`${label} process exited with code ${code}`));
+                }).catch(error => console.error(`${label} Prisma Error: ${error.message}`));
+            } else {
+                // Inicia o servidor para `front`
+                const start = exec(`cd ${directory} && npm run dev`);
+                start.stdout.on('data', (data) => console.log(`${label}: ${data}`));
+                start.stderr.on('data', (data) => console.error(`${label} Error: ${data}`));
+                start.on('close', (code) => console.log(`${label} process exited with code ${code}`));
             }
-
-            const start = exec(`cd ${directory} && npm run dev`);
-            start.stdout.on('data', (data) => console.log(`${label}: ${data}`));
-            start.stderr.on('data', (data) => console.error(`${label} Error: ${data}`));
-            start.on('close', (code) => console.log(`${label} process exited with code ${code}`));
         } else {
             console.error(`${label} Install failed with code ${code}`);
         }
     });
 }
 
+// Função para gerar o Prisma Client
+function generatePrismaClient(directory) {
+    return new Promise((resolve, reject) => {
+        if (fs.existsSync(path.join(directory, 'node_modules', '@prisma', 'client'))) {
+            console.log("Prisma Client already exists, skipping generate.");
+            resolve();
+        } else {
+            const generate = exec(`cd ${directory} && npx prisma generate`);
+            generate.stdout.on('data', (data) => console.log(`Prisma Generate: ${data}`));
+            generate.stderr.on('data', (data) => console.error(`Prisma Generate Error: ${data}`));
+            generate.on('close', (code) => {
+                if (code === 0) {
+                    console.log("Prisma Client generated successfully.");
+                    resolve();
+                } else {
+                    reject(new Error("Failed to generate Prisma Client."));
+                }
+            });
+        }
+    });
+}
+
 // Iniciar o frontend e o backend
 startServer('front', 'front');
-startServer('Back', 'back');
+startServer('back', 'back');
