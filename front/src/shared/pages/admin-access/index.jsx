@@ -14,6 +14,10 @@ export function AdminPanel() {
   const [showProfileError, setShowProfileError] = useState(false);
   const [showUpdateError, setShowUpdateError] = useState(false);
   const [labelChart, setLabelChart] = useState('');
+  
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   // Função para resgatar todos os usuários da API
   const fetchUsers = async () => {
@@ -24,11 +28,6 @@ export function AdminPanel() {
       console.error('Erro ao buscar usuários', error);
     }
   };
-
-  // Carrega os usuários ao montar o componente
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const handleSubmit = () => {
     if (labelChart == "Administrador"){
@@ -121,6 +120,7 @@ export function AdminPanel() {
   const handleDelete = async (id) => {
 
     const loggedUser = sessionStorage.getItem('user');
+    console.log(id);
 
     // Caso o usuário queira se deletar ou deletar outro admin
     if (loggedUser === name || admin == true){

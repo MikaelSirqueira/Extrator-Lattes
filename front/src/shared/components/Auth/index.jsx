@@ -15,6 +15,7 @@ export function Auth() {
   const [showInputError, setShowInputError] = useState(false);
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  
 
   useEffect(() => {
     sessionStorage.clear();
@@ -52,9 +53,10 @@ export function Auth() {
       if (response.status === 200) {
         const { token, admin } = response.data;
         console.log(response.data); 
-        sessionStorage.setItem('authToken', token); // Armazena o token
+        sessionStorage.setItem('authToken', token);
         sessionStorage.setItem('admin', admin);
         sessionStorage.setItem('user', userName);
+        sessionStorage.setItem('isLoggedIn', true);
   
       navigate('/home');
 
