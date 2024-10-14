@@ -36,6 +36,8 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
                 contentLeft={info.data1} 
                 contentRight={info.data2}
                 fileLabels={fileLabels}
+                name1={researcherName1}
+                name2={researcherName2}
               />
             ))}
           </PublicationAccordion>

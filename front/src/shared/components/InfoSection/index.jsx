@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography, Divider } from '@mui/material';
 
-export function InfoSection({ title, contentLeft, contentRight, fileLabels }) {
+export function InfoSection({ title, contentLeft, contentRight, fileLabels, name1, name2 }) {
   const renderContent = (content) => {
     return content.map((item, index) => (
       <Box key={index} sx={{ marginBottom: 0 }} color='secondary.dark'>
@@ -124,21 +124,29 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels }) {
   return (
     <section style={{ }}>
       <Typography variant="h5" color='secondary.dark'
-        sx={{ marginBottom: 2, display: 'flex', justifyContent: 'center' }}
+        sx={{ marginBottom: 4, display: 'flex', justifyContent: 'center' }}
       >
         {fileLabels[title]}
       </Typography>
       <Box sx={{ display: 'flex', gap:6 }}>
-        <Card sx={{ borderRadius: 6, boxShadow: 'none' }}>
-          <CardContent>
-            {renderContent(contentLeft)}
-          </CardContent>
-        </Card>
-        <Card sx={{ borderRadius: 6, boxShadow: 'none' }}>
+        <div>
+          <Typography variant="h6" color='secondary.dark' sx={{display: 'flex', justifyContent: 'center'}}>{name1}</Typography>
+          <Card sx={{ borderRadius: 6, boxShadow: 'none', maxWidth: '430px', minWidth: '300px'}}>
+            <CardContent>
+              {renderContent(contentLeft)}
+            </CardContent>
+          </Card>
+        </div>
+
+       <div>
+        <Typography variant="h6" color='secondary.dark' sx={{display: 'flex', justifyContent: 'center'}}>{name2}</Typography>
+        <Card sx={{ borderRadius: 6, boxShadow: 'none', maxWidth: '430px', minWidth: '300px' }}>
           <CardContent>
             {renderContent(contentRight)}
           </CardContent>
         </Card>
+       </div>
+
       </Box>
     </section>
   );
