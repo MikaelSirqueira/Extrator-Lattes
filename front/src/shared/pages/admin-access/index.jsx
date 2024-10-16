@@ -13,6 +13,8 @@ export function AdminPanel() {
   const [showInputError, setShowInputError] = useState(false);
   const [showProfileError, setShowProfileError] = useState(false);
   const [showUpdateError, setShowUpdateError] = useState(false);
+  const [showUnexpectedDeleteError, setShowUnexpectedDeleteError] = useState(false);
+  const [showUnexpectedFormError, setShowUnexpectedFormError] = useState(false);
   const [labelChart, setLabelChart] = useState('');
   
   useEffect(() => {
@@ -51,6 +53,8 @@ export function AdminPanel() {
       setShowUserError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
+      setShowUnexpectedDeleteError(false);
+      setShowUnexpectedFormError(false);
       setShowInputError(true);
       return
     }else{
@@ -65,6 +69,8 @@ export function AdminPanel() {
       setShowInputError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
+      setShowUnexpectedDeleteError(false);
+      setShowUnexpectedFormError(false);
       setShowUserError(true);
       return
     } else{
@@ -73,9 +79,11 @@ export function AdminPanel() {
     
     try {
       await api.post("/user", { name, password, admin });
+      setShowUnexpectedFormError(false);
       fetchUsers(); 
       clearForm();
     } catch (error) {
+      setShowUnexpectedFormError(true);
       console.error('Erro ao salvar usuário', error);
     }
   };
@@ -88,6 +96,8 @@ export function AdminPanel() {
       setShowUserError(false);
       setShowProfileError(false);
       setShowUpdateError(false);
+      setShowUnexpectedDeleteError(false);
+      setShowUnexpectedFormError(false);
       setShowInputError(true);
       return
     }else{
@@ -101,6 +111,8 @@ export function AdminPanel() {
       setShowInputError(false);
       setShowUserError(false);
       setShowProfileError(false);
+      setShowUnexpectedDeleteError(false);
+      setShowUnexpectedFormError(false);
       setShowUpdateError(true);
       return
     } else{
@@ -109,9 +121,11 @@ export function AdminPanel() {
 
     try {
       await api.put("/user", { name, password, admin });
+      setShowUnexpectedFormError(false);
       fetchUsers(); 
       clearForm();
     } catch (error) {
+      setShowUnexpectedFormError(true);
       console.error('Erro ao salvar usuário', error);
     }
   };
@@ -120,24 +134,29 @@ export function AdminPanel() {
   const handleDelete = async (id) => {
 
     const loggedUser = sessionStorage.getItem('user');
-    console.log(id);
 
     // Caso o usuário queira se deletar ou deletar outro admin
-    if (loggedUser === name || admin == true){
+    const userToDelete = users.find((user) => user.id === id);
+    if (loggedUser.name === userToDelete.name || userToDelete.admin) {
       setShowInputError(false);
       setShowUserError(false);
       setShowUpdateError(false);
+      setShowUnexpectedDeleteError(false);
+      setShowUnexpectedFormError(false);
       setShowProfileError(true);
-      return
+      return;
     } else {
       setShowProfileError(false);
     }
+
     try {
-      await api.delete("/user", {params: {id: id}});
+      await api.delete("/user", {params: {id: Number(id)}});
+      setShowUnexpectedDeleteError(false);
       fetchUsers();
       clearForm();
     } catch (error) {
       console.error('Erro ao deletar usuário', error);
+      setShowUnexpectedDeleteError(true);
     }
   };
 
@@ -157,6 +176,7 @@ export function AdminPanel() {
     setShowUserError(false);
     setShowUpdateError(false);
     setShowProfileError(false);
+    setShowUnexpectedDeleteError(false);
     setEditUser(false);
     setName('');
     setPassword('');
@@ -262,8 +282,9 @@ export function AdminPanel() {
               Cancelar
             </Button>
           )}
+        </Box>
 
-          { showUserError && (
+        { showUserError && (
             <Stack spacing={10}>
               <Alert  sx={{
                 fontSize:'14px',
@@ -293,21 +314,6 @@ export function AdminPanel() {
             </Stack>
           )}
 
-          { showProfileError && (
-            <Stack spacing={2}>
-              <Alert  sx={{
-                fontSize:'14px',
-                backgroundColor: theme => theme.palette.dangerComponent.main,
-                display:'flex',
-                alignItems:'center'
-                }} variant="filled" severity="error">
-                Você não pode deletar este usuário.
-                <br/>
-                Tente novamente.
-              </Alert>
-            </Stack>
-          )}
-
           { showUpdateError && (
             <Stack spacing={2}>
               <Alert  sx={{
@@ -323,7 +329,21 @@ export function AdminPanel() {
             </Stack>
           )}
 
-        </Box>
+          { showUnexpectedFormError && (
+            <Stack spacing={2}>
+              <Alert  sx={{
+                fontSize:'14px',
+                backgroundColor: theme => theme.palette.dangerComponent.main,
+                display:'flex',
+                alignItems:'center'
+                }} variant="filled" severity="error">
+                Erro inesperado.
+                <br/>
+                Tente novamente.
+              </Alert>
+            </Stack>
+          )}
+  
 
         {/* Tabela de usuários */}
         <TableContainer component={Paper} color='secondary.dark' sx={{ bgcolor: 'background.default', borderRadius: '12px', boxShadow: 5}}>
@@ -341,7 +361,13 @@ export function AdminPanel() {
                 <TableRow key={user.id}>
                   <TableCell><Typography color="secondary.dark">{user.name}</Typography></TableCell>
                   <TableCell><Typography color="secondary.dark">{user.admin ? 'Administrador' : 'Pesquisador'}</Typography></TableCell>
-                  <TableCell><Typography color="secondary.dark">{new Date(user.created_at).toLocaleDateString()}</Typography></TableCell>
+                  <TableCell><Typography color="secondary.dark">
+                    {new Date(user.created_at).toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })}
+                  </Typography></TableCell>
                   <TableCell>
                     <Button 
                       variant="outlined"
@@ -364,7 +390,38 @@ export function AdminPanel() {
             </TableBody>
           </Table>
         </TableContainer>
+        { showProfileError && (
+            <Stack spacing={2}>
+              <Alert  sx={{
+                fontSize:'14px',
+                backgroundColor: theme => theme.palette.dangerComponent.main,
+                display:'flex',
+                alignItems:'center'
+                }} variant="filled" severity="error">
+                Você não pode deletar este usuário.
+                <br/>
+                Tente novamente.
+              </Alert>
+            </Stack>
+          )}
+
+          { showUnexpectedDeleteError && (
+            <Stack spacing={2}>
+              <Alert  sx={{
+                fontSize:'14px',
+                backgroundColor: theme => theme.palette.dangerComponent.main,
+                display:'flex',
+                alignItems:'center'
+                }} variant="filled" severity="error">
+                Erro inesperado.
+                <br/>
+                Tente novamente.
+              </Alert>
+            </Stack>
+          )}
+
       </Box>
     </Box>
   );
+
 }

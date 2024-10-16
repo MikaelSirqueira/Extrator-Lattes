@@ -1,17 +1,34 @@
 import { prismaClient } from "../prisma/index";
 
 interface DeleteUserProps{
-    id: string;
+    id: number;
 }
 
 class DeleteUserService{
     async execute({ id }: DeleteUserProps){
 
+        console.log(typeof id);
+
         if(!id){
             throw new Error("Solicitação inválida")
         }
 
-        const findUser = await prismaClient.user.findFirst({
+        if (typeof id !== 'number') {
+            try {
+                id = Number(id);
+                
+                // Caso a conversão resulte em NaN (não é um número), lança um erro
+                if (isNaN(id)) {
+                    throw new Error();
+                }
+            } catch (error) {
+                throw new Error("O ID deve ser um número válido");
+            }
+
+        }
+
+
+        const findUser = await prismaClient.user.findUnique({
             where:{
                 id: id
             }
