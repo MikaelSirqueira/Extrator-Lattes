@@ -3,7 +3,7 @@ import { DeleteUserService } from '../services/DeleteUserService';
 
 class DeleteUserController{
     async handle(request: FastifyRequest, reply: FastifyReply){
-        const { id } = request.query as { id: string }
+        const { id } = request.query as { id: number }
 
         const userService = new DeleteUserService()
 

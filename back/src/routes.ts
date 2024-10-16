@@ -25,6 +25,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     // Deleta um usuário
     fastify.delete("/user", async (request: FastifyRequest, reply: FastifyReply) => {
+        console.log(request);
         return new DeleteUserController().handle(request, reply)
     })
 

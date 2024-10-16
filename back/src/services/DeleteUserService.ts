@@ -1,7 +1,7 @@
 import { prismaClient } from "../prisma/index";
 
 interface DeleteUserProps{
-    id: string;
+    id: number;
 }
 
 class DeleteUserService{
@@ -11,7 +11,11 @@ class DeleteUserService{
             throw new Error("Solicitação inválida")
         }
 
-        const findUser = await prismaClient.user.findFirst({
+        if (typeof id !== 'number') {
+            throw new Error("O ID deve ser um número");
+        }
+
+        const findUser = await prismaClient.user.findUnique({
             where:{
                 id: id
             }
