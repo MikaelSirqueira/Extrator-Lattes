@@ -151,20 +151,10 @@ export function FilterPanel({isSelectedToShowResearchers }) {
       if (beginYear > endYear) {
           return 'O ano inicial não pode ser maior que o ano final';
       }
-      if (!evaluationArea || evaluationArea == '') {
-        return 'Por favor, preencha a área de avaliação';        
-      } 
     } else if (beginYear && !endYear) {
       if (beginYear > currentYear) {
         return 'O ano inicial não pode ser maior que o ano atual';
       }
-      if (!evaluationArea || evaluationArea == '') {
-        return 'Por favor, preencha a área de avaliação';        
-      } 
-      setEndYear(currentYear)
-    }   
-
-    if (evaluationArea && (beginYear && !endYear)) {
       setEndYear(currentYear)
     }
 
@@ -175,7 +165,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     const name1 = researcherName1.toUpperCase()
     const name2 = researcherName2.toUpperCase() 
     const resultsToInfos = [];    
-
+    
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
@@ -197,23 +187,26 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           file: file,
           data1: validResponses1,
           data2: validResponses2,
-        })     
-
-        setResultsToInfos(resultsToInfos);
+        })
 
         const data1Count = validResponses1.length;
         const data2Count = validResponses2.length;
 
 
-        return [
-          { count: data1Count, researcher: name1 },
-          { count: data2Count, researcher: name2 },
-        ];
+        return {
+          title: fileLabels[file],
+          content: [
+            { count: data1Count, researcher: name1 },
+            { count: data2Count, researcher: name2 },
+          ]
+        }
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
       }
     }));
+
+    setResultsToInfos(resultsToInfos);
 
     return datasets;
   }
@@ -314,7 +307,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           </Box>
         </Box>
       )}
-      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4}} component='form'>
+      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4, width: 700}} component='form'>
         {isSelectedToShowResearchers ? (
           <>
             <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>

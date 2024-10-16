@@ -19,8 +19,12 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
       <main style={styles.container}>
         {hasGraphData && (
           <PublicationAccordion title="Análise por gráficos">
-            {chartData.length > 0 && chartData.map((dataset, index) =>  (
-              <GraphSection key={index} index={index} dataset={dataset} fileLabels={fileLabels} selectedFiles={selectedFiles} />
+            {chartData && chartData.map((dataset, index) => (
+              <>
+                {dataset && dataset.content ? (
+                  <GraphSection key={index} dataset={dataset.content} title={dataset.title} />
+                ) : null}
+              </>
             ))}
           </PublicationAccordion>
         )}
