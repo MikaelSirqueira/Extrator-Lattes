@@ -135,9 +135,6 @@ export function AdminPanel() {
 
     const loggedUser = sessionStorage.getItem('user');
 
-    console.log(typeof id, id);
-
-
     // Caso o usuário queira se deletar ou deletar outro admin
     const userToDelete = users.find((user) => user.id === id);
     if (loggedUser.name === userToDelete.name || userToDelete.admin) {
