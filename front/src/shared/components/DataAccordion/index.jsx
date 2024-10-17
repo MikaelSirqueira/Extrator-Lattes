@@ -1,13 +1,12 @@
 import React from 'react';
 import { PublicationAccordion } from '../PublicationAccordion';
 import { Box, Button, Divider } from '@mui/material';
-import styles from './styles';
 import { GeneralInfos } from '../GeneralInfos';
 import GraphSection from '../GraphSection';
 import { useNavigate } from 'react-router-dom';
 import { InfoSection } from '../InfoSection';
 
-export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, saveSearchHistory, resultsToInfos, isSelectedToShowResearchers, infos }) {
+export function DataAccordion({ chartData, fileLabels, researcherName1, researcherName2, resultsToInfos, isSelectedToShowResearchers, infos }) {
   const hasGraphData = chartData.length > 0;
   const navigate = useNavigate();
 
@@ -16,12 +15,16 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
       {
         isSelectedToShowResearchers && <GeneralInfos name1={researcherName1} name2={researcherName2} infos={infos} />
       }
-      <main style={styles.container}>
+      <main style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
         {hasGraphData && (
           <PublicationAccordion title="Análise por gráficos">
-            {chartData.length > 0 && chartData.map((dataset, index) =>  (
-              <GraphSection key={index} index={index} dataset={dataset} fileLabels={fileLabels} selectedFiles={selectedFiles} />
-            ))}
+            {chartData && 
+            [...new Set(chartData.map(dataset => dataset.title))].map((title, index) => {
+              const dataset = chartData.find(d => d.title === title);
+              return (
+                <GraphSection key={title || index} dataset={dataset.content} title={dataset.title} />
+              );
+            })}
           </PublicationAccordion>
         )}
 
@@ -42,12 +45,7 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
             ))}
           </PublicationAccordion>
         )}
-
-        <Box sx={styles.buttonPanel}>
-          <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
-          <Button variant="outlined" sx={styles.button} onClick={() => navigate(0)}>Voltar</Button>
-          <Button variant='contained' color="primary" sx={styles.button} onClick={saveSearchHistory}>Salvar</Button>
-        </Box>
+        
       </main>
     </>
   );

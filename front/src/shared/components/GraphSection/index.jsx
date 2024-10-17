@@ -1,19 +1,18 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { Box, Card, CardContent, FormControl, InputLabel, Select } from '@mui/material';
 
-export default function GraphSection({ index , dataset, fileLabels ,selectedFiles }) {
-  const [layout, setLayout] = React.useState('vertical');
-  const [radius, setRadius] = React.useState(10);
-  const [labelChart, setLabelChart] = React.useState('Rótulo Ativado');
-  const [grid, setGrid] = React.useState('Grid Horizontal');
-
+export default function GraphSection({ dataset, title}) {
+  const [layout, setLayout] = useState('vertical');
+  const [radius, setRadius] = useState(10);
+  const [labelChart, setLabelChart] = useState('Rótulo Ativado');
+  const [grid, setGrid] = useState('Grid Horizontal');
+  
   const chartSettingsH = {
     xAxis: [{ scaleType: 'band' }],
     yAxis: [{ scaleType: 'band', dataKey: 'researcher' }],
@@ -79,7 +78,7 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
         display: 'flex',
         justifyContent: 'center',
       }}>
-        Título do Gráfico
+        {titles[index]} opa
       </Typography> */}
 
       <CardContent sx={{
@@ -97,7 +96,7 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
         }}>
         <BarChart
             series={[
-              { dataKey: 'count', label: fileLabels[selectedFiles[index]] },
+              { dataKey: 'count', label: title },
             ]}
             dataset={dataset}
             {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}

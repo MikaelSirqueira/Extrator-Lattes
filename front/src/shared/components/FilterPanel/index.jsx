@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, IconButton, NativeSelect } from '@mui/material';
+import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, IconButton, NativeSelect, Divider, Typography, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
 import { getIdByName, conferences, csvToArray, advisingComplete, advisingOnGoing, teachingActivities, workPresentation, projects, patents, software, book, bookChapter, shortDurationCourse, otherTechnicalProduction, otherBibliography, teachingMaterials, committeeParticipation, eventParticipation, processOrTechniques, technologicalProducts, getIdsByProgram, awards, journals, getInfosById } from '../../../http/get-routes';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import TodayIcon from '@mui/icons-material/Today';
 import EventIcon from '@mui/icons-material/Event';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
 
 const fileLabels = {
@@ -151,20 +153,10 @@ export function FilterPanel({isSelectedToShowResearchers }) {
       if (beginYear > endYear) {
           return 'O ano inicial não pode ser maior que o ano final';
       }
-      if (!evaluationArea || evaluationArea == '') {
-        return 'Por favor, preencha a área de avaliação';        
-      } 
     } else if (beginYear && !endYear) {
       if (beginYear > currentYear) {
         return 'O ano inicial não pode ser maior que o ano atual';
       }
-      if (!evaluationArea || evaluationArea == '') {
-        return 'Por favor, preencha a área de avaliação';        
-      } 
-      setEndYear(currentYear)
-    }   
-
-    if (evaluationArea && (beginYear && !endYear)) {
       setEndYear(currentYear)
     }
 
@@ -197,49 +189,51 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           file: file,
           data1: validResponses1,
           data2: validResponses2,
-        })     
-
-        setResultsToInfos(resultsToInfos);
+        })
 
         const data1Count = validResponses1.length;
         const data2Count = validResponses2.length;
 
 
-        return [
-          { count: data1Count, researcher: name1 },
-          { count: data2Count, researcher: name2 },
-        ];
+        return {
+          title: fileLabels[file],
+          content: [
+            { count: data1Count, researcher: name1 },
+            { count: data2Count, researcher: name2 },
+          ]
+        }
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
       }
     }));
 
+    setResultsToInfos(resultsToInfos);
+
     return datasets;
   }
 
   async function getPpgData(filesToFetch) {
-    const name1 = researcherName1.toUpperCase()
-    const name2 = researcherName2.toUpperCase()
-    const listName = [name1, name2]
-    const listCollegeName = [collegeName1.toUpperCase(), collegeName2.toUpperCase()]
-
+    const name1 = researcherName1.toUpperCase();
+    const name2 = researcherName2.toUpperCase();
+    const listName = [name1, name2];
     const failedIds = { 0: [], 1: [] };
 
     const idsForEachPpg = await getIdsByProgram(name1, collegeName1.toUpperCase(), name2, collegeName2.toUpperCase());
 
-    const datasets = await Promise.all(filesToFetch.map(async (file) => {
+    const datasets = [];
+
+    await Promise.all(filesToFetch.map(async (file, index) => {
       try {
         const fetchFunction = functionMap[file];
-        const resultsToGraphs = [];        
-        
+
         for (const keyPpg in idsForEachPpg) {
           if (idsForEachPpg.hasOwnProperty(keyPpg)) {
-            const idArray = idsForEachPpg[keyPpg]; 
-            
+            const idArray = idsForEachPpg[keyPpg];
+
             const responses = await Promise.all(idArray.map(async (id) => {
               try {
-                const dataResponse = await fetchFunction(id, beginYear, endYear); 
+                const dataResponse = await fetchFunction(id, beginYear, endYear);
                 return csvToArray(dataResponse.data);
               } catch (err) {
                 failedIds[keyPpg].push(id);
@@ -249,28 +243,40 @@ export function FilterPanel({isSelectedToShowResearchers }) {
 
             const validResponses = responses.filter(response => response && Object.values(response).some(value => value !== null));
 
-            const totalCount = validResponses.reduce((acc, data) => {          
-                return acc + data.length;
+            const totalCount = validResponses.reduce((acc, data) => {
+              return acc + data.length;
             }, 0);
 
-            resultsToGraphs.push(
-              {
+            // Verifica se já existe um dataset com o mesmo título
+            const existingDataset = datasets.find(dataset => dataset.title === fileLabels[file]);
+            if (existingDataset) {
+              // Se existir, adiciona
+              existingDataset.content.push({
                 count: totalCount,
                 researcher: `${listName[Number(keyPpg)]} ${Number(keyPpg)}`
-              }
-            )
+              });
+            } else { // senão, cria novo
+              datasets.push({
+                title: fileLabels[file],
+                content: [
+                  {
+                    count: totalCount,
+                    researcher: `${listName[Number(keyPpg)]} ${Number(keyPpg)}`
+                  }
+                ]
+              });
+            }
           }
         }
-        
-        return Object.values(resultsToGraphs);
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
-        return [];
       }
     }));
-    setFailedIds(failedIds)
 
-    return datasets;
+    setFailedIds(failedIds);
+
+    // Retorna os datasets no formato esperado
+    return datasets; // Retorna o array de datasets agrupados
   }
 
 
@@ -281,7 +287,6 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     setEndYear(search.endYear);
     setSelectedFiles(search.selectedFiles);
 
-
     await handleExtractClick();
   };
 
@@ -289,15 +294,16 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     <>
     <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column' }} component='section'>
       {searchHistory.length > 0 && (
-        <Box component={'section'} mt={4}>
-          <Typography variant="subtitle1" color='secondary.dark' mb={3}>
-            Pesquisas salvas
-          </Typography>
-          <Box component={'div'}>
+        <Accordion sx={{bgcolor: 'customComponents.main', borderColor: 'headerFooterComponent.main', border: '1px', marginBottom: 4}}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+            <Typography color='secondary.dark'>
+              Pesquisas salvas
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', gap: 2}}>
             {searchHistory.map((search, index) => (
               <Link 
                 key={index}
-                color='customComponents.dark' 
                 onClick={() => loadPreviousSearch(search)} 
                 variant="overline"
                 display={'flex'}
@@ -311,10 +317,10 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                 <ArrowOutwardIcon sx={{fontSize: 16}} />
               </Link>
             ))}
-          </Box>
-        </Box>
+          </AccordionDetails>
+        </Accordion>
       )}
-      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4}} component='form'>
+      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4, width: 700}} component='form'>
         {isSelectedToShowResearchers ? (
           <>
             <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
@@ -610,16 +616,41 @@ export function FilterPanel({isSelectedToShowResearchers }) {
       {chartData.length > 0 && 
         <DataAccordion 
           chartData={chartData} 
-          fileLabels={fileLabels} 
-          selectedFiles={selectedFiles} 
+          fileLabels={fileLabels}
           researcherName1={researcherName1.toUpperCase()}
           researcherName2={researcherName2.toUpperCase()}
-          saveSearchHistory={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
           resultsToInfos={resultsToInfos}
           isSelectedToShowResearchers={isSelectedToShowResearchers}
           infos={infos}
         />
       }
+
+      <Box sx={{ padding: '24px 64px'}}>
+        <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
+        <Button variant="outlined" sx={{marginTop: '24px',
+          marginRight: '16px',
+          borderRadius: '24px',
+          fontSize: '16px',
+          textTransform: 'none',
+          height: '48px',
+          width: '108px',}}
+          onClick={() => navigate(0)}
+          >
+            Voltar
+          </Button>
+        {chartData.length > 0 && 
+          <Button variant='contained' color="primary" sx={{marginTop: '24px',
+            marginRight: '16px',
+            borderRadius: '24px',
+            fontSize: '16px',
+            textTransform: 'none',
+            height: '48px',
+            width: '108px',}} onClick={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
+          >
+              Salvar
+          </Button>
+        }
+      </Box>
 
       {isLoading && <Loading />}
     </Box>
