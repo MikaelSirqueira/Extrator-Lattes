@@ -3,9 +3,10 @@ import cors from "@fastify/cors";
 import { routes } from "./routes";
 import { loginRoutes } from "./login";
 import fastifyJwt from "@fastify/jwt";
-//import { protectedRoutes } from "./protected";
+import { protectedRoutes } from "./protected"; // Importe as rotas protegidas
 
-const app = Fastify()
+const app = Fastify();
+const startPort = 3333; // Porta inicial para tentativas de conexão
 
 // Configura a chave secreta para JWT
 app.register(fastifyJwt, {
@@ -17,7 +18,7 @@ app.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply
   try {
     await request.jwtVerify(); // Verifica o token
   } catch (err) {
-    reply.send(err); // Retorna erro se o token for inválido
+    reply.code(401).send({ message: 'Token inválido ou não autorizado' }); // Retorna erro 401 para token inválido
   }
 });
 
@@ -30,10 +31,34 @@ app.setErrorHandler((error, request, reply) => {
 app.register(cors);
 app.register(routes);
 app.register(loginRoutes);
-// app.register(protectedRoutes);
-// protectedRoutes(app);
+app.register(protectedRoutes); // Registra as rotas protegidas
 
-// Inicia o servidor
-app.listen({ port: 3333 }).then(() => {
-  console.log('HTTP Server Running!');
-});
+// Função para encontrar a próxima porta disponível
+async function findAvailablePort(port: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const tempApp = Fastify();
+
+    tempApp.listen({ port }, (err: NodeJS.ErrnoException | null) => {
+      if (err) {
+        if (err.code === 'EADDRINUSE') {
+          resolve(findAvailablePort(port + 1)); // Tenta a próxima porta
+        } else {
+          reject(err);
+        }
+      } else {
+        tempApp.close().then(() => resolve(port)); // Fecha o servidor temporário e retorna a porta
+      }
+    });
+  });
+}
+
+// Inicia o servidor na próxima porta disponível
+findAvailablePort(startPort)
+  .then((port) => {
+    app.listen({ port }).then(() => {
+      console.log(`HTTP Server Running on port ${port}!`);
+    });
+  })
+  .catch((err) => {
+    console.error("Erro ao iniciar o servidor:", err);
+  });
