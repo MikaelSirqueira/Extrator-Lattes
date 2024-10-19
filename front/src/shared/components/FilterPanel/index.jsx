@@ -9,6 +9,7 @@ import EventIcon from '@mui/icons-material/Event';
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate } from 'react-router-dom';
+import { cvRaw, conflictsJournals, conflictsConferences, conflictsBooks, conflictsBookChapters, cnpq_pq, pqd } from '../../../http/get-infos-ppg';
 
 const fileLabels = {
   'conferences': 'Conferências',
@@ -31,6 +32,26 @@ const fileLabels = {
   'processOrTechniques': 'Processos ou Técnicas',
   'technologicalProducts': 'Produtos Tecnológicos',
   'awards': 'Prêmios e Títulos',
+};
+
+const ppgFileLabels = {
+  // 'cvRaw': 'Currículo Lattes',
+  'conflictsJournals': 'Conflitos em Periódicos',
+  'conflictsConferences': 'Conflitos em Conferências',
+  'conflictsBooks': 'Conflitos em Livros',
+  'conflictsBookChapters': 'Conflitos em Capítulos de Livros',
+  'cnpq_pq': 'CNPq PQ',
+  'pqd': 'Produção Qualificada por Área',
+};
+
+const ppgFunctionMap = {
+  // 'cvRaw': cvRaw,
+  'conflictsJournals': conflictsJournals,
+  'conflictsConferences': conflictsConferences,
+  'conflictsBooks': conflictsBooks,
+  'conflictsBookChapters': conflictsBookChapters,
+  'cnpq_pq': cnpq_pq,
+  'pqd': pqd,
 };
 
 const functionMap = {
@@ -67,6 +88,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
   const [infos, setInfos] = useState([]);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedFilesPPG, setSelectedFilesPPG] = useState([]);
   const [beginYear, setBeginYear] = useState('');
   const [endYear, setEndYear] = useState('');
   const [chartData, setChartData] = useState([]);
@@ -100,6 +122,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
 
   const handleExtractClick = async () => {
     setChartData([]);
+    setResultsToInfos([]);
     setError('');
 
     if (!researcherName1 || !researcherName2) {
@@ -107,7 +130,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
       return;
     }       
 
-    const msgError = await evaluationAreaAndDateValidation();
+    const msgError = await DateValidation();
     if (msgError) {
         setError(msgError);
         return;
@@ -115,10 +138,10 @@ export function FilterPanel({isSelectedToShowResearchers }) {
 
     setIsLoading(true);  
     const filesToFetch = selectedFiles.length > 0 ? selectedFiles : Object.keys(fileLabels);
-
+    
     try {
       let datasets;
-
+      
       if (isSelectedToShowResearchers) {
         const { id1, id2 } = await getIdByName(researcherName1.toUpperCase(), researcherName2.toUpperCase());
         if (!id1 || !id2) {
@@ -133,7 +156,14 @@ export function FilterPanel({isSelectedToShowResearchers }) {
         const infos2 = await getInfosById(id2);
         setInfos([infos1, infos2]);
       } else {
-        datasets = await getPpgData(filesToFetch);
+        const msgErrorPPG = await DateValidationToPPG();
+        if (msgErrorPPG) {
+            setError(msgErrorPPG);
+            return;
+        }
+        
+        const filesToFetchPPG = selectedFilesPPG.length > 0 ? selectedFilesPPG : Object.keys(ppgFileLabels);
+        datasets = await getPpgData(filesToFetch, filesToFetchPPG);
       }
 
       setChartData(datasets);      
@@ -146,18 +176,28 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     }
   };
 
-  async function evaluationAreaAndDateValidation() {
+  async function DateValidation() {
     const currentYear = new Date().getFullYear()
 
     if (beginYear && endYear) {
       if (beginYear > endYear) {
           return 'O ano inicial não pode ser maior que o ano final';
       }
-    } else if (beginYear && !endYear) {
+    } 
+    
+    if (beginYear && !endYear) {
       if (beginYear > currentYear) {
         return 'O ano inicial não pode ser maior que o ano atual';
       }
       setEndYear(currentYear)
+    }
+
+    return null;
+   }
+
+   async function DateValidationToPPG() {
+    if (!beginYear) {
+      return 'É necessário preencher a data inicial.'
     }
 
     return null;
@@ -182,8 +222,8 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
         }
         
-        const validResponses1 = data1.filter(response => response && Object.values(response).some(value => value !== null));
-        const validResponses2 = data2.filter(response => response && Object.values(response).some(value => value !== null));
+        const validResponses1 = data1.filter(response => response && typeof response === 'object' && !Object.values(response).every(value => value === null));
+        const validResponses2 = data2.filter(response => response && typeof response === 'object' && !Object.values(response).every(value => value === null));
   
         resultsToInfos.push({
           file: file,
@@ -193,7 +233,6 @@ export function FilterPanel({isSelectedToShowResearchers }) {
 
         const data1Count = validResponses1.length;
         const data2Count = validResponses2.length;
-
 
         return {
           title: fileLabels[file],
@@ -213,17 +252,19 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     return datasets;
   }
 
-  async function getPpgData(filesToFetch) {
+  async function getPpgData(filesToFetch, filesToFetchPPG) {
     const name1 = researcherName1.toUpperCase();
     const name2 = researcherName2.toUpperCase();
     const listName = [name1, name2];
-    const failedIds = { 0: [], 1: [] };
+    const failedIds = { 0: [], 1: [] };    
+    const resultsToInfos = [];    
 
     const idsForEachPpg = await getIdsByProgram(name1, collegeName1.toUpperCase(), name2, collegeName2.toUpperCase());
 
     const datasets = [];
 
-    await Promise.all(filesToFetch.map(async (file, index) => {
+    // GRAFICOS
+    await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
 
@@ -233,15 +274,16 @@ export function FilterPanel({isSelectedToShowResearchers }) {
 
             const responses = await Promise.all(idArray.map(async (id) => {
               try {
-                const dataResponse = await fetchFunction(id, beginYear, endYear);
-                return csvToArray(dataResponse.data);
+                const infosDataResponse = await fetchFunction(id, beginYear, endYear, evaluationArea);
+                return csvToArray(infosDataResponse.data);
               } catch (err) {
                 failedIds[keyPpg].push(id);
                 return null;
               }
             }));
 
-            const validResponses = responses.filter(response => response && Object.values(response).some(value => value !== null));
+            // Filtragem para remover valores nulos
+            const validResponses = responses.filter(response => response && Array.isArray(response) && response.length > 0);
 
             const totalCount = validResponses.reduce((acc, data) => {
               return acc + data.length;
@@ -273,14 +315,65 @@ export function FilterPanel({isSelectedToShowResearchers }) {
       }
     }));
 
-    setFailedIds(failedIds);
+    // INFOS PPG
+    await Promise.all(filesToFetchPPG.map(async (file) => {
+      try {
+        const fetchFunction = ppgFunctionMap[file];
+        
+        for (const keyPpg in idsForEachPpg) {
+          if (idsForEachPpg.hasOwnProperty(keyPpg)) {
+            const idArray = idsForEachPpg[keyPpg];
 
-    // Retorna os datasets no formato esperado
-    return datasets; // Retorna o array de datasets agrupados
+            const responses = await Promise.all(idArray.map(async (id) => {
+              try {
+                const graphDataResponse = await fetchFunction(id, beginYear, endYear, evaluationArea);
+                return csvToArray(graphDataResponse.data);
+              } catch (err) {
+                failedIds[keyPpg].push(id);
+                return null;
+              }
+            }));
+
+            // Filtragem para remover valores nulos
+            const validResponses = responses.filter(response => response && Array.isArray(response) && response.length > 0);
+
+            // Filtragem adicional para remover objetos com todos os valores nulos
+            const filteredResponses = validResponses.filter(response => 
+              response.some(item => Object.values(item).some(value => value !== null))
+            );
+
+            // Verifica se já existe uma entrada para o arquivo atual
+            const existingInfo = resultsToInfos.find(info => info.file === file);
+
+            if (existingInfo) {
+              // Se existir, adiciona os novos dados ao array 'data' existente
+              existingInfo.data1.push(...filteredResponses.filter((_, index) => index % 2 === 0)); // Para o primeiro PPG
+              existingInfo.data2.push(...filteredResponses.filter((_, index) => index % 2 !== 0)); // Para o segundo PPG
+            } else {
+              resultsToInfos.push({
+                file: file,
+                data1: filteredResponses.filter((_, index) => index % 2 === 0),
+                data2: filteredResponses.filter((_, index) => index % 2 !== 0) 
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
+      }
+    }));
+
+    setFailedIds(failedIds);    
+    setResultsToInfos(resultsToInfos);
+
+    return datasets;
   }
 
 
   const loadPreviousSearch = async (search) => {
+    setChartData([]);
+    setError('');
+    
     setResearcherName1(search.name1);
     setResearcherName2(search.name2);
     setBeginYear(search.beginYear);
@@ -294,7 +387,15 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     <>
     <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column' }} component='section'>
       {searchHistory.length > 0 && (
-        <Accordion sx={{bgcolor: 'customComponents.main', borderColor: 'headerFooterComponent.main', border: '1px', marginBottom: 4}}>
+        <Accordion sx={{
+          bgcolor: 'customComponents.main', 
+          border: '1px solid',
+          borderColor: 'secondary.dark', 
+          marginBottom: 4,
+          '&:before': { // Remove a borda padrão do Accordion
+            display: 'none',
+          },
+        }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
             <Typography color='secondary.dark'>
               Pesquisas salvas
@@ -320,7 +421,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           </AccordionDetails>
         </Accordion>
       )}
-      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4, width: 700}} component='form'>
+      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4, width: '850px'}} component='form'>
         {isSelectedToShowResearchers ? (
           <>
             <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
@@ -431,7 +532,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
         ) : (
           <>
             {/* PRIMEIRO PPG */}
-            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
+            <div style={{display: 'flex', gap: 16}}>
               <TextField
                 placeholder="Ex: Ciência da Computação"
                 onChange={(e) => setResearcherName1(e.target.value)}
@@ -447,7 +548,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
-                helperText={`Insira o nome completo do primeiro programa`}
+                helperText={`* Insira o nome completo do primeiro programa`}
               />
               <TextField
                 placeholder="Ex: Pontificia Universidade Catolica do Parana"
@@ -464,12 +565,12 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
-                helperText={`Insira o nome completo da Instituição do programa`}
+                helperText={`* Insira o nome completo da Instituição do programa`}
               />          
             </div>   
 
             {/* SEGUNDO PPG */}
-            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
+            <div style={{display: 'flex', gap: 16}}>
               <TextField placeholder="Ex: Informática" onChange={(e) => setResearcherName2(e.target.value)} fullWidth
                 InputProps={{ startAdornment: ( 
                     <InputAdornment position="start">
@@ -481,7 +582,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
-                helperText={`Insira o nome completo do segundo programa`}
+                helperText={`* Insira o nome completo do segundo programa`}
               />
               <TextField placeholder="Ex: Universidade de Brasilia" onChange={(e) => setCollegeName2(e.target.value)} fullWidth
                 InputProps={{ startAdornment: ( 
@@ -494,7 +595,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                 }}
-                helperText={`Insira o nome completo da Instituição do programa`}
+                helperText={`* Insira o nome completo da Instituição do programa`}
               />
             </div>  
 
@@ -504,7 +605,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                 placeholder="Ex: 2010"
                 onChange={(e) => setBeginYear(e.target.value)}
                 fullWidth
-                helperText='Insira o ano inicial do filtro'
+                helperText='* Insira o ano inicial do filtro'
                 sx={{
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
@@ -521,7 +622,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                 placeholder="Ex: 2022"
                 onChange={(e) => setEndYear(e.target.value)}
                 fullWidth
-                helperText='Insira o ano final do filtro'
+                helperText='* Insira o ano final do filtro'
                 sx={{
                   '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                   '& .MuiInputBase-root': { backgroundColor: '#FFF' }
@@ -535,79 +636,119 @@ export function FilterPanel({isSelectedToShowResearchers }) {
               />
             </div>
 
-            {/* Area e Duplicates */}
-            <div style={{ display: 'flex', gap: 16 }}>
-              <TextField
-                placeholder="Ex: Computação"
-                onChange={(e) => setEvaluationArea(e.target.value)} 
-                fullWidth
-                helperText='Insira a área de avalição desejada'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-              />
-              <FormControl fullWidth sx={{'.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'}, '.MuiList-root' : {color: 'secondary.dark'},}} >
-                <Select                     
-                  value={dropValue}
-                  onChange={(e) => setDropValue(e.target.value)}
-                  sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
-                  MenuProps={{
-                    sx: {
-                      '& .MuiMenuItem-root': { color: 'secondary.dark' },
-                      '& .Mui-selected': { backgroundColor: 'homeCardComponent.light'},
-                    },
-                  }}
-                >
-                  <MenuItem value={true}>Remover</MenuItem>
-                  <MenuItem value={false}>Manter</MenuItem>
-                </Select>
-                <FormHelperText sx={{
-                    '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
-                  }} 
-                >
-                  Selecione se deseja manter ou remover os dados duplicados
-                </FormHelperText>
-              </FormControl>
-            </div>
           </>
         )}
 
         {error && <FormHelperText sx={{fontSize: '14px'}} error>{error}</FormHelperText>}
-        <FormControl 
-          sx={{
-              '.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'},
-              '.MuiList-root' : {color: 'secondary.dark'},
-            }}
-          >
-          <InputLabel id="file-select-label">Selecionar informações que deseja visualizar</InputLabel>
-          <Select
-            labelId="file-select-label"
-            multiple
-            value={selectedFiles}
-            onChange={(e) => setSelectedFiles(e.target.value)}
-            sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
-            renderValue={(selected) => (
-              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={fileLabels[value]} />
+        <div style={{display: 'flex',  gap: 16}}>
+          {/* GRAFICOS GERAIS */}
+          <FormControl 
+            sx={{
+                '& .MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'},
+                '& .MuiButtonBase-root .MuiMenuItem-root' : {color: 'secondary.dark'},
+              }}
+              fullWidth
+            >
+            <InputLabel id="file-select-label">Selecionar gráficos que deseja visualizar</InputLabel>
+            <Select
+              labelId="file-select-label"
+              multiple
+              value={selectedFiles}
+              onChange={(e) => setSelectedFiles(e.target.value)}
+              MenuProps={{
+                sx: {
+                  '& .MuiMenuItem-root': {
+                    color: 'secondary.dark',                  
+                  },
+                  '& .Mui-selected': {
+                    backgroundColor: 'homeCardComponent.light',
+                  },
+                },
+              }}
+              sx={{ 
+                '& .MuiSelect-select': { backgroundColor: '#FFF' }, 
+                '.MuiChip-root': { 
+                  borderColor: 'secondary.headerFooterComponent', 
+                  border: '1px solid', 
+                }
+              }}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={fileLabels[value]} />
+                  ))}
+                </Box>
+              )}
+            >
+              {Object.entries(fileLabels).map(([key, label]) => (
+                <MenuItem key={key} value={key}>
+                  {label}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText sx={{
+                '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
+              }} 
+            >
+              Caso não for selecionado nenhum, todas as informações serão exibidas.
+            </FormHelperText>
+          </FormControl>
+
+          {/* INFOS PARA PPGS */         } 
+          {!isSelectedToShowResearchers && (
+             <FormControl 
+              sx={{
+                  '& .MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'},
+                  '& .MuiButtonBase-root .MuiMenuItem-root' : {color: 'secondary.dark'},
+                }}
+                fullWidth
+              >
+              <InputLabel id="file-select-label">Selecionar informações sobre o PPG</InputLabel>
+              <Select
+                labelId="file-select-label"
+                multiple
+                value={selectedFilesPPG}
+                onChange={(e) => setSelectedFilesPPG(e.target.value)}
+                MenuProps={{
+                  sx: {
+                    '& .MuiMenuItem-root': {
+                      color: 'secondary.dark',                  
+                    },
+                    '& .Mui-selected': {
+                      backgroundColor: 'homeCardComponent.light',
+                    },
+                  },
+                }}
+                sx={{ 
+                  '& .MuiSelect-select': { backgroundColor: '#FFF' }, 
+                  '.MuiChip-root': { 
+                    borderColor: 'secondary.headerFooterComponent', 
+                    border: '1px solid', 
+                  } 
+                }}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={ppgFileLabels[value]} />
+                    ))}
+                  </Box>
+                )}
+              >
+                {Object.entries(ppgFileLabels).map(([key, label]) => (
+                  <MenuItem key={key} value={key}>
+                    {label}
+                  </MenuItem>
                 ))}
-              </Box>
-            )}
-          >
-            {Object.entries(fileLabels).map(([key, label]) => (
-              <MenuItem key={key} value={key}>
-                {label}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText sx={{
-              '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
-            }} 
-          >
-            Caso não for selecionado nenhum, todas as informações serão exibidas.
-          </FormHelperText>
-        </FormControl>
+              </Select>
+              <FormHelperText sx={{
+                  '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
+                }} 
+              >
+                Caso não for selecionado nenhum, todas as informações serão exibidas.
+              </FormHelperText>
+            </FormControl>
+          )}
+        </div>
         <Button variant="contained" size="large" onClick={handleExtractClick} disabled={isLoading}>
           {isLoading ? <CircularProgress size={24} /> : 'Extrair Dados'}
         </Button>       
@@ -617,6 +758,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
         <DataAccordion 
           chartData={chartData} 
           fileLabels={fileLabels}
+          ppgFileLabels={ppgFileLabels}
           researcherName1={researcherName1.toUpperCase()}
           researcherName2={researcherName2.toUpperCase()}
           resultsToInfos={resultsToInfos}

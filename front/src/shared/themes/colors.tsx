@@ -55,13 +55,13 @@ export const typography = (fontSizeFactor: number): TypographyOptions => ({
   },
   body1: {
     fontFamily: 'Source Sans 3, sans-serif',
-    fontSize: `${16 * fontSizeFactor}px`,    
-    lineHeight: '1.6',
+    fontSize: `${18 * fontSizeFactor}px`,    
+    lineHeight: '140%',
   },
   body2: {
     fontFamily: 'Source Sans 3, sans-serif',
     fontSize: `${24 * fontSizeFactor}px`,
-    lineHeight: '1.6',
+    lineHeight: '140%',
   },
   button: {
     fontFamily: 'Source Sans 3, sans-serif',
@@ -72,6 +72,6 @@ export const typography = (fontSizeFactor: number): TypographyOptions => ({
     fontFamily: 'Source Sans 3, sans-serif',
     fontSize: `${14 * fontSizeFactor}px`,
     fontWeight: 600,
-    lineHeight: '130%',
+    lineHeight: '140%',
   }
 })

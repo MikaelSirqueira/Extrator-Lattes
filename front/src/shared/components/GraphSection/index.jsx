@@ -62,6 +62,7 @@ export default function GraphSection({ dataset, title}) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      width: '100%'
     }}>
     {/* Card do Gráfico */}
     <Card sx={{    
@@ -74,20 +75,12 @@ export default function GraphSection({ dataset, title}) {
       margin: '0 8px',        
       }}
     >
-      {/* <Typography variant='body2' color='secondary.dark' sx={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}>
-        {titles[index]} opa
-      </Typography> */}
-
       <CardContent sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        flexGrow: '1'  ,
-        minWidth: '600px',       
+        flexGrow: '1'  ,      
       }}>  
         <Stack direction="column" spacing={1} sx={{ width: '100%',
           display: 'flex',
@@ -181,7 +174,6 @@ export default function GraphSection({ dataset, title}) {
         justifyContent: 'center',
         flexDirection: 'column',
         flexGrow: '1'  ,
-        minWidth: '180px',
       }}>
         <Stack direction="column" spacing={4} flex={1} color='secondary.dark'>
           <Stack spacing={0.1}>
