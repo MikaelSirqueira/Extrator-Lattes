@@ -6,14 +6,14 @@ const styles = {
     marginTop: '24px',
   },
   divider: {
-    width: '80%',
+    width: '90%',
     marginTop: '16px',
   },
   accordion: {    
     display: 'flex',
     flexDirection: 'column',
     marginTop: '24px',
-    width: '80%',
+    width: '100%',
   },
   title: {
     fontWeight: '600',
