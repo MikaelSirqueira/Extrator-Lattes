@@ -204,8 +204,8 @@ export function FilterPanel({isSelectedToShowResearchers }) {
    }
 
   async function getResearcherData(filesToFetch, id1, id2) {
-    const name1 = researcherName1.toUpperCase()
-    const name2 = researcherName2.toUpperCase() 
+    const name1 = researcherName1.toUpperCase();
+    const name2 = researcherName2.toUpperCase(); 
     const resultsToInfos = [];    
 
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
@@ -229,18 +229,23 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           file: file,
           data1: validResponses1,
           data2: validResponses2,
-        })
+        });
 
         const data1Count = validResponses1.length;
         const data2Count = validResponses2.length;
+
+        const altTextToGraphs = generateAltTextToPpgToResearcher(fileLabels[file], name1, data1Count, name2, data2Count);
+
+        console.log('alt ',altTextToGraphs)
 
         return {
           title: fileLabels[file],
           content: [
             { count: data1Count, researcher: name1 },
             { count: data2Count, researcher: name2 },
-          ]
-        }
+          ],
+          altText: altTextToGraphs
+        };
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
         return [];
@@ -251,6 +256,17 @@ export function FilterPanel({isSelectedToShowResearchers }) {
 
     return datasets;
   }
+
+  // Nova função para gerar o texto alternativo
+  function generateAltTextToPpg(file, name1, data1Count, college1, name2, data2Count, college2) {
+    return `O gráfico de ${file} mostra que ${name1} da ${college1} possui ${data1Count} registros, enquanto ${name2} da ${college2} possui ${data2Count} registros.`;
+  }
+
+  // Nova função para gerar o texto alternativo
+  function generateAltTextToPpgToResearcher(file, name1, data1Count, name2, data2Count) {
+    return `O gráfico de ${file} mostra que ${name1} possui ${data1Count} registros, enquanto ${name2} possui ${data2Count} registros.`;
+  }
+
 
   async function getPpgData(filesToFetch, filesToFetchPPG) {
     const name1 = researcherName1.toUpperCase();
@@ -298,7 +314,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                 researcher: `${listName[Number(keyPpg)]} ${Number(keyPpg)}`
               });
             } else { // senão, cria novo
-              datasets.push({
+              const newDataset = {
                 title: fileLabels[file],
                 content: [
                   {
@@ -306,10 +322,18 @@ export function FilterPanel({isSelectedToShowResearchers }) {
                     researcher: `${listName[Number(keyPpg)]} ${Number(keyPpg)}`
                   }
                 ]
-              });
+              };
+              datasets.push(newDataset);
             }
           }
         }
+
+        // Após preencher todos os dados, gera o texto alternativo para cada dataset
+        datasets.forEach(dataset => {
+          const altTextToGraphs = generateAltTextToPpg(dataset.title.toUpperCase(), listName[0], dataset.content[0].count, collegeName1, listName[1], dataset.content[1]?.count || 0, collegeName2,);
+          dataset.altText = altTextToGraphs; // Adiciona o texto alternativo ao dataset
+        });
+
       } catch (err) {
         console.error(`Erro ao carregar dados para ${fileLabels[file]}: `, err);
       }
@@ -334,19 +358,14 @@ export function FilterPanel({isSelectedToShowResearchers }) {
               }
             }));
 
-            // Filtragem para remover valores nulos
             const validResponses = responses.filter(response => response && Array.isArray(response) && response.length > 0);
-
-            // Filtragem adicional para remover objetos com todos os valores nulos
             const filteredResponses = validResponses.filter(response => 
               response.some(item => Object.values(item).some(value => value !== null))
             );
 
-            // Verifica se já existe uma entrada para o arquivo atual
             const existingInfo = resultsToInfos.find(info => info.file === file);
 
             if (existingInfo) {
-              // Se existir, adiciona os novos dados ao array 'data' existente
               existingInfo.data1.push(...filteredResponses.filter((_, index) => index % 2 === 0)); // Para o primeiro PPG
               existingInfo.data2.push(...filteredResponses.filter((_, index) => index % 2 !== 0)); // Para o segundo PPG
             } else {
@@ -366,9 +385,10 @@ export function FilterPanel({isSelectedToShowResearchers }) {
     setFailedIds(failedIds);    
     setResultsToInfos(resultsToInfos);
 
+    console.log('data ', datasets)
+
     return datasets;
   }
-
 
   const loadPreviousSearch = async (search) => {
     setChartData([]);
@@ -392,7 +412,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
           border: '1px solid',
           borderColor: 'secondary.dark', 
           marginBottom: 4,
-          '&:before': { // Remove a borda padrão do Accordion
+          '&:before': {
             display: 'none',
           },
         }}>
@@ -463,7 +483,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
             <div style={{ display: 'flex', gap: 16 }}>
               <TextField
                 placeholder="Ex: 2010"
-                onChange={(e) => setBeginYear(e.target.value)}  // Atualiza o estado do ano inicial
+                onChange={(e) => setBeginYear(e.target.value)}
                 fullWidth
                 helperText='Insira o ano inicial do filtro'
                 sx={{
@@ -479,7 +499,7 @@ export function FilterPanel({isSelectedToShowResearchers }) {
               />
               <TextField
                 placeholder="Ex: 2022"
-                onChange={(e) => setEndYear(e.target.value)}    // Atualiza o estado do ano final
+                onChange={(e) => setEndYear(e.target.value)}
                 fullWidth
                 helperText='Insira o ano final do filtro'
                 sx={{
@@ -781,13 +801,15 @@ export function FilterPanel({isSelectedToShowResearchers }) {
             Voltar
           </Button>
         {chartData.length > 0 && 
-          <Button variant='contained' color="primary" sx={{marginTop: '24px',
-            marginRight: '16px',
-            borderRadius: '24px',
-            fontSize: '16px',
-            textTransform: 'none',
-            height: '48px',
-            width: '108px',}} onClick={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
+          <Button variant='contained' color="primary" 
+            sx={{marginTop: '24px',
+              marginRight: '16px',
+              borderRadius: '24px',
+              fontSize: '16px',
+              textTransform: 'none',
+              height: '48px',
+              width: '108px',
+            }} onClick={() => saveSearchHistory(researcherName1, researcherName2, beginYear, endYear, selectedFiles)}
           >
               Salvar
           </Button>
