@@ -23,13 +23,13 @@ export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcher
             [...new Set(chartData.map(dataset => dataset.title))].map((title, index) => {
               const dataset = chartData.find(d => d.title === title);
               return (
-                <GraphSection key={title || index} dataset={dataset.content} title={dataset.title} />
+                <GraphSection key={title || index} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
               );
             })}
             {isSelectedToShowResearchers && chartData && chartData.map((dataset, index) => (
               <>
                 {dataset && dataset.content ? (
-                  <GraphSection key={index} dataset={dataset.content} title={dataset.title} />
+                  <GraphSection key={index} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
                 ) : null}
               </>
             ))} 
