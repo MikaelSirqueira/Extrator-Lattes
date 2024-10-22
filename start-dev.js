@@ -14,35 +14,34 @@ function createEnvFile(directory) {
 
 // Função para instalar dependências e rodar o servidor em uma pasta específica
 function startServer(directory, label) {
-    console.log(`Starting ${label} installation and server...`);
-    
-    // Cria o arquivo .env na pasta `back` se necessário
+    console.log(`\n\n============================`);
+    console.log(`Iniciando a instalação do ${label}, por favor aguarde...`);
+    console.log(`============================\n`);
+
+    // Cria o arquivo .env na pasta 'back' se necessário
     if (label === 'back') {
         createEnvFile(directory);
     }
-    
-    // Primeiro, executa `npm install`
+
+    // Primeiro, executa 'npm install'
     const install = exec(`cd ${directory} && npm install`);
     install.stdout.on('data', (data) => console.log(`${label} Install: ${data}`));
     install.stderr.on('data', (data) => console.error(`${label} Install Error: ${data}`));
-    
-    // Quando `npm install` termina, inicia `npm run dev`
+
+    // Quando 'npm install' termina, inicia 'npm run dev'
     install.on('close', (code) => {
-        if (code === 0) { // Se `npm install` for bem-sucedido
-            // Verifica e gera o Prisma Client apenas no `back`
+        if (code === 0) { // Se 'npm install' for bem-sucedido
+            console.log(`\n\n============================`);
+            console.log(`Instalação do ${label} concluída. Iniciando o servidor...`);
+            console.log(`============================\n`);
+
+            // Verifica e gera o Prisma Client apenas no 'back'
             if (label === 'back') {
                 generatePrismaClient(directory).then(() => {
-                    const start = exec(`cd ${directory} && npm run dev`);
-                    start.stdout.on('data', (data) => console.log(`${label}: ${data}`));
-                    start.stderr.on('data', (data) => console.error(`${label} Error: ${data}`));
-                    start.on('close', (code) => console.log(`${label} process exited with code ${code}`));
+                    runDev(directory, label);
                 }).catch(error => console.error(`${label} Prisma Error: ${error.message}`));
             } else {
-                // Inicia o servidor para `front`
-                const start = exec(`cd ${directory} && npm run dev`);
-                start.stdout.on('data', (data) => console.log(`${label}: ${data}`));
-                start.stderr.on('data', (data) => console.error(`${label} Error: ${data}`));
-                start.on('close', (code) => console.log(`${label} process exited with code ${code}`));
+                runDev(directory, label);
             }
         } else {
             console.error(`${label} Install failed with code ${code}`);
@@ -70,6 +69,31 @@ function generatePrismaClient(directory) {
             });
         }
     });
+}
+
+// Função para iniciar o servidor e exibir o link de acesso
+function runDev(directory, label) {
+    console.log(`\n\n============================`);
+    console.log(`Servidor do ${label} está iniciando, por favor aguarde...`);
+    console.log(`============================\n`);
+
+    const start = exec(`cd ${directory} && npm run dev`);
+    start.stdout.on('data', (data) => {
+        console.log(`${label}: ${data}`);
+
+        // Detectar a porta do front-end e exibir o link
+        if (label === 'front' && data.includes('Local:')) {
+            const match = data.match(/http:\/\/localhost:(\d+)/);
+            if (match && match[1]) {
+                const detectedPort = match[1];
+                console.log(`\n\n============================`);
+                console.log(`ACESSE O LINK: http://localhost:${detectedPort}`);
+                console.log(`============================\n`);
+            }
+        }
+    });
+    start.stderr.on('data', (data) => console.error(`${label} Error: ${data}`));
+    start.on('close', (code) => console.log(`${label} process exited with code ${code}`));
 }
 
 // Iniciar o frontend e o backend
