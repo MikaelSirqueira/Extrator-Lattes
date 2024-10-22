@@ -1,9 +1,17 @@
 {
-  "outputDirectory": "./front",
   "builds": [
     {
       "src": "front/package.json",
-      "use": "@vercel/node"
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "front/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
