@@ -10,8 +10,6 @@ interface EditUserProps{
 class EditUserService{
     async execute({ name, password, admin }: EditUserProps){
 
-      console.log(name, password, admin);
-
         if(!name || !password){
             throw new Error("Solicitação inválida")
         }
