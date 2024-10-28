@@ -1,6 +1,7 @@
 // Fetch /cv_raw/:id_lattes
 export async function cvRaw(id_lattes) {   
     const response = await fetch(`api/cv_raw/${id_lattes}`)
+
     const result = await response.json();
     return result; 
 }
@@ -11,10 +12,8 @@ export async function cvRaw(id_lattes) {
 // 	"message": "successfully fetched"
 // }
 // Fetch /conflictsjournals/:id_lattes/:begin_year/:end_year
-export async function conflictsJournals(id_lattes, begin_year = '', end_year = '') {
-    const url = begin_year && end_year 
-        ? `api/conflictsjournals/${id_lattes}/${begin_year}/${end_year}`
-        : `api/conflictsjournals/${id_lattes}`;
+export async function conflictsJournals(id_lattes, begin_year, end_year) {
+    const url = `api/conflictsjournals/${id_lattes}/${begin_year}/${end_year}`
     
     const response = await fetch(url);      
     const result = await response.json();
@@ -27,11 +26,9 @@ export async function conflictsJournals(id_lattes, begin_year = '', end_year = '
 // 	"message": "successfully fetched"
 // }
 // // Fetch /conflictsconferences/:id_lattes/:begin_year/:end_year
-export async function conflictsConferences(id_lattes, begin_year = '', end_year = '') {
-    const url = begin_year && end_year 
-        ? `api/conflictsconferences/${id_lattes}/${begin_year}/${end_year}`
-        : `api/conflictsconferences/${id_lattes}`;
-    
+export async function conflictsConferences(id_lattes, begin_year, end_year) {
+    const url = `api/conflictsconferences/${id_lattes}/${begin_year}/${end_year}`
+
     const response = await fetch(url);      
     const result = await response.json();
     return result;
@@ -40,10 +37,8 @@ export async function conflictsConferences(id_lattes, begin_year = '', end_year 
 
 // Erro KeyError:TÍTULO 
 // Fetch /conflictsbooks/:id_lattes/:begin_year/:end_year
-export async function conflictsBooks(id_lattes, begin_year = '', end_year = '') {
-    const url = begin_year && end_year 
-        ? `api/conflictsbooks/${id_lattes}/${begin_year}/${end_year}`
-        : `api/conflictsbooks/${id_lattes}`;
+export async function conflictsBooks(id_lattes, begin_year, end_year) {
+    const url = `api/conflictsbooks/${id_lattes}/${begin_year}/${end_year}`
     
     const response = await fetch(url);      
     const result = await response.json();
@@ -52,10 +47,8 @@ export async function conflictsBooks(id_lattes, begin_year = '', end_year = '') 
 
 
 // Fetch /conflictsbookchapters/:id_lattes/:begin_year/:end_year
-export async function conflictsBookChapters(id_lattes, begin_year = '', end_year = '') {
-    const url = begin_year && end_year 
-        ? `api/conflictsbookchapters/${id_lattes}/${begin_year}/${end_year}`
-        : `api/conflictsbookchapters/${id_lattes}`;
+export async function conflictsBookChapters(id_lattes, begin_year, end_year) {
+    const url = `api/conflictsbookchapters/${id_lattes}/${begin_year}/${end_year}`    
     
     const response = await fetch(url);      
     const result = await response.json();
@@ -73,8 +66,8 @@ export async function cnpq_pq(id_lattes) {
 }
 
 // @app.route('/pqd/<id_lattes>/<area>/<begin_year>/<end_year>', methods=['GET'])
-export async function pqd(id_lattes, area, begin_year, end_year) {
-    const url = `api/pqd/${id_lattes}/${begin_year}/${end_year}`
+export async function pqd(id_lattes, begin_year, end_year,  area='') {
+    const url = `api/pqd/${id_lattes}/"${area}"/${begin_year}/${end_year}`
         
     const response = await fetch(url);
     const result = await response.json();

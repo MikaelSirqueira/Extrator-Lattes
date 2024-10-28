@@ -1,13 +1,13 @@
 import React from 'react';
 import { PublicationAccordion } from '../PublicationAccordion';
 import { Box, Button, Divider } from '@mui/material';
-import styles from './styles';
 import { GeneralInfos } from '../GeneralInfos';
 import GraphSection from '../GraphSection';
 import { useNavigate } from 'react-router-dom';
 import { InfoSection } from '../InfoSection';
+import { InfoSectionToPPG } from '../InfoSection/index2';
 
-export function DataAccordion({ chartData, fileLabels, selectedFiles, researcherName1, researcherName2, saveSearchHistory, resultsToInfos, isSelectedToShowResearchers, infos }) {
+export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcherName1, researcherName2, resultsToInfos, isSelectedToShowResearchers, infos }) {
   const hasGraphData = chartData.length > 0;
   const navigate = useNavigate();
 
@@ -16,38 +16,59 @@ export function DataAccordion({ chartData, fileLabels, selectedFiles, researcher
       {
         isSelectedToShowResearchers && <GeneralInfos name1={researcherName1} name2={researcherName2} infos={infos} />
       }
-      <main style={styles.container}>
+      <main style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
         {hasGraphData && (
           <PublicationAccordion title="Análise por gráficos">
-            {chartData.length > 0 && chartData.map((dataset, index) =>  (
-              <GraphSection key={index} index={index} dataset={dataset} fileLabels={fileLabels} selectedFiles={selectedFiles} />
-            ))}
+            {!isSelectedToShowResearchers && chartData && 
+            [...new Set(chartData.map(dataset => dataset.title))].map((title, index) => {
+              const dataset = chartData.find(d => d.title === title);
+              return (
+                <GraphSection key={title || `graph-${index}`} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
+              );
+            })}
+            {isSelectedToShowResearchers && chartData && chartData.map((dataset, index) => (
+              dataset && dataset.content ? (
+                <GraphSection key={dataset.title || `graph-${index}`} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
+              ) : null
+            ))} 
           </PublicationAccordion>
         )}
 
         <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
 
-        {isSelectedToShowResearchers && resultsToInfos.length > 0 && ( // Verifica se há dados para exibir
+        {isSelectedToShowResearchers && resultsToInfos.length > 0 && ( 
           <PublicationAccordion title="Detalhamento das informações dos gráficos">
             {resultsToInfos.map((info, index) => (
               <InfoSection 
-                key={index}
+                key={info.file || `info-${index}`}
                 title={info.file}
                 contentLeft={info.data1} 
                 contentRight={info.data2}
                 fileLabels={fileLabels}
-                name1={researcherName1}
-                name2={researcherName2}
               />
             ))}
           </PublicationAccordion>
         )}
 
-        <Box sx={styles.buttonPanel}>
-          <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
-          <Button variant="outlined" sx={styles.button} onClick={() => navigate(0)}>Voltar</Button>
-          <Button variant='contained' color="primary" sx={styles.button} onClick={saveSearchHistory}>Salvar</Button>
-        </Box>
+        {!isSelectedToShowResearchers && resultsToInfos.length > 0 && (
+          <>
+            <PublicationAccordion title="Análise do PPG">
+              {resultsToInfos.map((info, index) => (
+                <InfoSectionToPPG 
+                  key={info.file || `ppg-info-${index}`}
+                  title={info.file}
+                  contentLeft={info.data1} 
+                  contentRight={info.data2}
+                  fileLabels={ppgFileLabels}
+                />
+              ))}
+            </PublicationAccordion>
+
+            <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />
+          </>
+        )}
+
+        
       </main>
     </>
   );

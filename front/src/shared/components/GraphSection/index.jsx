@@ -1,19 +1,23 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 import { Box, Card, CardContent, FormControl, InputLabel, Select } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import Tooltip from '@mui/material/Tooltip';
+import Paper from '@mui/material/Paper';
+import { useTheme } from '@mui/material/styles';
 
-export default function GraphSection({ index , dataset, fileLabels ,selectedFiles }) {
-  const [layout, setLayout] = React.useState('vertical');
-  const [radius, setRadius] = React.useState(10);
-  const [labelChart, setLabelChart] = React.useState('Rótulo Ativado');
-  const [grid, setGrid] = React.useState('Grid Horizontal');
-
+export default function GraphSection({ dataset, title, altText}) {
+  const [layout, setLayout] = useState('vertical');
+  const [radius, setRadius] = useState(10);
+  const [labelChart, setLabelChart] = useState('Rótulo Ativado');
+  const [grid, setGrid] = useState('Grid Horizontal');
+  const theme = useTheme();
+  
   const chartSettingsH = {
     xAxis: [{ scaleType: 'band' }],
     yAxis: [{ scaleType: 'band', dataKey: 'researcher' }],
@@ -63,6 +67,7 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      width: '100%'
     }}>
     {/* Card do Gráfico */}
     <Card sx={{    
@@ -72,23 +77,16 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
       flexDirection: 'column',
       borderRadius: 8,
       padding: 3,
-      margin: '0 8px',        
+      margin: '0 8px',    
+      width: '70%'    
       }}
     >
-      {/* <Typography variant='body2' color='secondary.dark' sx={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}>
-        Título do Gráfico
-      </Typography> */}
-
       <CardContent sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
-        flexGrow: '1'  ,
-        minWidth: '600px',       
+        flexGrow: '1'  ,      
       }}>  
         <Stack direction="column" spacing={1} sx={{ width: '100%',
           display: 'flex',
@@ -97,9 +95,10 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
         }}>
         <BarChart
             series={[
-              { dataKey: 'count', label: fileLabels[selectedFiles[index]] },
+              { dataKey: 'count', label: title },
             ]}
             dataset={dataset}
+            aria-label={altText}
             {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}
             borderRadius={radius}
             {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
@@ -154,6 +153,31 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
               },              
             })}
           />
+          
+          {/* Texto alternativo estilizado */}
+          <Paper 
+            elevation={3} 
+            sx={{ 
+              backgroundColor: theme.palette.homeCardComponent.light, // Usar a cor secundária do tema
+              padding: 2,
+              display: 'flex',
+              alignItems: 'center',
+              width: '60%',
+              marginTop: 2,
+              outline: 'none', // Para foco
+              '&:focus': {
+                outline: `2px solid ${theme.palette.secondary.dark}`, // Estilo de foco
+              },
+              color: 'secondary.dark'
+            }} 
+            tabIndex={0} // Permitir foco com Tab
+          >
+            {altText}
+            <Tooltip title="Texto alternativo para o gráfico">
+              <InfoIcon sx={{ color: 'secondary.main', cursor: 'pointer' }} />
+            </Tooltip>
+          </Paper>
+          
         </Stack>
       </CardContent>
     </Card>
@@ -182,7 +206,6 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
         justifyContent: 'center',
         flexDirection: 'column',
         flexGrow: '1'  ,
-        minWidth: '180px',
       }}>
         <Stack direction="column" spacing={4} flex={1} color='secondary.dark'>
           <Stack spacing={0.1}>
@@ -200,34 +223,36 @@ export default function GraphSection({ index , dataset, fileLabels ,selectedFile
           </Stack>
 
           <FormControl
-          sx={{
-            '.MuiFormHelperText-root' : { color: 'secondary.dark'},
-            '.MuiList-root' : {color: 'secondary.dark'},
-          }}>
-          <InputLabel id="file-select-label">Rótulo</InputLabel>
-          <Select
-            labelId="file-select-label" id='file-select'    
-            sx={{ 
-              '& .MuiSelect-select': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  }
-            }}
-            MenuProps={{
-              sx: {
-                '& .MuiMenuItem-root': {
-                  color: 'secondary.dark',                  
+            sx={{
+              '.MuiFormHelperText-root' : { color: 'secondary.dark'},
+              '.MuiList-root' : {color: 'secondary.dark'},
+            }}>
+            <InputLabel id="file-select-label">Rótulo</InputLabel>
+            <Select
+              labelId="file-select-label" id='file-select'    
+              sx={{ 
+                '& .MuiSelect-select': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  },
+                '& .': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  },
+
+              }}
+              MenuProps={{
+                sx: {
+                  '& .MuiMenuItem-root': {
+                    color: 'secondary.dark',                  
+                  },
+                  '& .Mui-selected': {
+                    backgroundColor: 'homeCardComponent.light',
+                  },
                 },
-                '& .Mui-selected': {
-                  backgroundColor: 'homeCardComponent.light',
-                },
-              },
-            }}
-            label="Rótulo"
-            value={labelChart}
-            onChange={(event) => setLabelChart(event.target.value)}
-          >
-            <MenuItem value="Rótulo Desativado"
-            sx={{'& .MuiMenuItem-gutters': {color:'secondary.dark'}}}>Rótulo Desativado</MenuItem>
-            <MenuItem value="Rótulo Ativado">Rótulo Ativado</MenuItem>
-          </Select>
+              }}
+              label="Rótulo"
+              value={labelChart}
+              onChange={(event) => setLabelChart(event.target.value)}
+            >
+              <MenuItem value="Rótulo Desativado"
+              sx={{'& .MuiMenuItem-gutters': {color:'secondary.dark'}}}>Rótulo Desativado</MenuItem>
+              <MenuItem value="Rótulo Ativado">Rótulo Ativado</MenuItem>
+            </Select>
           </FormControl>
 
           <FormControl

@@ -15,22 +15,28 @@ model User {
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
 
-  researches Research[]  // Relacionamento com as pesquisas
+  researches Research[] // Relacionamento com as pesquisas
 
   @@map("users")
 }
 
 model Research {
-  id              Int       @id @default(autoincrement())
-  name1           String
-  name2           String
-  informations    String
-  graphs          String
-  created_at      DateTime? @default(now())
-  updated_at      DateTime? @updatedAt
+  id                 Int       @id @default(autoincrement())
+  name1              String
+  name2              String
+  college1           String?
+  college2           String?
+  begin_year         String?
+  end_year           String?
+  selected_files     String?
+  selected_files_ppg String?
+  drop_duplicates    Boolean
+  is_researcher      Boolean
+  created_at         DateTime? @default(now())
+  updated_at         DateTime? @updatedAt
 
-  userId          Int
-  user            User      @relation(fields: [userId], references: [id]) // Relacionamento com o usuário
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 
   @@map("savedResearches")
 }
