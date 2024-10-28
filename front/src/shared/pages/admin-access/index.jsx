@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputAdornment, Typography, Stack, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { api } from "../../../services/api";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 export function AdminPanel() {
   const [name, setName] = useState('');
@@ -268,6 +271,7 @@ export function AdminPanel() {
             color="primary"
             sx={{ borderRadius: 2, textTransform: 'none', mt: 2 }}
             onClick={(handleSubmit)}
+            startIcon={<PersonAddIcon />}
           >
             {selectedUser ? 'Atualizar Usuário' : 'Criar Usuário'}
           </Button>
@@ -374,6 +378,7 @@ export function AdminPanel() {
                       color="primary"
                       onClick={() => handleEdit(user)}
                       sx={{ mr: 2 }}
+                      startIcon={<EditIcon />}
                     >
                       Editar
                     </Button>
@@ -381,6 +386,7 @@ export function AdminPanel() {
                       variant="outlined"
                       color="secondary"
                       onClick={() => handleDelete(user.id)}
+                      startIcon={<DeleteIcon />}
                     >
                       Deletar
                     </Button>
