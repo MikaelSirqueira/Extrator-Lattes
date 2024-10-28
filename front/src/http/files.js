@@ -1,5 +1,5 @@
 import { advisingComplete, advisingOnGoing, awards, book, bookChapter, committeeParticipation, conferences, eventParticipation, journals, otherBibliography, otherTechnicalProduction, patents, processOrTechniques, projects, shortDurationCourse, software, teachingActivities, teachingMaterials, technologicalProducts, workPresentation } from './get-routes';
-import { cvRaw, conflictsJournals, conflictsConferences, conflictsBooks, conflictsBookChapters, cnpq_pq, pqd } from '/http/get-infos-ppg';
+import { cvRaw, conflictsJournals, conflictsConferences, conflictsBooks, conflictsBookChapters, cnpq_pq, pqd } from './get-infos-ppg';
 
 
 export const fileLabelsExport = {
