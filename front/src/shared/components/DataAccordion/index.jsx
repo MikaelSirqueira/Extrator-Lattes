@@ -23,15 +23,13 @@ export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcher
             [...new Set(chartData.map(dataset => dataset.title))].map((title, index) => {
               const dataset = chartData.find(d => d.title === title);
               return (
-                <GraphSection key={title || index} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
+                <GraphSection key={title || `graph-${index}`} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
               );
             })}
             {isSelectedToShowResearchers && chartData && chartData.map((dataset, index) => (
-              <>
-                {dataset && dataset.content ? (
-                  <GraphSection key={index} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
-                ) : null}
-              </>
+              dataset && dataset.content ? (
+                <GraphSection key={dataset.title || `graph-${index}`} dataset={dataset.content} title={dataset.title} altText={dataset.altText} />
+              ) : null
             ))} 
           </PublicationAccordion>
         )}
@@ -42,7 +40,7 @@ export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcher
           <PublicationAccordion title="Detalhamento das informações dos gráficos">
             {resultsToInfos.map((info, index) => (
               <InfoSection 
-                key={index}
+                key={info.file || `info-${index}`}
                 title={info.file}
                 contentLeft={info.data1} 
                 contentRight={info.data2}
@@ -57,7 +55,7 @@ export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcher
             <PublicationAccordion title="Análise do PPG">
               {resultsToInfos.map((info, index) => (
                 <InfoSectionToPPG 
-                  key={index}
+                  key={info.file || `ppg-info-${index}`}
                   title={info.file}
                   contentLeft={info.data1} 
                   contentRight={info.data2}
