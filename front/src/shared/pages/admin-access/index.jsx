@@ -8,7 +8,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 export function AdminPanel() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [admin, setAdmin] = useState(null);
+  const [admin, setAdmin] = useState(false);
   const [users, setUsers] = useState([]);
   const [editUser, setEditUser] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -18,7 +18,7 @@ export function AdminPanel() {
   const [showUpdateError, setShowUpdateError] = useState(false);
   const [showUnexpectedDeleteError, setShowUnexpectedDeleteError] = useState(false);
   const [showUnexpectedFormError, setShowUnexpectedFormError] = useState(false);
-  const [labelChart, setLabelChart] = useState('');
+  const [labelChart, setLabelChart] = useState('Pesquisador');
   
   useEffect(() => {
     fetchUsers();
@@ -35,11 +35,15 @@ export function AdminPanel() {
   };
 
   const handleSubmit = () => {
-    if (labelChart == "Administrador"){
+    console.log(labelChart);
+
+    if (labelChart === 'Administrador') {
       setAdmin(true);
-    } else{
+    } else {
       setAdmin(false);
     }
+
+    console.log(admin);
 
     if (editUser) {
       handleEditSubmit();
@@ -171,6 +175,11 @@ export function AdminPanel() {
     setName(user.name);
     setAdmin(user.admin);
     setPassword(''); 
+
+    window.scrollTo({
+      top: 500,
+      behavior: 'instant'
+    });
   };
 
   // Função para limpar o formulário
@@ -196,7 +205,7 @@ export function AdminPanel() {
       alignItems='center'
       minHeight='90vh'
       overflow='hidden'
-      sx={{ marginTop: '120px' }} // Adicionando espaçamento abaixo do Header
+      sx={{ marginTop: '20px' }}
     >
       <Box 
         bgcolor='homeCardComponent.main' 
@@ -216,6 +225,28 @@ export function AdminPanel() {
           Gerenciamento de Usuários
         </Typography>
 
+        <Box id="about" component={'section'} maxWidth={'780px'} pb={2} >
+        <Typography variant="h6" color='secondary.dark' pb={2}>Sobre o Gerenciamento</Typography>
+        
+        <Typography variant="body1" color='secondary.light'>
+          Esta tela para administradores deve ser utilizada para cadastrar novos usuários e para atualizar ou deletar usuários já existentes.
+          <br />
+          <br />
+          Criar Usuário {'->'} O usuário será registrado no sistema com os dados informados e será mostrado ao final da lista de usuários presente na tela.
+          <br />
+          Editar {'->'} O nome do usuário será pré-preenchido no formulário, permitindo que você altere todos os campos necessários.
+          <br />
+          Deletar {'->'} O sistema irá apagar o usuário sem solicitar uma segunda confirmação.
+          <br />
+          <br />
+          Importante: Os usuários com perfil do tipo "Pesquisador" visualizam uma tela contendo apenas opção de alterar a própria senha.
+        </Typography>
+      </Box>
+
+      <Typography color='secondary.dark' variant="h6" textAlign='left'>
+          Formulário
+        </Typography>
+
         <Box component="form" sx={{ mb: 4 }} >
           <TextField 
             placeholder="Nome"
@@ -232,6 +263,7 @@ export function AdminPanel() {
             fullWidth
             sx={{ mb: 2, '& .MuiInputBase-root': { backgroundColor: '#FFF' }}}
           />
+
           <FormControl
           fullWidth
           sx={{
@@ -242,7 +274,11 @@ export function AdminPanel() {
           }}>
           <InputLabel id="file-select-label">Tipo de Perfil</InputLabel>
           <Select
-            labelId="file-select-label" id='file-select'    
+            labelId="file-select-label"
+            id='profile-select'    
+            label="Tipo de Perfil"
+            value={labelChart}
+            onChange={(event) => setLabelChart(event.target.value)}
             sx={{ 
               '& .MuiSelect-select': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  }
             }}
@@ -256,9 +292,6 @@ export function AdminPanel() {
                 },
               },
             }}
-            label="Tipo de Perfil"
-            value={labelChart}
-            onChange={(event) => setLabelChart(event.target.value)}
           >
             <MenuItem value="Pesquisador"
             sx={{'& .MuiMenuItem-gutters': {color:'secondary.dark'}}}>Pesquisador</MenuItem>
