@@ -64,7 +64,7 @@ export function Header({isLoggedIn}) {
             )}
             <Button color="secondary" size='large' onClick={() => handleNavigation('#about')} sx={{borderRadius: '24px', textTransform: 'none'}}>Sobre</Button>
             <Button color="secondary" size='large' onClick={() => handleNavigation('#guide')} sx={{borderRadius: '24px', textTransform: 'none'}}>Manual</Button>
-            <Button color="secondary" size='large' onClick={toggleTheme} sx={{borderRadius: '24px', textTransform: 'none'}}>Alto Contraste</Button>
+            <Button color="secondary" size="large" onClick={toggleTheme} sx={{ borderRadius: '24px', textTransform: 'none' }}>{themeName === 'light' ? 'Alto Contraste' : 'Baixo Contraste'}</Button>
             <Button color="secondary" size='large' onClick={() => handleLogOut()} sx={{borderRadius: '24px', textTransform: 'none'}}>Sair</Button>
             <Button color="primary" size='large' onClick={() => navigate('/extract')} sx={{borderRadius: '24px', textTransform: 'none'}} variant='contained'>Extrair</Button>
           </Box>
@@ -82,7 +82,7 @@ export function Header({isLoggedIn}) {
             alignItems={'center'}
             gap={2}
           >
-            <Button color="secondary" size='large' onClick={toggleTheme} sx={{borderRadius: '24px', textTransform: 'none'}}>Alto Contraste</Button>
+            <Button color="secondary" size="large" onClick={toggleTheme} sx={{ borderRadius: '24px', textTransform: 'none' }}>{themeName === 'light' ? 'Alto Contraste' : 'Baixo Contraste'}</Button>
           </Box>
         </>
       )}
