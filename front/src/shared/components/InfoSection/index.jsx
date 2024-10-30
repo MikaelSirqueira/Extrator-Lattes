@@ -6,22 +6,22 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
   const renderContent = (content) => {
     return content.map((item, index) => (
       <>
-        <Box key={index} sx={{ marginBottom: 0 }} color='secondary.dark'>
+        <Box key={index}  sx={{ marginBottom: 0 }} color='secondary.dark'>
           {title === 'conferences' && (
-            <Box sx={{padding: 1}}>
-              <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
-              <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME DO EVENTO:</span> <Typography variant='body1'>{item['NOME DO EVENTO']?.toUpperCase() || 'N/A'}</Typography></Typography>
-              <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
+            <Box tabIndex={0} sx={{padding: 1}}>
+              <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1' component={'span'}>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
+              <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME DO EVENTO:</span> <Typography variant='body1' component={'span'}>{item['NOME DO EVENTO']?.toUpperCase() || 'N/A'}</Typography></Typography>
+              <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1' component={'span'}>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
             </Box>
           )}
           {title === 'advisingOnGoing' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
             </Box>
           )}
           {title === 'journals' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item['TITULO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO PERIÓDICO:</span> <Typography variant='body1'>{item['TITULO PERIODICO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
@@ -30,14 +30,14 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'software' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO SOFTWARE:</span> <Typography variant='body1'>{item['TITULO SOFTWARE']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>FINALIDADE:</span> <Typography variant='body1'>{item.FINALIDADE?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
             </Box>
           )}
           {title === 'advisingComplete' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TIPO DE ORIENTAÇÃO:</span> <Typography variant='body1'>{item['TIPO DE ORIENTACAO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TIPO:</span> <Typography variant='body1'>{item.TIPO?.toUpperCase() || 'N/A'}</Typography></Typography>
@@ -45,7 +45,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'workPresentation' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>CIDADE DA APRESENTAÇÃO:</span> <Typography variant='body1'>{item['CIDADE DA APRESENTACAO']?.toUpperCase() || 'N/A'}</Typography></Typography>
@@ -54,7 +54,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'projects' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME DO PROJETO:</span> <Typography variant='body1'>{item['NOME DO PROJETO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>INSTITUIÇÃO:</span> <Typography variant='body1'>{item.INSTITUICAO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO INÍCIO:</span> <Typography variant='body1'>{item['ANO INICIO']}</Typography></Typography>
@@ -62,7 +62,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'teachingActivities' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>DISCIPLINAS:</span> <Typography variant='body1'>{item.DISCIPLINAS?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TIPO DE ENSINO:</span> <Typography variant='body1'>{item.TIPO_ENSINO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME DO CURSO:</span> <Typography variant='body1'>{item.NOME_CURSO?.toUpperCase() || 'N/A'}</Typography></Typography>
@@ -72,7 +72,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'bookChapter' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO DO LIVRO:</span> <Typography variant='body1'>{item['TITULO DO LIVRO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TIPO:</span> <Typography variant='body1'>{item.TIPO?.toUpperCase() || 'N/A'}</Typography></Typography>
@@ -84,7 +84,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'shortDurationCourse' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>UNIDADE:</span> <Typography variant='body1'>{item.UNIDADE?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>DURAÇÃO:</span> <Typography variant='body1'>{item.DURACAO}</Typography></Typography>
@@ -94,7 +94,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'eventParticipation' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item['TITULO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME DO EVENTO:</span> <Typography variant='body1'>{item['NOMED DO EVENTO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TIPO:</span> <Typography variant='body1'>{item.TIPO?.toUpperCase() || 'N/A'}</Typography></Typography>
@@ -102,7 +102,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'committee' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME DA INSTITUIÇÃO:</span> <Typography variant='body1'>{item.NOME_DA_INSTITUICAO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NÍVEL:</span> <Typography variant='body1'>{item.NIVEL?.toUpperCase() || 'N/A'}</Typography></Typography>
@@ -112,7 +112,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
             </Box>
           )}
           {title === 'awards' && (
-            <Box sx={{padding: 1}}>
+            <Box tabIndex={0} sx={{padding: 1}}>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>NOME PRÊMIO:</span> <Typography variant='body1'>{item['NOME_PREMIO']?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ENTIDADE PROMOTORA PRÊMIO:</span> <Typography variant='body1'>{item.ENTIDADE_PROMOTORA_PREMIO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
@@ -129,6 +129,8 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
     sx={{
       width: '100%',
       bgcolor: 'customComponents.main',
+      outline: '2px solid',
+      outlineColor: 'secondary.dark',
       marginBottom: 4,
     }}
     TransitionProps={{
@@ -139,6 +141,17 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
     }}
   >
     <AccordionSummary 
+      sx={{
+        bgcolor: 'customComponents.main',
+        '&:focus': { 
+          outline: '2px solid',
+          outlineColor: 'primary.main',
+        },
+        '&:focus-visible': { 
+          outline: '2px solid',
+          outlineColor: 'primary.main',
+        },
+      }}
       expandIcon={<ExpandMoreIcon color='primary'/>} aria-controls={`panel-${title}-content`} id={`panel-${title}-header`}>
       <Typography variant="h6" color='secondary.dark' sx={{ marginBottom: 4 }}>
         {fileLabels[title]}
