@@ -18,7 +18,7 @@ export function AdminPanel() {
   const [showUpdateError, setShowUpdateError] = useState(false);
   const [showUnexpectedDeleteError, setShowUnexpectedDeleteError] = useState(false);
   const [showUnexpectedFormError, setShowUnexpectedFormError] = useState(false);
-  const [labelChart, setLabelChart] = useState('Pesquisador');
+  // const [labelChart, setLabelChart] = useState(false);
   
   useEffect(() => {
     fetchUsers();
@@ -35,15 +35,6 @@ export function AdminPanel() {
   };
 
   const handleSubmit = () => {
-    console.log(labelChart);
-
-    if (labelChart === 'Administrador') {
-      setAdmin(true);
-    } else {
-      setAdmin(false);
-    }
-
-    console.log(admin);
 
     if (editUser) {
       handleEditSubmit();
@@ -127,7 +118,7 @@ export function AdminPanel() {
     }
 
     try {
-      await api.put("/user", { name, password, admin });
+      await api.put("/user", { id: selectedUser.id , name, password, admin });
       setShowUnexpectedFormError(false);
       fetchUsers(); 
       clearForm();
@@ -277,10 +268,10 @@ export function AdminPanel() {
             labelId="file-select-label"
             id='profile-select'    
             label="Tipo de Perfil"
-            value={labelChart}
-            onChange={(event) => setLabelChart(event.target.value)}
+            value={admin}
+            onChange={(event) => setAdmin(event.target.value)}
             sx={{ 
-              '& .MuiSelect-select': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  }
+              //'& .MuiSelect-select': { color: 'secondary.dark', borderColor: 'secondary.headerFooterComponent'  }
             }}
             MenuProps={{
               sx: {
@@ -293,9 +284,8 @@ export function AdminPanel() {
               },
             }}
           >
-            <MenuItem value="Pesquisador"
-            sx={{'& .MuiMenuItem-gutters': {color:'secondary.dark'}}}>Pesquisador</MenuItem>
-            <MenuItem value="Administrador">Administrador</MenuItem>
+            <MenuItem value={false}>Pesquisador</MenuItem>
+            <MenuItem value={true}>Administrador</MenuItem>
           </Select>
           </FormControl>
 
