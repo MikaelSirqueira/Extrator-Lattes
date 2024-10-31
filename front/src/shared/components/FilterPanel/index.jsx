@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider } from '@mui/material';
+import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider, Autocomplete } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
-import { getIdByName, csvToArray, getIdsByProgram, getInfosById } from '../../../http/get-routes';
+import { getIdByName, csvToArray, getIdsByProgram, getInfosById, getAllColleges, getAllResearchers } from '../../../http/get-data';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import TodayIcon from '@mui/icons-material/Today';
 import EventIcon from '@mui/icons-material/Event';
@@ -39,6 +39,31 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   const [resultsToInfos, setResultsToInfos] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
   const [selectedSearch, setSelectedSearch] = useState(null);
+
+  const [colleges, setColleges] = useState([]);
+  const [researchers1, setResearchers1] = useState([]);
+  const [researchers2, setResearchers2] = useState([]);
+
+  useEffect(() => {
+    const fetchColleges = async () => {
+      const collegeList = await getAllColleges();
+      setColleges(collegeList);
+    };
+
+    fetchColleges();
+  }, []);
+
+  const fetchNames = async () => {
+    const names1 = await getAllResearchers(collegeName1);
+    const names2 = await getAllResearchers(collegeName2);
+
+    setResearchers1(names1);
+    setResearchers2(names2);
+  };
+
+  useEffect(() => {
+    fetchNames();
+  }, [collegeName1, collegeName2]);
 
   const handleExtractClick = async () => {
     setChartData([]);
@@ -443,46 +468,126 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
         loadPreviousSearch={loadPreviousSearch}
         handleExtractClick={handleExtractClick}
       />
-      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 6, p: 4, mb: 10, borderRadius: 4, width: '850px'}} component='form'>
+      <Card sx={{ display: 'flex', flexDirection: 'column', gap: 4, p: 4, mb: 10, borderRadius: 4, width: '850px'}} component='form'>
         {isSelectedToShowResearchers ? (
           <>
             <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
-              <TextField
-                placeholder="Nome completo"
-                value={researcherName1}
-                onChange={(e) => setResearcherName1(e.target.value)}
+              <Autocomplete
                 fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonOutlineIcon />
-                    </InputAdornment>
-                  ),
+                options={colleges}
+                onInputChange={(event, newInputValue) => {
+                  setCollegeName1(newInputValue);
                 }}
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                helperText={`Insira o nome completo do primeiro pesquisador`}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Ex: Pontificia Universidade Catolica do Parana"                    
+                    fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonOutlineIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                      '& .MuiInputBase-root': { backgroundColor: '#FFF' },
+                    }}
+                    helperText={`Insira o nome da instituição do primeiro pesquisador`}
+                  />
+                )}
+                getOptionLabel={(option) => option}
               />
-              <TextField
-                placeholder="Nome completo"
-                value={researcherName2}
-                onChange={(e) => setResearcherName2(e.target.value)}
+              <Autocomplete
                 fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonOutlineIcon />
-                    </InputAdornment>
-                  ),
+                options={colleges}
+                onInputChange={(event, newInputValue) => {
+                  setCollegeName2(newInputValue);
                 }}
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Nome da Instituição do Pesquisador"
+                    fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonOutlineIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                      '& .MuiInputBase-root': { backgroundColor: '#FFF' },
+                    }}
+                    helperText={`Insira o nome da instituição do segundo pesquisador`}
+                  />
+                )}
+                getOptionLabel={(option) => option}
+              />
+            </div>
+            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
+              <Autocomplete
+                fullWidth
+                options={researchers1}
+                onInputChange={(event, newInputValue) => {
+                  setResearcherName1(newInputValue);
                 }}
-                helperText={`Insira o nome completo do segundo pesquisador`}
-              />          
+                renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Nome completo"
+                  value={researcherName1}
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonOutlineIcon />
+                        </InputAdornment>
+                      ),
+                  }}
+                  sx={{
+                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                    '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                  }}
+                  helperText={`Insira o nome completo do primeiro pesquisador`}
+                />
+              )}
+              getOptionLabel={(option) => option}
+              />
+              <Autocomplete
+                fullWidth
+                options={researchers2}
+                onInputChange={(event, newInputValue) => {
+                  setResearcherName2(newInputValue);
+                }}
+                renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Nome completo"
+                  value={researcherName1}
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonOutlineIcon />
+                        </InputAdornment>
+                      ),
+                  }}
+                  sx={{
+                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                    '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+                  }}
+                  helperText={`Insira o nome completo do segundo pesquisador`}
+                />
+              )}
+              getOptionLabel={(option) => option}
+              />
             </div>
             <div style={{ display: 'flex', gap: 16 }}>
               <TextField
@@ -521,38 +626,7 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
               />
             </div>
             <div style={{ display: 'flex', gap: 16 }}>
-              <TextField
-                placeholder="Ex: Computação"
-                onChange={(e) => setEvaluationArea(e.target.value)} 
-                fullWidth
-                helperText='Insira a área de avalição desejada'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-              />
-              <FormControl fullWidth sx={{'.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'}, '.MuiList-root' : {color: 'secondary.dark'},}} >
-                <Select                     
-                  value={dropValue}
-                  onChange={(e) => setDropValue(e.target.value)}
-                  sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
-                  MenuProps={{
-                    sx: {
-                      '& .MuiMenuItem-root': { color: 'secondary.dark' },
-                      '& .Mui-selected': { backgroundColor: 'homeCardComponent.light'},
-                    },
-                  }}
-                >
-                  <MenuItem value={true}>Remover</MenuItem>
-                  <MenuItem value={false}>Manter</MenuItem>
-                </Select>
-                <FormHelperText sx={{
-                    '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
-                  }} 
-                >
-                  Selecione se deseja manter ou remover os dados duplicados
-                </FormHelperText>
-              </FormControl>
+              
             </div>
           </>
         ) : (
@@ -577,24 +651,34 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
                 }}
                 helperText={`* Insira o nome completo do primeiro programa`}
               />
-              <TextField
-                placeholder="Ex: Pontificia Universidade Catolica do Parana"
-                value={collegeName1}
-                onChange={(e) => setCollegeName1(e.target.value)}
+               <Autocomplete
                 fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonOutlineIcon />
-                    </InputAdornment>
-                  ),
+                options={colleges}
+                onInputChange={(event, newInputValue) => {
+                  setCollegeName1(newInputValue);
                 }}
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                helperText={`* Insira o nome completo da Instituição do programa`}
-              />          
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Ex: Pontificia Universidade Catolica do Parana"                    
+                    fullWidth
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonOutlineIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                      '& .MuiInputBase-root': { backgroundColor: '#FFF' },
+                    }}
+                    helperText={`Insira o nome da instituição do primeiro pesquisador`}
+                  />
+                )}
+                getOptionLabel={(option) => option}
+              />        
             </div>   
 
             {/* SEGUNDO PPG */}
@@ -612,19 +696,34 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
                 }}
                 helperText={`* Insira o nome completo do segundo programa`}
               />
-              <TextField placeholder="Ex: Universidade de Brasilia" value={collegeName2} onChange={(e) => setCollegeName2(e.target.value)} fullWidth
-                InputProps={{ startAdornment: ( 
-                    <InputAdornment position="start">
-                      <PersonOutlineIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                helperText={`* Insira o nome completo da Instituição do programa`}
-              />
+               <Autocomplete
+                  fullWidth
+                  options={colleges}
+                  onInputChange={(event, newInputValue) => {
+                    setCollegeName2(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Ex: Universidade de Brasília"                    
+                      fullWidth
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <PersonOutlineIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{
+                        '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                        '& .MuiInputBase-root': { backgroundColor: '#FFF' },
+                      }}
+                      helperText={`Insira o nome da instituição do segundo PPG`}
+                    />
+                  )}
+                  getOptionLabel={(option) => option}
+                />
             </div>  
 
             {/* Datas */}
@@ -669,7 +768,7 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
           </>
         )}
 
-        {error && <FormHelperText sx={{fontSize: '14px'}} error>{error}</FormHelperText>}
+        
         <div style={{display: 'flex',  gap: 16}}>
           {/* GRAFICOS GERAIS */}
           <FormControl 
@@ -721,6 +820,30 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
               }} 
             >
               Caso não for selecionado nenhum, todas as informações serão exibidas.
+            </FormHelperText>
+          </FormControl>
+
+          {/* DROP */}
+          <FormControl fullWidth sx={{'.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'}, '.MuiList-root' : {color: 'secondary.dark'},}} >
+            <Select                     
+              value={dropValue}
+              onChange={(e) => setDropValue(e.target.value)}
+              sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
+              MenuProps={{
+                sx: {
+                  '& .MuiMenuItem-root': { color: 'secondary.dark' },
+                  '& .Mui-selected': { backgroundColor: 'homeCardComponent.light'},
+                },
+              }}
+            >
+              <MenuItem value={true}>Remover</MenuItem>
+              <MenuItem value={false}>Manter</MenuItem>
+            </Select>
+            <FormHelperText sx={{
+                '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
+              }} 
+            >
+              Selecione se deseja manter ou remover os dados duplicados
             </FormHelperText>
           </FormControl>
 
@@ -779,6 +902,9 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
             </FormControl>
           )}
         </div>
+
+        {error && <FormHelperText sx={{fontSize: '14px'}} error>{error}</FormHelperText>}
+
         <Button variant="contained" size="large" onClick={handleExtractClick} disabled={isLoading}>
           {isLoading ? <CircularProgress size={24} /> : 'Extrair Dados'}
         </Button>       
