@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, CircularProgress, Card, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider, Autocomplete } from '@mui/material';
+import { Button, Box, CircularProgress, Card, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
 import { getIdByName, csvToArray, getIdsByProgram, getInfosById, getAllColleges, getAllResearchers, getAllPpgs } from '../../../http/get-data';
@@ -176,12 +176,14 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
-        
-        const data1Response = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
-        const data2Response = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea);
+        const data1 = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
+        const data2 = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea);
 
-        const data1 = csvToArray(data1Response.data);
-        const data2 = csvToArray(data2Response.data);
+        // NÃO APAGAR
+        // const data1Response = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
+        // const data2Response = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea)
+        // const data1 = csvToArray(data1Response.data);
+        // const data2 = csvToArray(data2Response.data);
 
         if (!data1 || !data2) {
           throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
