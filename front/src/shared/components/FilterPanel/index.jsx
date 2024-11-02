@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, CircularProgress, Card, TextField, InputAdornment, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider, Autocomplete } from '@mui/material';
+import { Button, Box, CircularProgress, Card, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider, Autocomplete } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
-import { getIdByName, csvToArray, getIdsByProgram, getInfosById, getAllColleges, getAllResearchers } from '../../../http/get-data';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import TodayIcon from '@mui/icons-material/Today';
-import EventIcon from '@mui/icons-material/Event';
+import { getIdByName, csvToArray, getIdsByProgram, getInfosById, getAllColleges, getAllResearchers, getAllPpgs } from '../../../http/get-data';
 import { useNavigate } from 'react-router-dom';
 import { SavedSearchs } from '../SavedSearchs';
 import { fileLabelsExport, functionMapExport, ppgFileLabelsExport, ppgFunctionMapExport } from '../../../http/files';
 import { api } from '../../../services/api';
+import { PpgSection } from './ppg';
+import { ResearchersSection } from './researchers';
 
 const fileLabels = fileLabelsExport;
 const ppgFileLabels = ppgFileLabelsExport;
@@ -41,8 +40,8 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   const [selectedSearch, setSelectedSearch] = useState(null);
 
   const [colleges, setColleges] = useState([]);
-  const [researchers1, setResearchers1] = useState([]);
-  const [researchers2, setResearchers2] = useState([]);
+  const [optionsToResearchers1, setOptionsResearchers1] = useState([]);
+  const [optionsToResearchers2, setOpstionsResearchers2] = useState([]);
 
   useEffect(() => {
     const fetchColleges = async () => {
@@ -54,11 +53,15 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   }, []);
 
   const fetchNames = async () => {
-    const names1 = await getAllResearchers(collegeName1);
-    const names2 = await getAllResearchers(collegeName2);
+    const names1 = isSelectedToShowResearchers 
+      ? await getAllResearchers(collegeName1) 
+      : await getAllPpgs(collegeName1);
+    const names2 = isSelectedToShowResearchers 
+      ? await getAllResearchers(collegeName2) 
+      : await getAllPpgs(collegeName2);
 
-    setResearchers1(names1);
-    setResearchers2(names2);
+    setOptionsResearchers1(names1);
+    setOpstionsResearchers2(names2);
   };
 
   useEffect(() => {
@@ -344,7 +347,6 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
     return datasets;
   }
 
-  // Função para limpar os campos de entrada
   const clearFields = () => {
     setResearcherName1('');
     setResearcherName2('');
@@ -357,7 +359,7 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   };
 
   async function loadPreviousSearch(search) {
-    if (!search) return; // Retorna caso search seja null ou undefined
+    if (!search) return;
     clearFields();
     setSelectedSearch(search);
     return fillFieldsToExtract(search);
@@ -366,7 +368,7 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   useEffect(() => {
     if (selectedSearch) {
        loadPreviousSearch(selectedSearch).then(() => {
-          handleExtractClick(); // Apenas é chamado quando os campos já estão preenchidos
+          handleExtractClick();
        });
     }
  }, [selectedSearch]);
@@ -471,300 +473,37 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 4, p: 4, mb: 10, borderRadius: 4, width: '850px'}} component='form'>
         {isSelectedToShowResearchers ? (
           <>
-            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
-              <Autocomplete
-                fullWidth
-                options={colleges}
-                onInputChange={(event, newInputValue) => {
-                  setCollegeName1(newInputValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Ex: Pontificia Universidade Catolica do Parana"                    
-                    fullWidth
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{
-                      '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                      '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-                    }}
-                    helperText={`Insira o nome da instituição do primeiro pesquisador`}
-                  />
-                )}
-                getOptionLabel={(option) => option}
-              />
-              <Autocomplete
-                fullWidth
-                options={colleges}
-                onInputChange={(event, newInputValue) => {
-                  setCollegeName2(newInputValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Nome da Instituição do Pesquisador"
-                    fullWidth
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{
-                      '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                      '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-                    }}
-                    helperText={`Insira o nome da instituição do segundo pesquisador`}
-                  />
-                )}
-                getOptionLabel={(option) => option}
-              />
-            </div>
-            <div style={{display: 'flex', flexDirection: 'row', gap: 16}}>
-              <Autocomplete
-                fullWidth
-                options={researchers1}
-                onInputChange={(event, newInputValue) => {
-                  setResearcherName1(newInputValue);
-                }}
-                renderInput={(params) => (
-                <TextField
-                  {...params}
-                  placeholder="Nome completo"
-                  value={researcherName1}
-                  fullWidth
-                  InputProps={{
-                    ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineIcon />
-                        </InputAdornment>
-                      ),
-                  }}
-                  sx={{
-                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                    '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                  }}
-                  helperText={`Insira o nome completo do primeiro pesquisador`}
-                />
-              )}
-              getOptionLabel={(option) => option}
-              />
-              <Autocomplete
-                fullWidth
-                options={researchers2}
-                onInputChange={(event, newInputValue) => {
-                  setResearcherName2(newInputValue);
-                }}
-                renderInput={(params) => (
-                <TextField
-                  {...params}
-                  placeholder="Nome completo"
-                  value={researcherName1}
-                  fullWidth
-                  InputProps={{
-                    ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineIcon />
-                        </InputAdornment>
-                      ),
-                  }}
-                  sx={{
-                    '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                    '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                  }}
-                  helperText={`Insira o nome completo do segundo pesquisador`}
-                />
-              )}
-              getOptionLabel={(option) => option}
-              />
-            </div>
-            <div style={{ display: 'flex', gap: 16 }}>
-              <TextField
-                placeholder="Ex: 2010"
-                value={beginYear}
-                onChange={(e) => setBeginYear(e.target.value)}
-                fullWidth
-                helperText='Insira o ano inicial do filtro'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                InputProps={{ startAdornment: ( 
-                    <InputAdornment position="start">
-                      <TodayIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                placeholder="Ex: 2022"
-                value={endYear}
-                onChange={(e) => setEndYear(e.target.value)}
-                fullWidth
-                helperText='Insira o ano final do filtro'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                InputProps={{ startAdornment: ( 
-                    <InputAdornment position="start">
-                      <EventIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div style={{ display: 'flex', gap: 16 }}>
-              
-            </div>
+            <ResearchersSection 
+              colleges={colleges} 
+              optionsToResearchers1={optionsToResearchers1}
+              optionsToResearchers2={optionsToResearchers2}
+              setCollegeName1={setCollegeName1}
+              setCollegeName2={setCollegeName2}
+              researcherName1={researcherName1}
+              researcherName2={researcherName2}
+              setResearcherName1={setResearcherName1}
+              setResearcherName2={setResearcherName2}
+              beginYear={beginYear}
+              endYear={endYear}
+              setBeginYear={setBeginYear}
+              setEndYear={setEndYear}
+            /> 
           </>
         ) : (
           <>
-            {/* PRIMEIRO PPG */}
-            <div style={{display: 'flex', gap: 16}}>
-              <TextField
-                placeholder="Ex: Ciência da Computação"
-                value={researcherName1}
-                onChange={(e) => setResearcherName1(e.target.value)}
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonOutlineIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                helperText={`* Insira o nome completo do primeiro programa`}
-              />
-               <Autocomplete
-                fullWidth
-                options={colleges}
-                onInputChange={(event, newInputValue) => {
-                  setCollegeName1(newInputValue);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder="Ex: Pontificia Universidade Catolica do Parana"                    
-                    fullWidth
-                    InputProps={{
-                      ...params.InputProps,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{
-                      '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                      '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-                    }}
-                    helperText={`Insira o nome da instituição do primeiro pesquisador`}
-                  />
-                )}
-                getOptionLabel={(option) => option}
-              />        
-            </div>   
-
-            {/* SEGUNDO PPG */}
-            <div style={{display: 'flex', gap: 16}}>
-              <TextField placeholder="Ex: Informática" value={researcherName2} onChange={(e) => setResearcherName2(e.target.value)} fullWidth
-                InputProps={{ startAdornment: ( 
-                    <InputAdornment position="start">
-                      <PersonOutlineIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                helperText={`* Insira o nome completo do segundo programa`}
-              />
-               <Autocomplete
-                  fullWidth
-                  options={colleges}
-                  onInputChange={(event, newInputValue) => {
-                    setCollegeName2(newInputValue);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Ex: Universidade de Brasília"                    
-                      fullWidth
-                      InputProps={{
-                        ...params.InputProps,
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <PersonOutlineIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                      sx={{
-                        '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                        '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-                      }}
-                      helperText={`Insira o nome da instituição do segundo PPG`}
-                    />
-                  )}
-                  getOptionLabel={(option) => option}
-                />
-            </div>  
-
-            {/* Datas */}
-            <div style={{ display: 'flex', gap: 16 }}>
-              <TextField
-                placeholder="Ex: 2010"
-                value={beginYear}
-                onChange={(e) => setBeginYear(e.target.value)}
-                fullWidth
-                helperText='* Insira o ano inicial do filtro'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                InputProps={{ startAdornment: ( 
-                    <InputAdornment position="start">
-                      <TodayIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                
-              />
-              <TextField
-                placeholder="Ex: 2022"
-                value={endYear}
-                onChange={(e) => setEndYear(e.target.value)}
-                fullWidth
-                helperText='* Insira o ano final do filtro'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                InputProps={{ startAdornment: ( 
-                  <InputAdornment position="start">
-                    <EventIcon />
-                  </InputAdornment>
-                ),
-              }}
-              />
-            </div>
-
+            <PpgSection 
+              colleges={colleges} 
+              optionsToResearchers1={optionsToResearchers1}
+              optionsToResearchers2={optionsToResearchers2}
+              setCollegeName1={setCollegeName1}
+              setCollegeName2={setCollegeName2}
+              setResearcherName1={setResearcherName1}
+              setResearcherName2={setResearcherName2}
+              beginYear={beginYear}
+              endYear={endYear}
+              setBeginYear={setBeginYear}
+              setEndYear={setEndYear}
+            />
           </>
         )}
 
@@ -847,7 +586,7 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
             </FormHelperText>
           </FormControl>
 
-          {/* INFOS PARA PPGS */         } 
+          {/* INFOS PARA PPGS */} 
           {!isSelectedToShowResearchers && (
              <FormControl 
               sx={{

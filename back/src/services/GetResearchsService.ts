@@ -6,7 +6,6 @@ interface SaveResearchersProps {
 
 class GetResearchersService {
   async execute( {currentUser} : SaveResearchersProps) {
-    console.log('cS', currentUser)
     if (!currentUser) {
       throw new Error("Usuário inválido");
     }
