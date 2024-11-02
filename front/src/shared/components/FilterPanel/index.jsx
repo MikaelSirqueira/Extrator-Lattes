@@ -94,6 +94,8 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
 
       if (isSelectedToShowResearchers) {
         const { id1, id2 } = await getIdByName(researcherName1.toUpperCase(), researcherName2.toUpperCase());
+
+        console.log('id', id1)
         if (!id1 || !id2) {
           setError('Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos com os assentos necessários');
           setIsLoading(false);

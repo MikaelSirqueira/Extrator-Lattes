@@ -1,12 +1,18 @@
 import * as XLSX from 'xlsx';
 
 async function fetchData() {
-    const url = `api/retrieve_listagem_ppgs`
-    const response = await fetch(url)
+  const response = await fetch(`ppgs/ppgs.xlsx`, {
+    headers: {
+      'Content-Type': 'arraybuffer',
+    },
+  });
+  const arrayBuffer = await response.arrayBuffer();
+  const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
+  const worksheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[worksheetName];
+  const json = XLSX.utils.sheet_to_json(worksheet);
 
-    const result = await response.json();
-    const data = csvToArray(result.data);
-    return data;
+  return json;
 }
 
 export async function getAllColleges() {
