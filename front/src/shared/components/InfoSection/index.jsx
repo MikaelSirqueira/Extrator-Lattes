@@ -77,7 +77,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>TÍTULO:</span> <Typography variant='body1'>{item.TITULO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>TIPO:</span> <Typography variant='body1'>{item.TIPO?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>CIDADE EDITORA:</span> <Typography variant='body1'>{item.CIDADE_EDITORA?.toUpperCase() || 'N/A'}</Typography></Typography>
-              <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>ISBN:</span> <Typography variant='body1'>{item.ISBN?.toUpperCase() || 'N/A'}</Typography></Typography>
+              <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>ISBN:</span> <Typography variant='body1'>{item['ISBN'] || 'N/A'}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>PÁGINA INICIAL:</span> <Typography variant='body1'>{item['PAGINA INICIAL']?.toString() || 'N/A'}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>PÁGINA FINAL:</span> <Typography variant='body1'>{item['PAGINA FINAL']?.toString() || 'N/A'}</Typography></Typography>
@@ -153,28 +153,26 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
         },
       }}
       expandIcon={<ExpandMoreIcon color='primary'/>} aria-controls={`panel-${title}-content`} id={`panel-${title}-header`}>
-      <Typography variant="h6" color='secondary.dark' sx={{ marginBottom: 4 }}>
+      <Typography variant="h6" color='secondary.dark' sx={{ margin: 2 }}>
         {fileLabels[title]}
       </Typography>
     </AccordionSummary>
     <AccordionDetails>
-      <Box sx={{ display: 'flex', flexGrow: 1,  gap: 6 }}>
-        {contentLeft && contentLeft.length > 0 && (
-          <Card sx={{ borderRadius: 6, boxShadow: 'none', width: '100%' }}>
-            <CardContent>
-              {renderContent(contentLeft)}
-            </CardContent>
-          </Card>
-        )}
-        {contentRight && contentRight.length > 0 && (
-          <Card sx={{ borderRadius: 6, boxShadow: 'none', width: '100%' }}>
-            <CardContent>
-              {renderContent(contentRight)}
-            </CardContent>
-          </Card>
-        )}
+      <Box sx={{ display: 'flex', flexGrow: 1, gap: 6 }}>
+        <Card sx={{ borderRadius: 6, boxShadow: 'none', width: '100%'}}> {/* Definindo altura mínima */}
+          <CardContent>
+          <Typography tabIndex={0} variant='h5' sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 6}}>{name1}</Typography>
+            {contentLeft && contentLeft.length > 0 ? renderContent(contentLeft) : <Typography variant='body2'>Nenhum dado disponível</Typography>}
+          </CardContent>
+        </Card>
+        <Card sx={{ borderRadius: 6, boxShadow: 'none', width: '100%'}}> {/* Definindo altura mínima */}
+          <CardContent>
+            <Typography tabIndex={0} variant='h5' sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: 6}}>{name2}</Typography>
+            {contentRight && contentRight.length > 0 ? renderContent(contentRight) : <Typography variant='body1'>Nenhum dado disponível</Typography>}
+          </CardContent>
+        </Card>
       </Box>
     </AccordionDetails>
-  </Accordion>
+    </Accordion>
   );
 }

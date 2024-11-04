@@ -6,7 +6,7 @@ import path from 'path';
 function createEnvFile(directory) {
     const envPath = path.join(directory, '.env');
     if (!fs.existsSync(envPath)) {
-        const envContent = `DATABASE_URL="mysql://root:root@localhost:3306/usuario"`;
+        const envContent = `DATABASE_URL="mysql://root:1234@localhost:3306/usuario"`;
         fs.writeFileSync(envPath, envContent);
         console.log(`.env file created at ${envPath} with DATABASE_URL`);
     }
