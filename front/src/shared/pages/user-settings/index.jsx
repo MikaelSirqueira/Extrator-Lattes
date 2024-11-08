@@ -24,8 +24,6 @@ export function UserSettings() {
   };
 
   const handleUpdatePassword = async () => {
-    console.log(loggedUser);
-
     try {        
         const user = await api.get("/user", {params: {name: loggedUser}});
 

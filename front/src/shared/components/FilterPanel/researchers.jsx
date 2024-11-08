@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import TodayIcon from '@mui/icons-material/Today';
@@ -18,7 +18,7 @@ export function ResearchersSection(props) {
             renderInput={(params) => (
                 <TextField
                 {...params}
-                placeholder="Nome da Instituição do Primeiro Pesquisador"
+                placeholder="Ex: Pontifícia Universidade Católica do Paraná"    
                 fullWidth
                 InputProps={{
                     ...params.InputProps,
@@ -32,43 +32,12 @@ export function ResearchersSection(props) {
                     '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                     '& .MuiInputBase-root': { backgroundColor: '#FFF' },
                 }}
-                helperText={`Insira o nome da instituição do segundo pesquisador`}
+                helperText={`Insira o nome da instituição do primeiro pesquisador`}
                 />
             )}
             getOptionLabel={(option) => option}
         />
-        <Autocomplete    
-          fullWidth
-          options={props.colleges}
-          onInputChange={(event, newInputValue) => {
-            props.setCollegeName2(newInputValue);
-            props.setResearcherName2('');
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Nome da Instituição do Segundo Pesquisador"
-              fullWidth
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonOutlineIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                '& .MuiInputBase-root': { backgroundColor: '#FFF' },
-              }}
-              helperText={`Insira o nome da instituição do segundo pesquisador`}
-            />
-          )}
-          getOptionLabel={(option) => option}
-        />
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
-        <Autocomplete
+         <Autocomplete
             fullWidth
             options={props.optionsToResearchers1}
             value={props.researcherName1} 
@@ -78,7 +47,7 @@ export function ResearchersSection(props) {
             renderInput={(params) => (
                 <TextField
                 {...params}
-                placeholder="Nome completo do Pesquisador 1"
+                placeholder="Nome do Primeiro Pesquisador"
                 fullWidth
                 InputProps={{
                     ...params.InputProps,
@@ -97,17 +66,50 @@ export function ResearchersSection(props) {
             )}
             getOptionLabel={(option) => option}
         />
-        <Autocomplete
+        
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
+        <Autocomplete    
           fullWidth
-          options={props.optionsToResearchers2}
-          value={props.researcherName2} // Define o valor do autocomplete como o estado do pesquisador
+          options={props.colleges}
           onInputChange={(event, newInputValue) => {
-            props.setResearcherName2(newInputValue); // Atualiza o valor do pesquisador 2
+            props.setCollegeName2(newInputValue);
+            props.setResearcherName2('');
           }}
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder="Nome completo do Pesquisador 2"
+              placeholder="Ex: Universidade de Brasília" 
+              fullWidth
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonOutlineIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+                '& .MuiInputBase-root': { backgroundColor: '#FFF' },
+              }}
+              helperText={`Insira o nome da instituição do segundo pesquisador`}
+            />
+            )}
+          getOptionLabel={(option) => option}
+        />
+       
+        <Autocomplete
+          fullWidth
+          options={props.optionsToResearchers2}
+          value={props.researcherName2}
+          onInputChange={(event, newInputValue) => {
+            props.setResearcherName2(newInputValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Nome do Segundo Pesquisador"
               fullWidth
               InputProps={{
                 ...params.InputProps,
@@ -130,42 +132,42 @@ export function ResearchersSection(props) {
 
       {/* Datas */}
       <div style={{ display: 'flex', gap: 16 }}>
-              <TextField
-                placeholder="Ex: 2010"
-                value={props.beginYear}
-                onChange={(e) => props.setBeginYear(e.target.value)}
-                fullWidth
-                helperText='* Insira o ano inicial do filtro'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                InputProps={{ startAdornment: ( 
-                    <InputAdornment position="start">
-                      <TodayIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                
-              />
-              <TextField
-                placeholder="Ex: 2022"
-                value={props.endYear}
-                onChange={(e) => props.setEndYear(e.target.value)}
-                fullWidth
-                helperText='* Insira o ano final do filtro'
-                sx={{
-                  '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
-                  '& .MuiInputBase-root': { backgroundColor: '#FFF' }
-                }}
-                InputProps={{ startAdornment: ( 
-                  <InputAdornment position="start">
-                    <EventIcon />
-                  </InputAdornment>
-                ),
-              }}
-              />
-            </div>
+        <TextField
+          placeholder="Ex: 2010"
+          value={props.beginYear}
+          onChange={(e) => props.setBeginYear(e.target.value)}
+          fullWidth
+          helperText='* Insira o ano inicial do filtro'
+          sx={{
+            '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+            '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+          }}
+          InputProps={{ startAdornment: ( 
+              <InputAdornment position="start">
+                <TodayIcon />
+              </InputAdornment>
+            ),
+          }}
+          
+        />
+        <TextField
+          placeholder="Ex: 2022"
+          value={props.endYear}
+          onChange={(e) => props.setEndYear(e.target.value)}
+          fullWidth
+          helperText='* Insira o ano final do filtro'
+          sx={{
+            '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
+            '& .MuiInputBase-root': { backgroundColor: '#FFF' }
+          }}
+          InputProps={{ startAdornment: ( 
+            <InputAdornment position="start">
+              <EventIcon />
+            </InputAdornment>
+          ),
+        }}
+        />
+      </div>
     </>
   );
 }

@@ -18,7 +18,7 @@ export function PpgSection(props) {
                     renderInput={(params) => (
                     <TextField
                         {...params}
-                        placeholder="Ex: Pontificia Universidade Catolica do Parana"                    
+                        placeholder="Ex: Pontifícia Universidade Católica do Paraná"                    
                         fullWidth
                         InputProps={{
                         ...params.InputProps,
@@ -32,7 +32,7 @@ export function PpgSection(props) {
                         '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                         '& .MuiInputBase-root': { backgroundColor: '#FFF' },
                         }}
-                        helperText={`Insira o nome da instituição do primeiro pesquisador`}
+                        helperText={`* Insira o nome da instituição do primeiro PPG`}
                     />
                     )}
                     getOptionLabel={(option) => option}
@@ -61,7 +61,7 @@ export function PpgSection(props) {
                             '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                             '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                         }}
-                        helperText={`Nome do primeiro programa de pós-graduação`}
+                        helperText={`* Nome do primeiro programa de pós-graduação`}
                         />
                     )}
                     getOptionLabel={(option) => option}
@@ -94,7 +94,7 @@ export function PpgSection(props) {
                         '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                         '& .MuiInputBase-root': { backgroundColor: '#FFF' },
                         }}
-                        helperText={`Insira o nome da instituição do segundo PPG`}
+                        helperText={`* Insira o nome da instituição do segundo PPG`}
                     />
                     )}
                     getOptionLabel={(option) => option}
@@ -123,7 +123,7 @@ export function PpgSection(props) {
                         '& .MuiFormHelperText-root': { ml: '0', fontSize: 13, color: 'secondary.dark' },
                         '& .MuiInputBase-root': { backgroundColor: '#FFF' }
                         }}
-                        helperText={`Nome do segundo programa de pós-graduação`}
+                        helperText={`* Nome do segundo programa de pós-graduação`}
                     />
                     )}
                     getOptionLabel={(option) => option}

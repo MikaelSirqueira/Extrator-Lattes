@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { PublicationAccordion } from '../PublicationAccordion';
 import { Box, Button, Divider } from '@mui/material';
 import { GeneralInfos } from '../GeneralInfos';
@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { InfoSection } from '../InfoSection';
 import { InfoSectionToPPG } from '../InfoSection/index2';
 
-export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcherName1, researcherName2, resultsToInfos, isSelectedToShowResearchers, infos }) {
+export function DataAccordion({ refProp ,chartData, fileLabels, ppgFileLabels, researcherName1, researcherName2, resultsToInfos, isSelectedToShowResearchers, infos }) {
   const hasGraphData = chartData.length > 0;
   const navigate = useNavigate();
 
   return (
-    <>
+    <div>
+      <div ref={refProp}></div>
       {
         isSelectedToShowResearchers && <GeneralInfos name1={researcherName1} name2={researcherName2} infos={infos} />
       }
@@ -72,6 +73,6 @@ export function DataAccordion({ chartData, fileLabels, ppgFileLabels, researcher
 
         
       </main>
-    </>
+    </div>
   );
 }

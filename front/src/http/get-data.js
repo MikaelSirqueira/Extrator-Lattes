@@ -48,8 +48,6 @@ export async function getAllPpgs(college) {
       .map(row => row['Nome do PPG'])
   )).filter(name => name !== null);
 
-  console.log('ppg', ppgs)
-
   return ppgs;
 }
 
