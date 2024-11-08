@@ -168,10 +168,11 @@ export default function GraphSection({ dataset, title, altText}) {
               '&:focus': {
                 outline: `2px solid ${theme.palette.secondary.dark}`, // Estilo de foco
               },
+              color: 'secondary.dark'
             }} 
             tabIndex={0} // Permitir foco com Tab
           >
-            <Typography sx={{ color: 'secondary.dark' }}>{altText}</Typography>
+            {altText}
             <Tooltip title="Texto alternativo para o gráfico">
               <InfoIcon sx={{ color: 'secondary.main', cursor: 'pointer' }} />
             </Tooltip>

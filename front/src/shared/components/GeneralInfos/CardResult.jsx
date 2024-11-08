@@ -8,7 +8,7 @@ export function CardResult({ name, idLattes, program, photo, college, area_avali
       <CardContent>
         {/* <Avatar sx={styles.avatar} src={photo} alt={`Foto de ${name}`} /> */}
         <Typography variant="h6" color='secondary.dark' sx={styles.researcherName}>{name}</Typography>
-        <Box sx={styles.details} color='secondary.dark'>
+        <Box tabIndex={0} sx={styles.details} color='secondary.dark'>
           <Typography> <strong>ID Lattes:</strong> {idLattes}</Typography>
           <Typography> <strong>Programa de Pós-Graduação:</strong> {program}</Typography>
           <Typography> <strong>Instituição:</strong> {college}</Typography>

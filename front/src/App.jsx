@@ -9,6 +9,7 @@ import { AboutPage } from "./shared/pages/about-guide/index.jsx";
 import { AuthPage } from "./shared/pages/auth/index.jsx";
 import { useEffect, useState } from "react";
 import { AdminPanel } from "./shared/pages/admin-access/index.jsx";
+import { UserSettings } from "./shared/pages/user-settings/index.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,11 @@ const router = createBrowserRouter([
       {
         path: "/access",
         element: <AdminPanel />,
-      },     
+      },
+      {
+        path: "/settings",
+        element: <UserSettings />,
+      }    
     ],
   },
 ]);
