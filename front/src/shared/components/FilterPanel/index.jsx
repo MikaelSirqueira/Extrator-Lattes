@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Box, CircularProgress, Card, FormHelperText, InputLabel, Select, Chip, MenuItem, FormControl, Divider } from '@mui/material';
 import { DataAccordion } from '../DataAccordion';
 import { Loading } from '../Loading';
@@ -43,6 +43,8 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   const [optionsToResearchers1, setOptionsResearchers1] = useState([]);
   const [optionsToResearchers2, setOpstionsResearchers2] = useState([]);
 
+  const myRef = useRef(null);
+
   useEffect(() => {
     const fetchColleges = async () => {
       const collegeList = await getAllColleges();
@@ -67,6 +69,15 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
   useEffect(() => {
     fetchNames();
   }, [collegeName1, collegeName2]);
+
+  // useEffect(() => {
+  //   if (chartData.length > 0 && !isLoading) {
+  //     const element = document.getElementById('dados');
+  //     if (element) {
+  //       element.scrollIntoView({ behavior: 'smooth' });
+  //     }
+  //   }
+  // }, [chartData, isLoading]);
 
   const handleExtractClick = async () => {
     setChartData([]);
@@ -95,7 +106,6 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
       if (isSelectedToShowResearchers) {
         const { id1, id2 } = await getIdByName(researcherName1.toUpperCase(), researcherName2.toUpperCase());
 
-        console.log('id', id1)
         if (!id1 || !id2) {
           setError('Não foi possível encontrar um ou ambos dos nomes especificados. Preencha os nomes completos com os assentos necessários');
           setIsLoading(false);
@@ -124,7 +134,13 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
       console.error('Erro ao carregar os dados.', err);
       setError('Erro ao carregar os dados.');
     } finally {
-      setIsLoading(false);
+      setIsLoading(false);      
+
+      if (chartData.length > 0 && !isLoading) {
+        const element = document.getElementById('dados');
+        element?.scrollIntoView({ behavior: 'smooth' });
+        element.focus();
+      }
     }
   };
   
@@ -452,8 +468,6 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
       isResearcher: isSelectedToShowResearchers,
     };
 
-    console.log('save ', searchData)
-
     try {
       await saveSearch(searchData);
     } catch (error) {
@@ -476,7 +490,6 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
       />
       <Card sx={{ display: 'flex', flexDirection: 'column', gap: 4, p: 4, mb: 10, borderRadius: 4, width: '850px'}} component='form'>
         {isSelectedToShowResearchers ? (
-          <>
             <ResearchersSection 
               colleges={colleges} 
               optionsToResearchers1={optionsToResearchers1}
@@ -491,10 +504,8 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
               endYear={endYear}
               setBeginYear={setBeginYear}
               setEndYear={setEndYear}
-            /> 
-          </>
+            />
         ) : (
-          <>
             <PpgSection 
               colleges={colleges} 
               optionsToResearchers1={optionsToResearchers1}
@@ -508,7 +519,6 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
               setBeginYear={setBeginYear}
               setEndYear={setEndYear}
             />
-          </>
         )}
 
         
@@ -653,18 +663,22 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
         </Button>       
       </Card>
      
-      {chartData.length > 0 && 
-        <DataAccordion 
-          chartData={chartData} 
-          fileLabels={fileLabels}
-          ppgFileLabels={ppgFileLabels}
-          researcherName1={names[0].toUpperCase()}
-          researcherName2={names[1].toUpperCase()}
-          resultsToInfos={resultsToInfos}
-          isSelectedToShowResearchers={isSelectedToShowResearchers}
-          infos={infos}
-        />
-      }
+      <div id='dados' ref={myRef}>
+        {chartData.length > 0 && 
+          <DataAccordion 
+            tabIndex="0"
+            refProp={myRef}
+            chartData={chartData} 
+            fileLabels={fileLabels}
+            ppgFileLabels={ppgFileLabels}
+            researcherName1={names[0].toUpperCase()}
+            researcherName2={names[1].toUpperCase()}
+            resultsToInfos={resultsToInfos}
+            isSelectedToShowResearchers={isSelectedToShowResearchers}
+            infos={infos}
+          />
+        }
+      </div>
 
       <Box sx={{ padding: '24px 64px'}}>
         <Divider sx={{ margin: '16px 0', backgroundColor: 'grey.400' }} aria-hidden="true" />

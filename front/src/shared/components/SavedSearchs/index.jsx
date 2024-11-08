@@ -35,7 +35,6 @@ export function SavedSearchs({ getSavedSearches, searchHistory, isSelectedToShow
   }
 
   const handleLinkClick = async (search) => {
-    console.log('search ', search);
     loadPreviousSearch(search);
   };
 

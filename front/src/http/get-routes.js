@@ -37,7 +37,6 @@ async function fetchData(file) {
 
 export async function advisingOnGoing(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('advising_ongoing.xlsx');
-  console.log('Dados de advising_ongoing.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year
     ? data.filter(row => 
@@ -56,7 +55,6 @@ export async function advisingOnGoing(id_lattes, begin_year = '', end_year = '')
 
 export async function advisingComplete(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('advising_complete.xlsx');
-  console.log('Dados de advising_complete.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -75,7 +73,6 @@ export async function advisingComplete(id_lattes, begin_year = '', end_year = ''
 
 export async function book(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const data = await fetchData('book.xlsx');
-  console.log('Dados de book.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -94,7 +91,6 @@ export async function book(id_lattes, begin_year = '', end_year = '', drop_dupli
 
 export async function bookChapter(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const data = await fetchData('book_chapter.xlsx');
-  console.log('Dados de book_chapter.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -113,7 +109,6 @@ export async function bookChapter(id_lattes, begin_year = '', end_year = '', dro
 
 export async function committeeParticipation(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('committee_participation.xlsx');
-  console.log('Dados de committee_participation.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -132,7 +127,6 @@ export async function committeeParticipation(id_lattes, begin_year = '', end_yea
 
 export async function conferences(id_lattes, begin_year = '', end_year = '', drop_duplicates = '', area_avaliacao = '') {
   const data = await fetchData('conference.xlsx');
-  console.log('Dados de conference.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -151,7 +145,6 @@ export async function conferences(id_lattes, begin_year = '', end_year = '', dro
 
 export async function eventParticipation(id_lattes, begin_year = "", end_year = "") {
   const data = await fetchData('event_participation.xlsx');
-  console.log('Dados de event_participation.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -170,7 +163,6 @@ export async function eventParticipation(id_lattes, begin_year = "", end_year = 
 
 export async function journals(id_lattes, begin_year = '', end_year = '', drop_duplicates='', area_avaliacao = '') {
   const data = await fetchData('journals.xlsx');
-  console.log('Dados de journals.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year && drop_duplicates
     ? data.filter(row => 
@@ -189,7 +181,6 @@ export async function journals(id_lattes, begin_year = '', end_year = '', drop_d
 
 export async function otherBibliography(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('other_bibliography.xlsx');
-  console.log('Dados de other_bibliography.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -208,7 +199,6 @@ export async function otherBibliography(id_lattes, begin_year = '', end_year = '
 
 export async function otherTechnicalProduction(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('other_technical_production.xlsx');
-  console.log('Dados de other_technical_production.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -227,7 +217,6 @@ export async function otherTechnicalProduction(id_lattes, begin_year = '', end_y
 
 export async function patents(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const data = await fetchData('patents.xlsx');
-  console.log('Dados de patents.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -246,7 +235,6 @@ export async function patents(id_lattes, begin_year = '', end_year = '', drop_du
 
 export async function processOrTechniques(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('process_or_techniques.xlsx');
-  console.log('Dados de process_or_techniques.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -265,7 +253,6 @@ export async function processOrTechniques(id_lattes, begin_year = '', end_year =
 
 export async function projects(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('projects.xlsx');
-  console.log('Dados de projects.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -284,7 +271,6 @@ export async function projects(id_lattes, begin_year = '', end_year = '') {
 
 export async function shortDurationCourse(id_lattes, begin_year = '', end_year = '') {
   const data = await fetchData('short_duration_course.xlsx');
-  console.log('Dados de short_duration_course.xlsx:', data); // Log dos dados
 
   const result = begin_year && end_year 
     ? data.filter(row => 
@@ -303,8 +289,6 @@ export async function shortDurationCourse(id_lattes, begin_year = '', end_year =
 
 export async function software(id_lattes, begin_year = '', end_year = '', drop_duplicates = '') {
   const data = await fetchData('software.xlsx');
-  console.log('Dados de software.xlsx:', data); // Log dos dados
-
   const result = begin_year && end_year 
     ? data.filter(row => 
         row['ID_LATTES_PESQUISADOR'] &&

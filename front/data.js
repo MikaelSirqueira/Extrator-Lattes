@@ -24,8 +24,6 @@ async function saveDataAsXlsx() {
         // Verifique se `rawData` é uma string ou um objeto JSON
         const csvData = typeof rawData === 'string' ? rawData : JSON.stringify(rawData);
 
-        console.log('Dados recebidos:', csvData);
-
         // Converta o CSV para JSON
         const data = csvToArray(csvData);
 
@@ -51,8 +49,6 @@ async function saveDataAsXlsx() {
         // Salve o arquivo em disco
         const filePath = 'dados.xlsx';
         XLSX.writeFile(workbook, filePath);
-
-        console.log(`Arquivo salvo com sucesso em: ${filePath}`);
     } catch (error) {
         console.error('Erro ao processar a requisição ou salvar o arquivo:', error);
     }
