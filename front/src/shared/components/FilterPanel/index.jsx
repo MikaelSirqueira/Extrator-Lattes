@@ -192,14 +192,14 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
     const datasets = await Promise.all(filesToFetch.map(async (file) => {
       try {
         const fetchFunction = functionMap[file];
-        const data1 = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
-        const data2 = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea);
+        // const data1 = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
+        // const data2 = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea);
 
         // NÃO APAGAR
-        // const data1Response = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
-        // const data2Response = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea)
-        // const data1 = csvToArray(data1Response.data);
-        // const data2 = csvToArray(data2Response.data);
+        const data1Response = await fetchFunction(id1, beginYear, endYear, dropValue, evaluationArea);
+        const data2Response = await fetchFunction(id2, beginYear, endYear, dropValue, evaluationArea)
+        const data1 = csvToArray(data1Response.data);
+        const data2 = csvToArray(data2Response.data);
 
         if (!data1 || !data2) {
           throw new Error(`Erro ao buscar dados para o gráfico: ${fileLabels[file]}`);
