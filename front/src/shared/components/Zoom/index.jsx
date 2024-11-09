@@ -18,9 +18,14 @@ export function Zoom() {
     }
   }
 
+  function handleSliderChange(event, newValue) {
+    setFontSizeFactor(newValue / 100); // Divide por 100 para manter o fator dentro do intervalo desejado
+  }
+
   return (
     <>
       <Card 
+        aria-label="Ajuste o tamanho da fonte"
         sx={{ 
           display: 'flex',
           alignItems: 'center',
@@ -34,12 +39,18 @@ export function Zoom() {
           top: '70%', 
         }}
       >      
-        <IconButton onClick={zoomOut} sx={{textTransform: 'none', color:"secondary.dark"}} >
-         <TextDecreaseRoundedIcon sx={{fontSize:"large"}} />
+        <IconButton 
+          onClick={zoomOut} 
+          sx={{ textTransform: 'none', color:"secondary.dark" }} 
+          aria-label="Diminuir tamanho da fonte"
+        >
+          <TextDecreaseRoundedIcon sx={{ fontSize:"large" }} />
         </IconButton>
+
         <Slider
           value={fontSizeFactor * 100}
-          valueLabelDisplay="auto"
+          onChange={handleSliderChange}
+          aria-labelledby="font-size-slider"
           min={100}
           max={200} 
           step={25}
@@ -53,10 +64,15 @@ export function Zoom() {
             '& .MuiSlider-valueLabel': { display: 'none' },
           }}
         />
-        <IconButton onClick={zoomIn} sx={{textTransform: 'none', color:"secondary.dark"}} >
-         <TextIncreaseRoundedIcon sx={{fontSize:"large"}} />
+
+        <IconButton 
+          onClick={zoomIn} 
+          sx={{ textTransform: 'none', color:"secondary.dark" }} 
+          aria-label="Aumentar tamanho da fonte"
+        >
+          <TextIncreaseRoundedIcon sx={{ fontSize:"large" }} />
         </IconButton>
       </Card>
     </>
-  )
+  );
 }
