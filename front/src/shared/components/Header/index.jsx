@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import LogoLight from "../../assets/logo-pucpr.svg";
 import LogoDark from "../../assets/logo-pucpr-contraste.svg";
-import { ContinuousColorLegend } from '@mui/x-charts';
 
 export function Header({isLoggedIn}) {
   const { themeName, toggleTheme } = useAppThemeContext();

@@ -1,12 +1,10 @@
 import { Box, Button, Divider, Link, Typography } from "@mui/material";
 import { BodyTitle } from "../../components/BodyTitle";
-import { useNavigate } from "react-router-dom";
 //import { SavedSearchs } from "../../components/SavedSearchs";
 import { useState } from "react";
 import { FilterPanel } from "../../components/FilterPanel";
 
 export function ExtractData() {
-  const navigate = useNavigate();
   const [isSelectedToExtract, setIsSelectedToExtract] = useState(false);
   const [isSelectedToShowResearchers, setIsSelectedToShowResearchers] = useState(true);
 

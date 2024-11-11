@@ -2,8 +2,6 @@ import React from 'react';
 import { Box, Card, CardContent, Typography, Divider, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-
-
 export function InfoSectionToPPG({ title, contentLeft, contentRight, fileLabels }) {
   const renderContent = (content) => {
     return content.map((item, index) => (

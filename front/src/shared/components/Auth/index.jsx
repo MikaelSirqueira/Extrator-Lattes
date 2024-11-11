@@ -84,14 +84,16 @@ export function Auth() {
       <img 
         src={ImageHome} 
         alt="Imagem interna da parte central da PUC-PR exibindo a cruz, a igreja e a biblioteca." 
+        loading="lazy" // Carregamento adiado
         style={{
           position: 'absolute',
           height: '100%',
           width: '100%',
           objectFit: 'cover',
-          filter: 'brightness(60%)'
+          filter: 'brightness(60%)',
+          transition: 'opacity 0.5s ease-in-out', // Suaviza o carregamento
         }} 
-      />  
+      />   
 
       <Box 
         bgcolor='homeCardComponent.main' 

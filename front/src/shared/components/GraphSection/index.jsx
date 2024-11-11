@@ -98,7 +98,7 @@ export default function GraphSection({ dataset, title, altText}) {
               { dataKey: 'count', label: title },
             ]}
             dataset={dataset}
-            aria-label={altText}
+            aria-labelledby="chart-title"
             {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}
             borderRadius={radius}
             {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
@@ -153,6 +153,10 @@ export default function GraphSection({ dataset, title, altText}) {
               },              
             })}
           />
+          
+          <Typography id="chart-title" variant="h2" sx={{ display: 'none' }}>
+            {altText} {/* Texto alternativo para o gráfico */}
+          </Typography>
           
           {/* Texto alternativo estilizado */}
           <Paper 
@@ -209,16 +213,18 @@ export default function GraphSection({ dataset, title, altText}) {
       }}>
         <Stack direction="column" spacing={4} flex={1} color='secondary.dark'>
           <Stack spacing={0.1}>
-            <Typography 
-            color='secondary.dark'
-            gutterBottom>Raio da Borda</Typography>
+            <InputLabel id="border-radius-label" color='secondary.dark'>Raio da Borda</InputLabel>
             <Slider
-              value={radius}
-              onChange={(e, v) => setRadius(v)}
-              valueLabelDisplay="auto"
-              min={0}
-              max={20}
-              sx={{ mt: 2 }}
+                aria-labelledby="border-radius-label"
+                value={radius}
+                onChange={(e, v) => setRadius(v)}
+                valueLabelDisplay="auto"
+                min={0}
+                max={20}
+                sx={{ mt: 2 }}
+                aria-valuenow={radius}
+                aria-valuemin={0}
+                aria-valuemax={20}
             />
           </Stack>
 

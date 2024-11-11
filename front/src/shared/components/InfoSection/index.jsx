@@ -90,7 +90,7 @@ export function InfoSection({ title, contentLeft, contentRight, fileLabels, name
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>DURAÇÃO:</span> <Typography variant='body1'>{item.DURACAO}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>NÍVEL:</span> <Typography variant='body1'>{item.NIVEL?.toUpperCase() || 'N/A'}</Typography></Typography>
               <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>ANO:</span> <Typography variant='body1'>{item.ANO?.toString() || 'N/A'}</Typography></Typography>
-              <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>INSTITUIÇÃO PROMOTORA:</span> <Typography variant='body1'>{item['INSTITUICAO PROMOTORA'].toUpperCase() || 'N/A'}</Typography></Typography>
+              <Typography component="span" variant="body2"><span style={{ fontWeight: 'bold' }}>INSTITUIÇÃO PROMOTORA:</span> <Typography variant='body1'>{item['INSTITUICAO PROMOTORA']?.toUpperCase() || 'N/A'}</Typography></Typography>
             </Box>
           )}
           {title === 'eventParticipation' && (
