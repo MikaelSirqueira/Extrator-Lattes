@@ -98,7 +98,6 @@ export default function GraphSection({ dataset, title, altText}) {
               { dataKey: 'count', label: title },
             ]}
             dataset={dataset}
-            aria-labelledby="chart-title"
             {...(layout === 'horizontal' ? chartSettingsH : chartSettingsV)}
             borderRadius={radius}
             {...(labelChart === 'Rótulo Desativado' ? labelOff : labelOn)}
@@ -221,10 +220,10 @@ export default function GraphSection({ dataset, title, altText}) {
                 valueLabelDisplay="auto"
                 min={0}
                 max={20}
-                sx={{ mt: 2 }}
-                aria-valuenow={radius}
-                aria-valuemin={0}
-                aria-valuemax={20}
+                sx={{ mt: 2 }}                
+                role="Componente slider para ajuste da borda dos gráficos"
+                tabIndex={0}
+                aria-describedby="border-radius-description"
             />
           </Stack>
 
