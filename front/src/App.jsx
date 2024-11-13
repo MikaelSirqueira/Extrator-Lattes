@@ -7,7 +7,6 @@ import './global.css';
 import { Index } from "./shared/pages/index.jsx";
 import { AboutPage } from "./shared/pages/about-guide/index.jsx";
 import { AuthPage } from "./shared/pages/auth/index.jsx";
-import { useEffect, useState } from "react";
 import { AdminPanel } from "./shared/pages/admin-access/index.jsx";
 import { UserSettings } from "./shared/pages/user-settings/index.jsx";
 

@@ -50,7 +50,8 @@ export function Zoom() {
         <Slider
           value={fontSizeFactor * 100}
           onChange={handleSliderChange}
-          aria-labelledby="font-size-slider"
+          aria-labelledby="font-size-slider"          
+          aria-label="Slider para ajuste do tamanho da fonte"
           min={100}
           max={200} 
           step={25}

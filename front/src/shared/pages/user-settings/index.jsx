@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputAdornment, Typography, Stack, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Stack, Alert } from '@mui/material';
 import { api } from "../../../services/api";
-import LockIcon from '@mui/icons-material/Lock';
 
 export function UserSettings() {
     const [password, setPassword] = useState('');

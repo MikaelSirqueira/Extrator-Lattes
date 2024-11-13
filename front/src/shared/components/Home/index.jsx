@@ -1,6 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
 import ImageHome from "../../assets/bg-home.svg";
-import styles from "../Home/styles";
 import { useNavigate } from "react-router-dom";
 
 export function Home() {
@@ -42,11 +41,11 @@ export function Home() {
         <Typography color='secondary.dark' variant="h5" textAlign='center'>Extrator Lattes</Typography>
         <Typography color='secondary.dark' variant="body2">Sistema desenvolvido para extração e comparação dos dados Lattes de um pesquisador em específico, um conjunto de pesquisadores, Programa de Pós-Graduação como um todo e até mesmo de um conjunto de Programas de Pós-Graduação.</Typography>
         
-        <Box sx={styles.buttonContainer}>
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '40px',}}>
           <Button 
             variant="outlined" 
             size="large" 
-            sx={styles.button}     
+            sx={{ borderRadius: '24px', textTransform: 'none'}}     
             onClick={() => navigate('/about')}       
           >
             Saiba mais
@@ -55,7 +54,7 @@ export function Home() {
             variant='contained' 
             size="large" 
             color="primary" 
-            sx={styles.button}
+            sx={{borderRadius: '24px', textTransform: 'none'}}
             onClick={() => navigate('/extract')}
           >
             Extrair

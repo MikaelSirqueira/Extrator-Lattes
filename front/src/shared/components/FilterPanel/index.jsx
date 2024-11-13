@@ -578,7 +578,10 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
 
           {/* DROP */}
           <FormControl fullWidth sx={{'.MuiFormHelperText-root' : {ml: '0', fontSize: 13, color: 'secondary.dark'}, '.MuiList-root' : {color: 'secondary.dark'},}} >
+            <InputLabel id="drop-select-label">Selecionar opção de dados</InputLabel>
             <Select                     
+              labelId="drop-select-label"
+              aria-describedby="drop-select-helper-text"
               value={dropValue}
               onChange={(e) => setDropValue(e.target.value)}
               sx={{ '& .MuiSelect-select': { backgroundColor: '#FFF' }, '.MuiChip-root': { borderColor: 'secondary.headerFooterComponent', border: '1px solid', } }}
@@ -592,11 +595,11 @@ export function FilterPanel({ isSelectedToShowResearchers }) {
               <MenuItem value={true}>Remover</MenuItem>
               <MenuItem value={false}>Manter</MenuItem>
             </Select>
-            <FormHelperText sx={{
+            <FormHelperText id="drop-select-helper-text" sx={{
                 '& .MuiFormHelperText-root .MuiFormHelperText-sizeMedium' : {color: 'secondary.dark'}
               }} 
             >
-              Selecione se deseja manter ou remover os dados duplicados
+              Selecione se deseja manter ou remover os dados duplicados.
             </FormHelperText>
           </FormControl>
 
